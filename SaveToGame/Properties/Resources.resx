@@ -1,0 +1,84 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Androeed_ru" xml:space="preserve">
+    <value>www.androeed.ru</value>
+  </data>
+  <data name="AppName" xml:space="preserve">
+    <value>SaveToGame</value>
+  </data>
+  <data name="Cant_add_popup_message_from_file" xml:space="preserve">
+    <value>Не удалось загрузить сообщение из файла</value>
+  </data>
+  <data name="Cant_add_save" xml:space="preserve">
+    <value>Не удалось добавить сохранить в файл. Попробуйте сделать это вручную</value>
+  </data>
+  <data name="Cant_check_the_key" xml:space="preserve">
+    <value>Не удалось проверить ключ</value>
+  </data>
+  <data name="Cant_delete_temp_folder" xml:space="preserve">
+    <value>Не удалось удалить временную папку.</value>
+  </data>
+  <data name="Cant_make_program_pro" xml:space="preserve">
+    <value>Не удалось активировать программу</value>
+  </data>
+  <data name="Cant_update_program" xml:space="preserve">
+    <value>Ошибка при обновлении программы</value>
+  </data>
+  <data name="Email_was_copied" xml:space="preserve">
+    <value>Электронная почта скопирована в буфер обмена</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>Ошибка!</value>
+  </data>
+  <data name="File_or_save_not_selected" xml:space="preserve">
+    <value>Файл или сохранение не выбраны!</value>
+  </data>
+  <data name="Invalid_license_fullbtn" xml:space="preserve">
+    <value>Эта лицензия не действительна</value>
+  </data>
+  <data name="JavaNotFound" xml:space="preserve">
+    <value>Java не найдена. Необходимо загрузить её с официального сайта. Ссылка скопирована в буфер обмена</value>
+  </data>
+  <data name="Not_enough_files" xml:space="preserve">
+    <value>Некоторые файлы не найдены!</value>
+  </data>
+  <data name="OK" xml:space="preserve">
+    <value>ОК</value>
+  </data>
+  <data name="Open" xml:space="preserve">
+    <value>Открыть</value>
+  </data>
+  <data name="Path_to_file" xml:space="preserve">
+    <value>Путь к файлу: </value>
+  </data>
+  <data name="ProVersionPlusses" xml:space="preserve" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Text Files\ProVersionPlusses.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;windows-1251</value>
+  </data>
+  <data name="Some_Error_Found" xml:space="preserve">
+    <value>Странно, обнаружены неизвестные ошибки...</value>
+  </data>
+  <data name="Successful" xml:space="preserve">
+    <value>Готово</value>
+  </data>
+  <data name="Thanks" xml:space="preserve">
+    <value>Спасибо за покупку!</value>
+  </data>
+  <data name="Unknown_error" xml:space="preserve">
+    <value>Произошла неизвестная ошибка!</value>
+  </data>
+  <data name="UpdateNewVersion" xml:space="preserve">
+    <value>Доступна новая версия. Обновить?</value>
+  </data>
+</root>

@@ -1,0 +1,158 @@
+﻿<Window x:Class="SaveToGameWpf.Windows.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:localization="clr-namespace:SaveToGameWpf.Resources.Localizations"
+        Title="{Binding MainWindowTitle}"
+        Width="732" Height="500" MinWidth="795" MinHeight="500"
+        Closed="MainWindow_OnClosed"
+        DataContext="{Binding RelativeSource={RelativeSource Self}}"
+        FontSize="14"
+        Loaded="MainWindow_Load"
+        SnapsToDevicePixels="true"
+        Style="{StaticResource VsWindowStyle}"
+        WindowStartupLocation="CenterScreen">
+    <DockPanel Margin="10,5,10,10">
+        <Menu
+              DockPanel.Dock="Top"
+              FontSize="14"
+              HorizontalAlignment="Stretch"
+              Background="#F5F5F5"
+              ScrollViewer.VerticalScrollBarVisibility="Disabled">
+            <MenuItem 
+                    Header="{x:Static localization:MainResources.InstallApkVersion}" 
+                    Visibility="{Binding Pro, Converter={StaticResource VisibleIfTrueConverter}}" 
+                    Click="InstallApkClick"/>
+            <MenuItem Header="{x:Static localization:MainResources.Settings}">
+                <MenuItem Header="{x:Static localization:MainResources.Language}">
+                    <MenuItem IsCheckable="True" Header="Русский" Click="ChangeLanguageClick" Tag="ru" IsChecked="{Binding RuIsChecked, Mode=OneWay}" />
+                    <MenuItem IsCheckable="True" Header="English" Click="ChangeLanguageClick" Tag="en" IsChecked="{Binding EnIsChecked, Mode=OneWay}" />
+                </MenuItem>
+                <MenuItem Header="{x:Static localization:MainResources.BackupType}">
+                    <MenuItem IsCheckable="True" IsChecked="{Binding TitaniumIsChecked}" Header="Titanium" />
+                    <MenuItem IsCheckable="True" IsChecked="{Binding RomToolboxIsChecked}" Header="ROM Toolbox"/>
+                    <MenuItem IsCheckable="True" IsChecked="{Binding LuckyPatcherIsChecked}" Header="Lucky Patcher"/>
+                </MenuItem>
+            </MenuItem>
+            <MenuItem 
+                    Header="{x:Static localization:MainResources.FullVersion}"
+                    Click="BuyItem_Click"
+                    Visibility="{Binding Pro, Converter={StaticResource VisibleIfFalseConverter}}" />
+            <MenuItem 
+                    Header="{x:Static localization:MainResources.AboutProgram}"
+                    Click="AboutProgramItem_Click" />
+        </Menu>
+
+        <Grid DockPanel.Dock="Top" Margin="0,5">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" MinWidth="500" MaxWidth="900"/>
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <Grid
+                    Height="60"
+                    Margin="0,0,0,5"
+                    HorizontalAlignment="Stretch">
+                
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*" />
+                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                
+                <Button 
+                    Grid.Column="0"
+                    x:Name="ChooseApkButton"
+                    Click="ChooseApkBtn_Click" Padding="20,0"
+                    Content="{x:Static localization:MainResources.ChooseApk}"
+                    FontSize="15" DragOver="Apk_DragOver" Drop="Apk_DragDrop" AllowDrop="True"/>
+                <Button 
+                    Grid.Column="1"
+                    x:Name="ChooseSaveButton"
+                    Margin="5,0" Padding="20,0"
+                    Click="ChooseSaveBtn_Click"
+                    Content="{x:Static localization:MainResources.ChooseSave}"
+                    FontSize="15" DragOver="Save_DragOver" Drop="Save_DragDrop" AllowDrop="True"/>
+                <Button 
+                    Grid.Column="2"
+                    Click="StartBtn_Click"
+                    Content="{x:Static localization:MainResources.Begin}"
+                    FontSize="15" Padding="20,0"
+                    IsEnabled="{Binding Working, Converter={StaticResource InvertBoolConverter}}" />
+            </Grid>
+
+            <Grid Grid.Row="1" Grid.Column="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="5"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Text="{x:Static localization:MainResources.MainSmaliName}" VerticalAlignment="Center"/>
+                <TextBox Grid.Row="0" Grid.Column="1" Margin="5,0,0,0" MaxLength="1000" IsEnabled="{Binding Pro}" Text="{Binding MainSmaliName}" />
+
+                <TextBlock Grid.Row="2" Grid.Column="0" Text="{x:Static localization:MainResources.TextOfMessage}" VerticalAlignment="Center"/>
+                <TextBox Grid.Row="2" Grid.Column="1" Margin="5,0,0,0" MaxLength="1000" IsEnabled="{Binding Pro}" Text="{Binding PopupBoxText}" AcceptsReturn="True" MaxLines="3"/>
+            </Grid>
+
+            <GroupBox
+                    x:Name="OptionsBox"
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    Grid.RowSpan="2"
+                    Margin="5,-6,-1,0"
+                    HorizontalAlignment="Left"
+                    Header="{x:Static localization:MainResources.Options}"
+                    IsEnabled="{Binding Pro}">
+                <StackPanel 
+                        Orientation="Vertical"
+                        Margin="4,3,5,3">
+
+                    <RadioButton
+                             Content="{x:Static localization:MainResources.OnlySave}"
+                             IsChecked="{Binding OnlySave}"
+                             IsEnabled="{Binding Working,
+                                                 Converter={StaticResource InvertBoolConverter}}" />
+                    <RadioButton 
+                        Margin="0,4"
+                        Content="{x:Static localization:MainResources.SavePlusMessage}"
+                        IsChecked="{Binding SavePlusMess}"
+                        IsEnabled="{Binding Working, Converter={StaticResource InvertBoolConverter}}" />
+                    
+                    <RadioButton 
+                        Content="{x:Static localization:MainResources.OnlyMessage}"
+                        IsChecked="{Binding OnlyMess}"
+                        IsEnabled="{Binding Working, Converter={StaticResource InvertBoolConverter}}" />
+                    <Slider 
+                        Name="Sl"
+                        Margin="0,4"
+                        Cursor="Hand"
+                        IsEnabled="{Binding OnlySave, Converter={StaticResource InvertBoolConverter}}"
+                        IsSnapToTickEnabled="True"
+                        Maximum="5"
+                        Minimum="1"
+                        SmallChange="1"
+                        Value="{Binding MessagesCount}" />
+                    <Label
+                        Content="{Binding Value, ElementName=Sl}"
+                        ContentStringFormat="{x:Static localization:MainResources.MessagesCount}" />
+                </StackPanel>
+            </GroupBox>
+        </Grid>
+
+        <TextBox 
+            x:Name="LogBox"
+            IsReadOnly="True"
+            VerticalScrollBarVisibility="Auto"
+            TextWrapping="Wrap"/>
+    </DockPanel>
+</Window>

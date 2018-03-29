@@ -1,0 +1,60 @@
+﻿<Window x:Class="SaveToGameWpf.Windows.AboutWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:localization="clr-namespace:SaveToGameWpf.Resources.Localizations"
+        xmlns:properties="clr-namespace:SaveToGameWpf.Properties"
+        FontSize="14"
+        Title="{x:Static localization:MainResources.AboutProgram}" 
+        Height="330" Width="350" 
+        ResizeMode="NoResize" 
+        WindowStartupLocation="CenterScreen"
+        SizeToContent="Height"
+        Style="{StaticResource VsWindowStyle}" 
+        MaxWidth="10000"
+        DataContext="{Binding RelativeSource={RelativeSource Self}}">
+    <Window.Resources>
+        <Style x:Key="UsualBlock" TargetType="TextBlock">
+            <Setter Property="Margin" Value="10,5"/>
+        </Style>
+        <Style x:Key="LinkBlock" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="Blue"/>
+            <Setter Property="FontWeight" Value="Medium"/>
+            <Setter Property="Margin" Value="10,5"/>
+        </Style>
+    </Window.Resources>
+    <Window.Background>
+        <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+            <GradientStop Color="#FFE4E4E4" Offset="0"/>
+            <GradientStop Color="White" Offset="1"/>
+        </LinearGradientBrush>
+    </Window.Background>
+    
+    <Grid Margin="0,0,0,10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="130"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        
+        <TextBlock Text="{x:Static properties:Resources.AppName}" FontSize="20" HorizontalAlignment="Center"/>
+        <Image Source="..\Resources\App_Icon.png" Grid.Row="1" Margin="0,10"/>
+        <Grid Grid.Row="2" Margin="40,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            
+            <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource UsualBlock}" Text="{x:Static localization:MainResources.Version}"/>
+            <TextBlock Grid.Row="0" Grid.Column="1" Style="{StaticResource UsualBlock}" Text="{Binding Version}"/>
+            <TextBlock Grid.Row="1" Grid.Column="0" Style="{StaticResource UsualBlock}" Text="{x:Static localization:MainResources.Developer}"/>
+            <TextBlock Grid.Row="1" Grid.Column="1" Style="{StaticResource LinkBlock}"  Text="And42" MouseLeftButtonDown="DeveloperBtn_Clicked" />
+            <TextBlock Grid.Row="2" Grid.Column="0" Style="{StaticResource UsualBlock}" Text="{x:Static localization:MainResources.Support}"/>
+            <TextBlock Grid.Row="2" Grid.Column="1" Style="{StaticResource LinkBlock}"  Text="4PDA" MouseLeftButtonDown="FourPdaBtn_Clicked"/>
+        </Grid>
+    </Grid>
+</Window>
