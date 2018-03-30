@@ -75,13 +75,13 @@
     <Reference Include="AlphaFS, Version=2.1.0.0, Culture=neutral, PublicKeyToken=4d31a58f7d7ad5c9, processorArchitecture=MSIL">
       <HintPath>..\packages\AlphaFS.2.1.3\lib\net40\AlphaFS.dll</HintPath>
     </Reference>
-    <Reference Include="AndroidLibs, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="AndroidHelper, Version=1.4.6662.38775, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Libs\Android\bin\Release\AndroidLibs.dll</HintPath>
+      <HintPath>Libraries\AndroidHelper.dll</HintPath>
     </Reference>
-    <Reference Include="ApkModifer, Version=1.2.6356.42786, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="ApkModifer, Version=1.3.6662.39042, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Libs\ApkModifer\ApkModifer\bin\Release\ApkModifer.dll</HintPath>
+      <HintPath>Libraries\ApkModifer.dll</HintPath>
     </Reference>
     <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -92,6 +92,10 @@
     </Reference>
     <Reference Include="Microsoft.WindowsAPICodePack.Shell, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\WindowsAPICodePack-Shell.1.1.1\lib\Microsoft.WindowsAPICodePack.Shell.dll</HintPath>
+    </Reference>
+    <Reference Include="MVVM_Tools, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\TranslatorApk\TranslatorApk\Libraries\MVVM_Tools.dll</HintPath>
     </Reference>
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
@@ -117,13 +121,13 @@
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
-    <Reference Include="UsefulClasses, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="UsefulClasses, Version=1.1.6419.29346, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Libs\UsefulClasses\bin\Release\UsefulClasses.dll</HintPath>
+      <HintPath>Libraries\UsefulClasses.dll</HintPath>
     </Reference>
-    <Reference Include="UsefulFunctionsLib, Version=1.2.6355.35184, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="UsefulFunctionsLib, Version=1.4.6537.36668, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Libs\UsefulFunctionsLib\UsefulFunctions\bin\Release\UsefulFunctionsLib.dll</HintPath>
+      <HintPath>Libraries\UsefulFunctionsLib.dll</HintPath>
     </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
@@ -308,6 +312,8 @@
     <None Include="app.manifest">
       <SubType>Designer</SubType>
     </None>
+    <None Include="Libraries\zzz_refresh_references.ps1" />
+    <None Include="Libraries\zzz_refresh_references_pause.ps1" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>PublicSettingsSingleFileGenerator</Generator>
@@ -341,6 +347,39 @@
       <ProductName>Windows Installer 4.5</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Libraries\zzz_dependencies.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Libraries\AlphaFS.dll" />
+    <None Include="Libraries\AlphaFS.pdb" />
+    <None Include="Libraries\AlphaFS.xml" />
+    <None Include="Libraries\AndroidHelper.dll" />
+    <None Include="Libraries\AndroidHelper.pdb" />
+    <None Include="Libraries\AndroidHelper.xml" />
+    <None Include="Libraries\AndroidTranslator.dll" />
+    <None Include="Libraries\AndroidTranslator.pdb" />
+    <None Include="Libraries\AndroidTranslator.xml" />
+    <None Include="Libraries\ApkModifer.dll" />
+    <None Include="Libraries\ApkModifer.pdb" />
+    <None Include="Libraries\ApkModifer.xml" />
+    <None Include="Libraries\ICSharpCode.SharpZipLib.dll" />
+    <None Include="Libraries\ICSharpCode.SharpZipLib.pdb" />
+    <None Include="Libraries\ICSharpCode.SharpZipLib.xml" />
+    <None Include="Libraries\MVVM_Tools.dll" />
+    <None Include="Libraries\MVVM_Tools.pdb" />
+    <None Include="Libraries\MVVM_Tools.xml" />
+    <None Include="Libraries\SharpCompress.dll" />
+    <None Include="Libraries\SmaliParser.dll" />
+    <None Include="Libraries\SmaliParser.pdb" />
+    <None Include="Libraries\SmaliParser.xml" />
+    <None Include="Libraries\UsefulClasses.dll" />
+    <None Include="Libraries\UsefulClasses.pdb" />
+    <None Include="Libraries\UsefulClasses.xml" />
+    <None Include="Libraries\UsefulFunctionsLib.dll" />
+    <None Include="Libraries\UsefulFunctionsLib.pdb" />
+    <None Include="Libraries\UsefulFunctionsLib.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

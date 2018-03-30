@@ -9,7 +9,8 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Shell;
 using Alphaleonis.Win32.Filesystem;
-using AndroidLibs;
+using AndroidHelper.Logic;
+using ApkModifer.Logic;
 using ICSharpCode.SharpZipLib.Zip;
 using Microsoft.Win32;
 using SaveToGameWpf.Logic.Classes;
@@ -140,7 +141,7 @@ namespace SaveToGameWpf.Windows
                 CheckPathExists = true
             };
 
-            if (SettingsIncapsuler.BackupType != ApkModifer.ApkModifer.BackupType.LuckyPatcher)
+            if (SettingsIncapsuler.BackupType != BackupType.LuckyPatcher)
             {
                 if (openSaveDialog.ShowDialog() == true)
                     Save = openSaveDialog.FileName;
@@ -239,7 +240,7 @@ namespace SaveToGameWpf.Windows
                         zip.ExtractAll(apk.FolderOfProject);
                     }
 
-                    ApkModifer.ApkModifer mod = new ApkModifer.ApkModifer(apk);
+                    var mod = new ApkModifer.Logic.ApkModifer(apk);
 
                     var backType = SettingsIncapsuler.BackupType;
 

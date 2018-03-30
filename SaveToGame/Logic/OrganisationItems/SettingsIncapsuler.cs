@@ -1,4 +1,5 @@
-﻿using SaveToGameWpf.Properties;
+﻿using ApkModifer.Logic;
+using SaveToGameWpf.Properties;
 
 namespace SaveToGameWpf.Logic.OrganisationItems
 {
@@ -26,7 +27,7 @@ namespace SaveToGameWpf.Logic.OrganisationItems
         private static string _language;
         private static bool _isFieldLoadedLanguage;
 
-        public static ApkModifer.ApkModifer.BackupType BackupType
+        public static BackupType BackupType
         {
             get
             {
@@ -45,7 +46,7 @@ namespace SaveToGameWpf.Logic.OrganisationItems
                 Settings.Default.Save();
             }
         }
-        private static ApkModifer.ApkModifer.BackupType _backupType;
+        private static BackupType _backupType;
         private static bool _isFieldLoadedBackupType;
 
         public static string PopupMessage

@@ -10,7 +10,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Shell;
-using AndroidLibs;
+using AndroidHelper.Logic;
+using ApkModifer.Logic;
 using Microsoft.Win32;
 using SaveToGameWpf.Logic;
 using SaveToGameWpf.Logic.Classes;
@@ -29,9 +30,7 @@ using DragEventArgs = System.Windows.DragEventArgs;
 using File = Alphaleonis.Win32.Filesystem.File;
 using FileInfo = Alphaleonis.Win32.Filesystem.FileInfo;
 using StrRes = SaveToGameWpf.Resources.Localizations.MainResources;
-using IOHelper = UsefulFunctionsLib.UsefulFunctions_IOHelper;
 using Path = Alphaleonis.Win32.Filesystem.Path;
-using BackupType = ApkModifer.ApkModifer.BackupType;
 
 namespace SaveToGameWpf.Windows
 {
@@ -438,7 +437,7 @@ namespace SaveToGameWpf.Windows
 
             apktool.Logging += LogLib;
 
-            var apkmodifer = new ApkModifer.ApkModifer(apktool);
+            var apkmodifer = new ApkModifer.Logic.ApkModifer(apktool);
 
             string folderOfProject = apktool.FolderOfProject;
 
