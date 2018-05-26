@@ -1,23 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Management;
 using System.Runtime.CompilerServices;
 using System.Text;
-using System.Windows.Forms;
 using System.Windows.Threading;
 using ICSharpCode.SharpZipLib.Zip;
-using Microsoft.WindowsAPICodePack.Dialogs;
 using SaveToGameWpf.Logic.Interfaces;
 using SaveToGameWpf.Logic.OrganisationItems;
 using SaveToGameWpf.Windows;
 
 using Application = System.Windows.Application;
-using DataFormats = System.Windows.DataFormats;
 using Directory = Alphaleonis.Win32.Filesystem.Directory;
-using DragDropEffects = System.Windows.DragDropEffects;
-using DragEventArgs = System.Windows.DragEventArgs;
 using File = Alphaleonis.Win32.Filesystem.File;
 using FileInfo = Alphaleonis.Win32.Filesystem.FileInfo;
 using Path = Alphaleonis.Win32.Filesystem.Path;
@@ -27,50 +20,6 @@ namespace SaveToGameWpf.Logic.Utils
 {
     internal static class Utils
     {
-        private static class ComputerInfo
-        {
-            public static string DiskDrive => "Win32_DiskDrive";
-            public static string Processor => "Win32_Processor";
-            public static string SystemProduct => "Win32_ComputerSystemProduct";
-            // ReSharper disable once InconsistentNaming
-            public static string CDROM => "Win32_CDROMDrive";
-            public static string Card => "CIM_Card";
-
-            /// <summary>
-            /// Returns all management objects from the provided place
-            /// </summary>
-            /// <param name="from">The place to selectfrom</param>
-            public static List<ManagementObject> GetQueryList(string from)
-            {
-                var winQuery = new ObjectQuery("SELECT * FROM " + from);
-                var searcher = new ManagementObjectSearcher(winQuery);
-
-                return searcher.Get().Cast<ManagementObject>().ToList();
-            }
-        }
-
-        public static (List<ManagementObject> systemObjects, string queryPropertyName)[] GetQueries()
-        {
-            (string from, string propName, Predicate<ManagementObject> checker)[] items =
-            {
-                (ComputerInfo.CDROM, "DeviceID", _ => true),
-                (ComputerInfo.Card, "SerialNumber", _ => true),
-                (ComputerInfo.DiskDrive, "SerialNumber", it => it["MediaType"]?.ToString() == "Fixed hard disk media"),
-                (ComputerInfo.Processor, "ProcessorId", _ => true),
-                (ComputerInfo.SystemProduct, "UUID", _ => true)
-            };
-
-            return Array.ConvertAll(items, item =>
-            {
-                var queries = ComputerInfo.GetQueryList(item.from);
-                return
-                    (
-                    queries.FindAll(it => item.checker(it) && !string.IsNullOrEmpty(it[item.propName]?.ToString())),
-                    item.propName
-                    );
-            });
-        }
-
         public static string EncodeUnicode(string inputText)
         {
             var result = new StringBuilder(inputText.Length * 6);
@@ -85,8 +34,8 @@ namespace SaveToGameWpf.Logic.Utils
         {
             return 
                 CompareVersions(
-                    first.Split('.').Select(int.Parse).ToArray(),
-                    second.Split('.').Select(int.Parse).ToArray()
+                    Array.ConvertAll(first.Split('.'), int.Parse),
+                    Array.ConvertAll(second.Split('.'), int.Parse)
                 );
         }
 
@@ -112,11 +61,11 @@ namespace SaveToGameWpf.Logic.Utils
 
             Application.Current.Dispatcher.InvokeAction(() =>
             {
-                if (enable)
-                {
-                    mainWindow.PopupBoxText = SettingsIncapsuler.PopupMessage ?? "";
-                    mainWindow.OnlySave = true;
-                }
+                if (!enable)
+                    return;
+
+                mainWindow.PopupBoxText.Value = DefaultSettingsContainer.Instance.PopupMessage ?? "";
+                mainWindow.OnlySave.Value = true;
             });
 
             mainWindow.Pro = enable;
@@ -133,18 +82,6 @@ namespace SaveToGameWpf.Logic.Utils
             };
 
             Process.Start(processInfo);
-        }
-
-        public static void CheckDragOver(DragEventArgs e, params string[] extensions)
-        {
-            string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
-
-            if (files?.Length == 1 && extensions.Any(ext => files[0].EndsWith(ext, StringComparison.Ordinal)))
-                e.Effects = DragDropEffects.Move;
-            else
-                e.Effects = DragDropEffects.None;
-
-            e.Handled = true;
         }
 
         public static void InvokeAction(this Dispatcher dispatcher, Action action)
@@ -213,29 +150,14 @@ namespace SaveToGameWpf.Logic.Utils
             return true;
         }
 
-        public static (bool success, string folderPath) OpenFolderWithDialog(string title = null)
+        public static byte[] GetBytesUtf8(this string input)
         {
-            // XP
-            if (Environment.OSVersion.Version.Major < 6)
-            {
-                var dialog = new FolderBrowserDialog
-                {
-                    Description = title
-                };
+            return Encoding.UTF8.GetBytes(input);
+        }
 
-                return dialog.ShowDialog() == DialogResult.OK ? (true, dialog.SelectedPath) : (false, null);
-            }
-            else
-            {
-                var dialog = new CommonOpenFileDialog
-                {
-                    Title = title,
-                    IsFolderPicker = true,
-                    Multiselect = false
-                };
-
-                return dialog.ShowDialog() == CommonFileDialogResult.Ok ? (true, dialog.FileName) : (false, null);
-            }
+        public static T CloneTyped<T>(this T obj) where T : ICloneable
+        {
+            return (T) obj.Clone();
         }
     }
 }

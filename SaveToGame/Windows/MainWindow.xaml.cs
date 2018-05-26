@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Globalization;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
@@ -12,7 +11,8 @@ using System.Windows;
 using System.Windows.Shell;
 using AndroidHelper.Logic;
 using ApkModifer.Logic;
-using Microsoft.Win32;
+using MVVM_Tools.Code.Disposables;
+using MVVM_Tools.Code.Providers;
 using SaveToGameWpf.Logic;
 using SaveToGameWpf.Logic.Classes;
 using SaveToGameWpf.Logic.Interfaces;
@@ -24,19 +24,14 @@ using UsefulFunctionsLib;
 
 using Application = System.Windows.Application;
 using Clipboard = System.Windows.Clipboard;
-using DataFormats = System.Windows.DataFormats;
 using Directory = Alphaleonis.Win32.Filesystem.Directory;
 using DragEventArgs = System.Windows.DragEventArgs;
 using File = Alphaleonis.Win32.Filesystem.File;
 using FileInfo = Alphaleonis.Win32.Filesystem.FileInfo;
-using StrRes = SaveToGameWpf.Resources.Localizations.MainResources;
 using Path = Alphaleonis.Win32.Filesystem.Path;
 
 namespace SaveToGameWpf.Windows
 {
-    /// <summary>
-    /// Логика взаимодействия для MainWindow.xaml
-    /// </summary>
     public sealed partial class MainWindow : IRaisePropertyChanged, IDisposable
     {
         #region Properties     
@@ -52,65 +47,26 @@ namespace SaveToGameWpf.Windows
         }
         private bool _pro;
 
-        public bool Working
-        {
-            get => _working;
-            set => this.SetProperty(ref _working, value);
-        }
-        private bool _working;
+        public Property<bool> Working { get; } = new Property<bool>();
+        public Property<bool> OnlySave { get; } = new Property<bool>();
+        public Property<bool> SavePlusMess { get; } = new Property<bool>();
+        public Property<bool> OnlyMess { get; } = new Property<bool>();
 
-        public bool OnlySave
-        {
-            get => _onlySave;
-            set => this.SetProperty(ref _onlySave, value);
-        }
-        private bool _onlySave;
+        public Property<string> PopupBoxText { get; } = new Property<string>("Modified by SaveToGame");
+        public Property<int> MessagesCount { get; } = new Property<int>(1);
 
-        public bool SavePlusMess
-        {
-            get => _savePlusMess;
-            set => this.SetProperty(ref _savePlusMess, value);
-        }
-        private bool _savePlusMess = true;
-
-        public bool OnlyMess
-        {
-            get => _onlyMess;
-            set => this.SetProperty(ref _onlyMess, value);
-        }
-        private bool _onlyMess;
-
-        public string PopupBoxText
-        {
-            get => _popupBoxText;
-            set => this.SetProperty(ref _popupBoxText, value);
-        }
-        private string _popupBoxText = "Modified by SaveToGame";
-
-        public int MessagesCount
-        {
-            get => _messagesCount;
-            set => this.SetProperty(ref _messagesCount, value);
-        }
-        private int _messagesCount = 1;
-
-        public string MainSmaliName
-        {
-            get => _mainSmaliName;
-            set => this.SetProperty(ref _mainSmaliName, value);
-        }
-        private string _mainSmaliName = "";
+        public Property<string> MainSmaliName { get; } = new Property<string>(string.Empty);
 
         public string CurrentApk
         {
             get => _currentApk;
             set
             {
-                if (this.SetProperty(ref _currentApk, value))
-                {
-                    _currentApkFile = new FileInfo(value);
-                    RaisePropertyChanged(nameof(MainWindowTitle));
-                }
+                if (!this.SetProperty(ref _currentApk, value))
+                    return;
+
+                _currentApkFile = new FileInfo(value);
+                RaisePropertyChanged(nameof(MainWindowTitle));
             }
         }
         private string _currentApk;
@@ -159,10 +115,10 @@ namespace SaveToGameWpf.Windows
 
         public BackupType CurrentBackupType
         {
-            get => SettingsIncapsuler.BackupType;
+            get => _settings.BackupType;
             set
             {
-                SettingsIncapsuler.BackupType = value;
+                _settings.BackupType = value;
 
                 RaisePropertyChanged(nameof(CurrentBackupType));
 
@@ -180,6 +136,8 @@ namespace SaveToGameWpf.Windows
 
         private bool _shutdownOnClose = true;
 
+        private readonly DefaultSettingsContainer _settings = DefaultSettingsContainer.Instance;
+
         static MainWindow()
         {
 #if !DEBUG
@@ -190,17 +148,9 @@ namespace SaveToGameWpf.Windows
 
 		public MainWindow()
 		{
-            string lang = SettingsIncapsuler.Language;
-
-            if (!string.IsNullOrEmpty(lang))
-            {
-                Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo(lang);
-                Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(lang);
-            }
-
             InitializeComponent();
 
-            TaskbarItemInfo = new TaskbarItemInfo();
+		    TaskbarItemInfo = new TaskbarItemInfo();
 		}
 
         #region Window events
@@ -214,7 +164,7 @@ namespace SaveToGameWpf.Windows
         {
             if (Pro)
             {
-                SettingsIncapsuler.PopupMessage = PopupBoxText;
+                _settings.PopupMessage = PopupBoxText.Value;
             }
 
             if (_shutdownOnClose)
@@ -229,44 +179,30 @@ namespace SaveToGameWpf.Windows
 
         private void ChooseApkBtn_Click(object sender, EventArgs e)
         {
-            var openApkDialog = new OpenFileDialog
-            {
-                Filter = MainResources.AndroidFiles + @" (*.apk)|*.apk",
-                AddExtension = true,
-                CheckFileExists = true,
-                CheckPathExists = true
-            };
+            var (success, filePath) = PickerUtils.PickFile(filter: MainResources.AndroidFiles + @" (*.apk)|*.apk");
 
-            if (openApkDialog.ShowDialog() == true)
-            {
-                CurrentApk = openApkDialog.FileName;
-                ChooseApkButton.ToolTip = CurrentApk;
-            }
+            if (!success)
+                return;
+
+            CurrentApk = filePath;
+            ChooseApkButton.ToolTip = filePath;
         }
 
         private void ChooseSaveBtn_Click(object sender, EventArgs e)
         {
-            var openSaveDialog = new OpenFileDialog
-            {
-                Filter = MainResources.Archives + @" (*.tar.gz)|*.tar.gz",
-                AddExtension = true,
-                CheckFileExists = true,
-                CheckPathExists = true
-            };
-
             if (!LuckyPatcherIsChecked)
             {
-                if (openSaveDialog.ShowDialog() == true)
-                    CurrentSave = openSaveDialog.FileName;
+                var (success, filePath) = PickerUtils.PickFile(filter: MainResources.Archives + @" (*.tar.gz)|*.tar.gz");
+
+                if (success)
+                    CurrentSave = filePath;
             }
             else
             {
-                var (res, folderPath) = Utils.OpenFolderWithDialog();
+                var (success, folderPath) = PickerUtils.PickFolder();
 
-                if (res)
-                {
+                if (success)
                     CurrentSave = folderPath;
-                }
             }
 
             ChooseSaveButton.ToolTip = CurrentSave;
@@ -288,7 +224,7 @@ namespace SaveToGameWpf.Windows
             #region Проверка на существование файлов
 
             if (CurrentApk == null || !File.Exists(CurrentApk) ||
-                (SavePlusMess || OnlySave) &&
+                (SavePlusMess.Value || OnlySave.Value) &&
                 (CurrentSave == null || !File.Exists(CurrentSave) && !Directory.Exists(CurrentSave))
             )
             {
@@ -301,69 +237,70 @@ namespace SaveToGameWpf.Windows
             _logger = new Logger(_currentApkFile.DirectoryName, false);
             _logger.NewLog(true, Path.Combine(_currentApkFile.DirectoryName ?? string.Empty, $"{Path.GetFileNameWithoutExtension(CurrentApk)}_log.txt"));
 
-            Working = true;
-            TaskbarItemInfo.ProgressState = TaskbarItemProgressState.Indeterminate;
-
             Task.Factory.StartNew(() =>
             {
-                try
+                using (CreateWorking())
                 {
-                    Start();
-                }
-                catch (System.IO.PathTooLongException ex)
-                {
-                    HaveError(Environment.NewLine + ex, StrRes.PathTooLongExceptionMessage);
-                }
-                catch (Exception ex)
-                {
-#if DEBUG
-                    Dispatcher.InvokeAction(() =>
+                    try
                     {
-                        TraceWriter.WriteLine(ex.ToString());
-                        throw new Exception("Some exception occured", ex);
-                    });
+                        Start();
+                    }
+                    catch (System.IO.PathTooLongException ex)
+                    {
+                        HaveError(Environment.NewLine + ex, MainResources.PathTooLongExceptionMessage);
+                    }
+                    catch (Exception ex)
+                    {
+#if DEBUG
+                        Dispatcher.InvokeAction(() =>
+                        {
+                            TraceWriter.WriteLine(ex.ToString());
+                            throw new Exception("Some exception occured", ex);
+                        });
 #else
                     HaveError(Environment.NewLine + ex);
 		            MessBox.ShowDial(Properties.Resources.Some_Error_Found);
 #endif
+                    }
+                    finally
+                    {
+                        _logger.Stop();
+                    }
                 }
-                finally
-                {
-                    _logger.Stop();
-                    Dispatcher.InvokeAction(() => TaskbarItemInfo.ProgressState = TaskbarItemProgressState.None);
-                }
-
-                Working = false;
             });
         }
 
         #endregion
 
-        #region Button drag&drop handlers
+        #region Button Drag & Drop handlers
 
         private void Apk_DragOver(object sender, DragEventArgs e)
         {
-            Utils.CheckDragOver(e, ".apk");
+            e.CheckDragOver(".apk");
         }
 
         private void Apk_DragDrop(object sender, DragEventArgs e)
         {
-            var files = (string[])e.Data.GetData(DataFormats.FileDrop);
-            if (files?.Length == 1 && Path.GetExtension(files[0]) == ".apk")
+            var files = e.GetFilesDrop(".apk");
+
+            if (files.Length == 1)
                 CurrentApk = files[0];
+
             e.Handled = true;
         }
 
         private void Save_DragOver(object sender, DragEventArgs e)
         {
-            Utils.CheckDragOver(e, ".tar.gz");
+            e.CheckDragOver(".tar.gz");
         }
 
         private void Save_DragDrop(object sender, DragEventArgs e)
         {
-            var files = (string[])e.Data.GetData(DataFormats.FileDrop);
-            if (files?.Length == 1 && files[0].EndsWith(".tar.gz", StringComparison.Ordinal))
+            var files = e.GetFilesDrop(".tar.gz");
+
+            if (files.Length == 1)
                 CurrentSave = files[0];
+
             e.Handled = true;
         }
 
@@ -378,7 +315,8 @@ namespace SaveToGameWpf.Windows
 
         private void ChangeLanguageClick(object sender, RoutedEventArgs e)
         {
-            SettingsIncapsuler.Language = sender.As<FrameworkElement>().Tag.As<string>();
+            _settings.Language = sender.As<FrameworkElement>().Tag.As<string>();
+            ApplicationUtils.SetLanguageFromSettings();
 
             _shutdownOnClose = false;
 
@@ -413,7 +351,7 @@ namespace SaveToGameWpf.Windows
 
             Dispatcher.InvokeAction(() =>
             {
-                SlashChange();
+                MainSmaliName.Value = MainSmaliName.Value.Replace('.', '\\').Replace('/', '\\');
                 LogBox.Clear();
             });
 
@@ -435,7 +373,7 @@ namespace SaveToGameWpf.Windows
             var apktool = new Apktools(processedApkPath, GlobalVariables.PathToResources);
 #endif
 
-            apktool.Logging += LogLib;
+            apktool.Logging += Log;
 
             var apkmodifer = new ApkModifer.Logic.ApkModifer(apktool);
 
@@ -445,9 +383,9 @@ namespace SaveToGameWpf.Windows
 
             #region Декомпиляция
             
-            Log(VisLog(Line));
-            Log(VisLog("Decompiling"));
-            Log(VisLog(Line));
+            Log(Line);
+            Log("Decompiling");
+            Log(Line);
             
             apktool.Baksmali();
 
@@ -465,10 +403,10 @@ namespace SaveToGameWpf.Windows
 
                 if (File.Exists(messageFile))
                 {
-                    texts.AddRange(File.ReadLines(messageFile, Encoding.UTF8));
+                    texts.AddRange(File.ReadLines(messageFile, Encoding.UTF8).Where(line => !string.IsNullOrWhiteSpace(line)));
                 }
 
-                ReplaceTexts(Path.Combine(folderOfProject, "smali"), texts, Utils.EncodeUnicode(PopupBoxText));
+                ReplaceTexts(Path.Combine(folderOfProject, "smali"), texts, Utils.EncodeUnicode(PopupBoxText.Value));
             }
 
             #endregion
@@ -481,15 +419,15 @@ namespace SaveToGameWpf.Windows
 
                 if (File.Exists(bannersFile))
                 {
-                    var banners = File.ReadAllLines(bannersFile);
+                    var banners = File.ReadLines(bannersFile).Where(line => !string.IsNullOrWhiteSpace(line)).ToList();
 
-                    if (banners.Length == 0)
+                    if (banners.Count == 0)
                     {
-                        banners = new[]
+                        banners.AddRange(new []
                         {
                             "invoke-static {p0}, Lcom/apkmania/apkmania;->createInfoBox(Landroid/content/Context;)V",
                             "invoke-static {p0}, LNORLAN/Box/Message;->NORLANBoxMessage(Landroid/content/Context;)V"
-                        };
+                        });
                     }
 
                     RemoveCodeLines(Path.Combine(folderOfProject, "smali"), banners);
@@ -500,17 +438,17 @@ namespace SaveToGameWpf.Windows
 
             #region Добавление данных
 
-            if (!string.IsNullOrEmpty(MainSmaliName))
+            if (!string.IsNullOrEmpty(MainSmaliName.Value))
             {
-                var mainSmaliPath = Path.Combine(folderOfProject, "smali", MainSmaliName);
+                var mainSmaliPath = Path.Combine(folderOfProject, "smali", MainSmaliName.Value);
 
-                if (!MainSmaliName.EndsWith(".smali", StringComparison.Ordinal))
+                if (!MainSmaliName.Value.EndsWith(".smali", StringComparison.Ordinal))
                     mainSmaliPath += ".smali";
 
                 if (File.Exists(mainSmaliPath))
                     apktool.Manifest.MainSmaliFile = new MainSmali(mainSmaliPath, apktool.Manifest.MainSmaliFile.MethodType, DefaultSmaliEncoding);
                 else
-                    Log(VisLog($"Typed main smali was not found ({mainSmaliPath})"));
+                    Log($"Typed main smali was not found ({mainSmaliPath})");
             }
 
             AesManaged mng = new AesManaged { KeySize = 128 };
@@ -530,11 +468,11 @@ namespace SaveToGameWpf.Windows
             apkmodifer.AddSaveAndMessage(
                 iv: mng.IV,
                 key: mng.Key, 
-                addSave: OnlySave || SavePlusMess,
-                addMessage: SavePlusMess || OnlyMess,
+                addSave: OnlySave.Value || SavePlusMess.Value,
+                addMessage: SavePlusMess.Value || OnlyMess.Value,
                 pathToSave: pathToSave,
-                message: PopupBoxText,
-                messagesAmount: MessagesCount, 
+                message: PopupBoxText.Value,
+                messagesAmount: MessagesCount.Value, 
                 forceMethod: true, 
                 backupType: backupType
             );
@@ -543,9 +481,9 @@ namespace SaveToGameWpf.Windows
 
             #region Сборка проекта
 
-			Log(VisLog(Line));
-			Log(VisLog("Building project"));
-			Log(VisLog(Line));
+			Log(Line);
+			Log("Building project");
+			Log(Line);
 
             var classesFiles = apktool.Smali();
 
@@ -553,9 +491,9 @@ namespace SaveToGameWpf.Windows
 
             #endregion
 
-            Log(VisLog(Line));
-            Log(VisLog("Signing file"));
-            Log(VisLog(Line));
+            Log(Line);
+            Log("Signing file");
+            Log(Line);
 
             #region Подпись
 
@@ -573,7 +511,7 @@ namespace SaveToGameWpf.Windows
 
             Utils.DeleteFolder(tempFolder);
 
-            VisLog("All done!");
+            Log("All done!");
 
             if (
                 MessBox.ShowDial(
@@ -706,52 +644,46 @@ namespace SaveToGameWpf.Windows
             //}
         }*/
 
-        public string VisLog(string text)
+        public void Log(string text)
         {
             if (string.IsNullOrEmpty(text))
-                return text;
+                return;
+
+            _logger.Log(text);
+            TraceWriter.WriteLine(text);
 
             Application.Current.Dispatcher.InvokeAction(() =>
             {
                 LogBox.AppendText(text + Environment.NewLine);
                 LogBox.ScrollToEnd();
             });
-
-            return text;
-        }
-
-        public void LogLib(string textToLog)
-        {
-            Log(VisLog(textToLog));
-        }
-
-        public void Log(params string[] textToLog)
-        {
-            foreach (string text in textToLog)
-            {
-                _logger.Log(text);
-                TraceWriter.WriteLine(text);
-            }
         }
 
         private void HaveError(string errorText, string dialogMessage = null)
         {
-            VisLog(errorText);
-            Log($"error: {errorText}");
+            Log($"Error: {errorText}");
             if (dialogMessage != null)
             {
                 Dispatcher.InvokeAction(() => MessBox.ShowDial(dialogMessage, Properties.Resources.Error));
             }
         }
 
-		private void SlashChange()
-		{
-			MainSmaliName = MainSmaliName.Replace('.', '\\').Replace('/', '\\');
-		}
-
         public void Dispose()
         {
             _logger.Dispose();
+        }
+
+        private CustomBoolDisposable CreateWorking()
+        {
+            return new CustomBoolDisposable(val =>
+            {
+                Working.Value = val;
+                Dispatcher.InvokeAction(
+                    () => TaskbarItemInfo.ProgressState = val 
+                        ? TaskbarItemProgressState.Indeterminate
+                        : TaskbarItemProgressState.None
+                );
+            });
         }
 
         #region PropertyChanged

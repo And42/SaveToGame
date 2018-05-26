@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Net;
 using System.Reflection;
 using System.Security.Principal;
@@ -7,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using Alphaleonis.Win32.Filesystem;
+using SaveToGameWpf.Logic.OrganisationItems;
 using SaveToGameWpf.Properties;
 using SaveToGameWpf.Windows;
 
@@ -96,6 +98,17 @@ namespace SaveToGameWpf.Logic.Utils
         public static bool GetIsPortable()
         {
             return File.Exists(Path.Combine(Path.GetDirectoryName(GetPathToExe()), "isportable"));
+        }
+
+        public static void SetLanguageFromSettings()
+        {
+            string lang = DefaultSettingsContainer.Instance.Language;
+
+            if (string.IsNullOrEmpty(lang))
+                return;
+
+            Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo(lang);
+            Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(lang);
         }
     }
 }

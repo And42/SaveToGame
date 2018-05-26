@@ -327,4 +327,11 @@
   <data name="LicenseFormatUpdated_Text" xml:space="preserve">
     <value>В этой версии был изменён формат ключа. Пожалуйста, напишите разработчику для получения нового ключа</value>
   </data>
+  <data name="Error" xml:space="preserve">
+    <value>Ошибка</value>
+  </data>
+  <data name="NoNeededFilesError" xml:space="preserve">
+    <value>Нет необходимых файлов для корректной работы программы!
+Отсутствующие файлы: {0}</value>
+  </data>
 </root>

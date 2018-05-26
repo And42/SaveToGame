@@ -229,7 +229,7 @@
                     Source="{TemplateBinding Icon}"/>
                 <Border Grid.Column="0" 
                         Name="Check"  
-                        Visibility="{TemplateBinding IsCheckable, Converter={StaticResource VisibleIfTrueConverter}}"
+                        Visibility="{TemplateBinding IsCheckable, Converter={StaticResource TrueToVisibleConverter}}"
                         Margin="2,0" 
                         BorderThickness="1"
                         VerticalAlignment="Center">

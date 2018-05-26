@@ -327,4 +327,11 @@
   <data name="GenerateLicenseFileError" xml:space="preserve">
     <value>Can't generate license file. Make sure you are not creating it in the system directory</value>
   </data>
+  <data name="Error" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="NoNeededFilesError" xml:space="preserve">
+    <value>Needed files not found. Program will not work.
+Missing files: {0}</value>
+  </data>
 </root>

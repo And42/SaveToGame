@@ -20,13 +20,14 @@
               ScrollViewer.VerticalScrollBarVisibility="Disabled">
             <MenuItem 
                     Header="{x:Static localization:MainResources.InstallApkVersion}" 
-                    Visibility="{Binding Pro, Converter={StaticResource VisibleIfTrueConverter}}" 
+                    Visibility="{Binding Pro, Converter={StaticResource TrueToVisibleConverter}}" 
                     Click="InstallApkClick"/>
             <MenuItem Header="{x:Static localization:MainResources.Settings}">
                 <MenuItem Header="{x:Static localization:MainResources.Language}">
                     <MenuItem IsCheckable="True" Header="Русский" Click="ChangeLanguageClick" Tag="ru" IsChecked="{Binding RuIsChecked, Mode=OneWay}" />
                     <MenuItem IsCheckable="True" Header="English" Click="ChangeLanguageClick" Tag="en" IsChecked="{Binding EnIsChecked, Mode=OneWay}" />
                 </MenuItem>
+
                 <MenuItem Header="{x:Static localization:MainResources.BackupType}">
                     <MenuItem IsCheckable="True" IsChecked="{Binding TitaniumIsChecked}" Header="Titanium" />
                     <MenuItem IsCheckable="True" IsChecked="{Binding RomToolboxIsChecked}" Header="ROM Toolbox"/>
@@ -36,7 +37,7 @@
             <MenuItem 
                     Header="{x:Static localization:MainResources.FullVersion}"
                     Click="BuyItem_Click"
-                    Visibility="{Binding Pro, Converter={StaticResource VisibleIfFalseConverter}}" />
+                    Visibility="{Binding Pro, Converter={StaticResource FalseToVisibleConverter}}" />
             <MenuItem 
                     Header="{x:Static localization:MainResources.AboutProgram}"
                     Click="AboutProgramItem_Click" />
@@ -82,7 +83,7 @@
                     Click="StartBtn_Click"
                     Content="{x:Static localization:MainResources.Begin}"
                     FontSize="15" Padding="20,0"
-                    IsEnabled="{Binding Working, Converter={StaticResource InvertBoolConverter}}" />
+                    IsEnabled="{Binding Working.Value, Converter={StaticResource InvertBoolConverter}}" />
             </Grid>
 
             <Grid Grid.Row="1" Grid.Column="0">
@@ -98,10 +99,10 @@
                 </Grid.ColumnDefinitions>
 
                 <TextBlock Text="{x:Static localization:MainResources.MainSmaliName}" VerticalAlignment="Center"/>
-                <TextBox Grid.Row="0" Grid.Column="1" Margin="5,0,0,0" MaxLength="1000" IsEnabled="{Binding Pro}" Text="{Binding MainSmaliName}" />
+                <TextBox Grid.Row="0" Grid.Column="1" Margin="5,0,0,0" MaxLength="1000" IsEnabled="{Binding Pro}" Text="{Binding MainSmaliName.Value}" />
 
                 <TextBlock Grid.Row="2" Grid.Column="0" Text="{x:Static localization:MainResources.TextOfMessage}" VerticalAlignment="Center"/>
-                <TextBox Grid.Row="2" Grid.Column="1" Margin="5,0,0,0" MaxLength="1000" IsEnabled="{Binding Pro}" Text="{Binding PopupBoxText}" AcceptsReturn="True" MaxLines="3"/>
+                <TextBox Grid.Row="2" Grid.Column="1" Margin="5,0,0,0" MaxLength="1000" IsEnabled="{Binding Pro}" Text="{Binding PopupBoxText.Value}" AcceptsReturn="True" MaxLines="3"/>
             </Grid>
 
             <GroupBox
@@ -119,29 +120,28 @@
 
                     <RadioButton
                              Content="{x:Static localization:MainResources.OnlySave}"
-                             IsChecked="{Binding OnlySave}"
-                             IsEnabled="{Binding Working,
-                                                 Converter={StaticResource InvertBoolConverter}}" />
+                             IsChecked="{Binding OnlySave.Value}"
+                             IsEnabled="{Binding Working.Value, Converter={StaticResource InvertBoolConverter}}" />
                     <RadioButton 
                         Margin="0,4"
                         Content="{x:Static localization:MainResources.SavePlusMessage}"
-                        IsChecked="{Binding SavePlusMess}"
-                        IsEnabled="{Binding Working, Converter={StaticResource InvertBoolConverter}}" />
+                        IsChecked="{Binding SavePlusMess.Value}"
+                        IsEnabled="{Binding Working.Value, Converter={StaticResource InvertBoolConverter}}" />
                     
                     <RadioButton 
                         Content="{x:Static localization:MainResources.OnlyMessage}"
-                        IsChecked="{Binding OnlyMess}"
-                        IsEnabled="{Binding Working, Converter={StaticResource InvertBoolConverter}}" />
+                        IsChecked="{Binding OnlyMess.Value}"
+                        IsEnabled="{Binding Working.Value, Converter={StaticResource InvertBoolConverter}}" />
                     <Slider 
                         Name="Sl"
                         Margin="0,4"
                         Cursor="Hand"
-                        IsEnabled="{Binding OnlySave, Converter={StaticResource InvertBoolConverter}}"
+                        IsEnabled="{Binding OnlySave.Value, Converter={StaticResource InvertBoolConverter}}"
                         IsSnapToTickEnabled="True"
                         Maximum="5"
                         Minimum="1"
                         SmallChange="1"
-                        Value="{Binding MessagesCount}" />
+                        Value="{Binding MessagesCount.Value}" />
                     <Label
                         Content="{Binding Value, ElementName=Sl}"
                         ContentStringFormat="{x:Static localization:MainResources.MessagesCount}" />

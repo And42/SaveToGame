@@ -2,17 +2,19 @@
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media.Imaging;
 using System.Windows.Shell;
 using Alphaleonis.Win32.Filesystem;
 using AndroidHelper.Logic;
 using ApkModifer.Logic;
 using ICSharpCode.SharpZipLib.Zip;
 using Microsoft.Win32;
+using MVVM_Tools.Code.Providers;
+using SaveToGameWpf.Logic;
 using SaveToGameWpf.Logic.Classes;
 using SaveToGameWpf.Logic.Interfaces;
 using SaveToGameWpf.Logic.OrganisationItems;
@@ -20,180 +22,110 @@ using SaveToGameWpf.Logic.Utils;
 using SaveToGameWpf.Resources.Localizations;
 using UsefulFunctionsLib;
 
-using static SaveToGameWpf.Logic.GlobalVariables;
-
-using DataFormats = System.Windows.DataFormats;
-using DragDropEffects = System.Windows.DragDropEffects;
 using DragEventArgs = System.Windows.DragEventArgs;
 using Image = System.Windows.Controls.Image;
 using IOHelper = UsefulFunctionsLib.UsefulFunctions_IOHelper;
 
 namespace SaveToGameWpf.Windows
 {
-    /// <summary>
-    /// Логика взаимодействия для InstallApkWindow.xaml
-    /// </summary>
     public partial class InstallApkWindow : IRaisePropertyChanged
     {
-        public AppIconsStorage IconsStorage { get; } = new AppIconsStorage();
+        public AppIconsStorage IconsStorage { get; }
 
-        public string Apk
-        {
-            get => _apk;
-            set
-            {
-                if (this.SetProperty(ref _apk, value))
-                    AppTitle = Path.GetFileNameWithoutExtension(value) + " mod";
-            }
-        }
-        private string _apk;
+        public Property<string> WindowTitle { get; } = new Property<string>();
+        public Property<bool> Working { get; } = new Property<bool>();
 
-        public string Save
-        {
-            get => _save;
-            set => this.SetProperty(ref _save, value);
-        }
-        private string _save;
+        public Property<string> Apk { get; } = new Property<string>();
+        public Property<string> Save { get; } = new Property<string>();
+        public Property<string> Data { get; } = new Property<string>();
+        public Property<string[]> Obb { get; } = new Property<string[]>();
 
-        public string Data
-        {
-            get => _data;
-            set => this.SetProperty(ref _data, value);
-        }
-        private string _data;
+        public Property<string> AppTitle { get; } = new Property<string>();
 
-        public string[] Obb
-        {
-            get => _obb;
-            set => this.SetProperty(ref _obb, value);
-        }
-        private string[] _obb;
+        public Property<long> ProgressNow { get; } = new Property<long>();
+        public Property<long> ProgressMax { get; } = new Property<long>();
 
-        public bool Working
-        {
-            get => _working;
-            private set => this.SetProperty(ref _working, value);
-        }
-        private bool _working;
+        private readonly DefaultSettingsContainer _settings = DefaultSettingsContainer.Instance;
 
-        public string AppTitle
-        {
-            get => _appTitle;
-            set => this.SetProperty(ref _appTitle, value);
-        }
-        private string _appTitle;
-
-        public long ProgressNow
-        {
-            get => _progressNow;
-            set => this.SetProperty(ref _progressNow, value);
-        }
-        private long _progressNow;
-
-        public long ProgressMax
-        {
-            get => _progressMax;
-            set => this.SetProperty(ref _progressMax, value);
-        }   
-        private long _progressMax;
-
-        public string WindowTitle
-        {
-            get => _windowTitle;
-            set => this.SetProperty(ref _windowTitle, value);
-        }
-        private string _windowTitle;
+        private readonly StringBuilder _log = new StringBuilder();
 
         public InstallApkWindow()
         {
             InitializeComponent();
             TaskbarItemInfo = new TaskbarItemInfo();
 
-            var iconsFolder = Path.Combine(PathToResources, "icons");
+            var iconsFolder = Path.Combine(GlobalVariables.PathToResources, "icons");
 
-            IconsStorage.Icon_xxhdpi_array = File.ReadAllBytes(Path.Combine(iconsFolder, "xxhdpi.png"));
-            IconsStorage.Icon_xhdpi_array = File.ReadAllBytes(Path.Combine(iconsFolder, "xhdpi.png"));
-            IconsStorage.Icon_hdpi_array = File.ReadAllBytes(Path.Combine(iconsFolder, "hdpi.png"));
-            IconsStorage.Icon_mdpi_array = File.ReadAllBytes(Path.Combine(iconsFolder, "mdpi.png"));
+            BitmapSource GetImage(string name) =>
+                File.ReadAllBytes(Path.Combine(iconsFolder, name)).ToBitmap().ToBitmapSource();
+
+            IconsStorage = new AppIconsStorage
+            {
+                Icon_xxhdpi = {Value = GetImage("xxhdpi.png")},
+                Icon_xhdpi = {Value = GetImage("xhdpi.png")},
+                Icon_hdpi = {Value = GetImage("hdpi.png")},
+                Icon_mdpi = {Value = GetImage("mdpi.png")}
+            };
+
+            Apk.PropertyChanged += (sender, args) => AppTitle.Value = Path.GetFileNameWithoutExtension(Apk.Value) + " mod";
         }
+
+        #region Buttons
 
         private void ChooseApkBtn_Click(object sender, EventArgs e)
         {
-            var openApkDialog = new OpenFileDialog
-            {
-                Filter = MainResources.AndroidFiles + @" (*.apk)|*.apk",
-                AddExtension = true,
-                CheckFileExists = true,
-                CheckPathExists = true
-            };
+            var (success, filePath) = PickerUtils.PickFile(filter: MainResources.AndroidFiles + @" (*.apk)|*.apk");
 
-            if (openApkDialog.ShowDialog() == true)
-                Apk = openApkDialog.FileName;
+            if (success)
+                Apk.Value = filePath;
         }
 
         private void ChooseSaveBtn_Click(object sender, EventArgs e)
         {
-            var openSaveDialog = new OpenFileDialog
+            if (_settings.BackupType == BackupType.LuckyPatcher)
             {
-                Filter = MainResources.Archives + @" (*.tar.gz)|*.tar.gz",
-                AddExtension = true,
-                CheckFileExists = true,
-                CheckPathExists = true
-            };
+                var (success, folderPath) = PickerUtils.PickFolder();
 
-            if (SettingsIncapsuler.BackupType != BackupType.LuckyPatcher)
-            {
-                if (openSaveDialog.ShowDialog() == true)
-                    Save = openSaveDialog.FileName;
+                if (success)
+                    Save.Value = folderPath;
             }
             else
             {
-                var (res, folderPath) = Utils.OpenFolderWithDialog();
+                var (success, filePath) = PickerUtils.PickFile(filter: MainResources.Archives + @" (*.tar.gz)|*.tar.gz");
 
-                if (res)
-                {
-                    Save = folderPath;
-                }
+                if (success)
+                    Save.Value = filePath;
             }
         }
 
         private void ChooseDataClick(object sender, RoutedEventArgs e)
         {
-            var openDialog = new OpenFileDialog
-            {
-                Filter = MainResources.ZipArchives + @" (*.zip)|*.zip",
-                AddExtension = true,
-                CheckFileExists = true,
-                CheckPathExists = true
-            };
+            var (success, filePath) = PickerUtils.PickFile(filter: MainResources.ZipArchives + @" (*.zip)|*.zip");
 
-            if (openDialog.ShowDialog() == true)
-                Data = openDialog.FileName;
+            if (success)
+                Data.Value = filePath;
         }
 
         private void ChooseObbClick(object sender, RoutedEventArgs e)
         {
-            var openDialog = new OpenFileDialog
-            {
-                Filter = MainResources.CacheFiles + @" (*.obb)|*.obb",
-                AddExtension = true,
-                CheckFileExists = true,
-                CheckPathExists = true,
-                Multiselect = true
-            };
+            var (success, filePaths) = PickerUtils.PickFiles(filter: MainResources.CacheFiles + @" (*.obb)|*.obb");
 
-            if (openDialog.ShowDialog() == true)
-            {
-                Obb = openDialog.FileNames;
-            }
+            if (success)
+                Obb.Value = filePaths;
         }
 
         private void StartClick(object sender, RoutedEventArgs e)
         {
-            if (Apk.NE() || !File.Exists(Apk))
+            string apkFile = Apk.Value;
+            string saveFile = Save.Value;
+            string androidDataFile = Data.Value;
+            string[] androidObbFiles = Obb.Value?.CloneTyped() ?? new string[0];
+            string appTitle = AppTitle.Value;
+
+            if (string.IsNullOrEmpty(apkFile) || !File.Exists(apkFile))
                 return;
 
-            Working = true;
+            Working.Value = true;
             TaskbarItemInfo.ProgressState = TaskbarItemProgressState.Indeterminate;
 
             _log.Clear();
@@ -211,17 +143,17 @@ namespace SaveToGameWpf.Windows
                     var copiedSourceApkPath = Path.Combine(tempProcessedFolder, "source.apk");
                     var apkToModifyPath = Path.Combine(tempProcessedFolder, "mod.apk");
 
-                    var containerZipPath = Path.Combine(PathToResources, "apk.zip");
+                    var containerZipPath = Path.Combine(GlobalVariables.PathToResources, "apk.zip");
 
-                    var resultFilePath = Path.Combine(Path.GetDirectoryName(Apk) ?? string.Empty, Path.GetFileNameWithoutExtension(Apk) + "_mod.apk");
+                    var resultFilePath = Path.Combine(Path.GetDirectoryName(apkFile) ?? string.Empty, Path.GetFileNameWithoutExtension(apkFile) + "_mod.apk");
 
                     IOHelper.DeleteFolder(tempProcessedFolder);
                     Directory.CreateDirectory(tempProcessedFolder);
 
-                    File.Copy(Apk, copiedSourceApkPath);
+                    File.Copy(apkFile, copiedSourceApkPath);
 
-                    Apktools apk = new Apktools(containerApkPath, PathToResources);
-                    apk.Logging += VisLog;
+                    Apktools apk = new Apktools(containerApkPath, GlobalVariables.PathToResources);
+                    apk.Logging += Log;
 
                     {
                         string signed;
@@ -234,7 +166,7 @@ namespace SaveToGameWpf.Windows
 
                     using (var zip = new ZipFile(containerZipPath)
                     {
-                        Password = AdditionalFilePassword
+                        Password = GlobalVariables.AdditionalFilePassword
                     })
                     {
                         zip.ExtractAll(apk.FolderOfProject);
@@ -242,30 +174,30 @@ namespace SaveToGameWpf.Windows
 
                     var mod = new ApkModifer.Logic.ApkModifer(apk);
 
-                    var backType = SettingsIncapsuler.BackupType;
+                    var backType = _settings.BackupType;
 
                     mod.ProgressChanged += (o, args) =>
                     {
-                        ProgressMax = args.Maximum;
-                        ProgressNow = args.Now;
+                        ProgressMax.Value = args.Maximum;
+                        ProgressNow.Value = args.Now;
                     };
 
-                    if (!Save.NE() && File.Exists(Save))
+                    if (!string.IsNullOrEmpty(saveFile) && File.Exists(saveFile))
                     {
                         SetStep(MainResources.AddingLD);
-                        mod.AddLocalData(Save, backupType: backType);
+                        mod.AddLocalData(saveFile, backupType: backType);
                     }
 
-                    if (!Data.NE() && File.Exists(Data))
+                    if (!string.IsNullOrEmpty(androidDataFile) && File.Exists(androidDataFile))
                     {
                         SetStep(MainResources.AddingED);
-                        mod.AddExternalData(Data);
+                        mod.AddExternalData(androidDataFile);
                     }
 
-                    if (Obb?.Length > 0)
+                    if (androidObbFiles.Length > 0)
                     {
                         SetStep(MainResources.AddingObb);
-                        mod.AddExternalObb(Obb);
+                        mod.AddExternalObb(androidObbFiles);
                     }
 
                     SetStep(MainResources.CopyingApk);
@@ -275,7 +207,7 @@ namespace SaveToGameWpf.Windows
                     string package;
 
                     {
-                        string instMan = new Apktools(apkToModifyPath, PathToResources).ExtractSimpleManifest();
+                        string instMan = new Apktools(apkToModifyPath, GlobalVariables.PathToResources).ExtractSimpleManifest();
 
                         string temp = File.ReadAllText(instMan, Encoding.UTF8);
 
@@ -289,25 +221,31 @@ namespace SaveToGameWpf.Windows
 
                     File.WriteAllText(apk.PathToAndroidManifest,
                         File.ReadAllText(apk.PathToAndroidManifest, Encoding.UTF8).Replace("change_package",
-                            package).Replace("@string/app_name", AppTitle));
+                            package).Replace("@string/app_name", appTitle));
 
                     string iconsFolder = Path.Combine(apk.FolderOfProject, "res", "mipmap-");
 
-                    IOHelper.DeleteFile(Path.Combine($"{iconsFolder}xxhdpi-v4", "ic_launcher.png"));
-                    IOHelper.DeleteFile(Path.Combine($"{iconsFolder}xhdpi-v4", "ic_launcher.png"));
-                    IOHelper.DeleteFile(Path.Combine($"{iconsFolder}hdpi-v4", "ic_launcher.png"));
-                    IOHelper.DeleteFile(Path.Combine($"{iconsFolder}mdpi-v4", "ic_launcher.png"));
+                    void DeleteIcon(string folder) =>
+                        IOHelper.DeleteFile(Path.Combine($"{iconsFolder}{folder}", "ic_launcher.png"));
 
-                    File.WriteAllBytes(Path.Combine($"{iconsFolder}xxhdpi-v4", "ic_launcher.png"), IconsStorage.Icon_xxhdpi_array);
-                    File.WriteAllBytes(Path.Combine($"{iconsFolder}xhdpi-v4", "ic_launcher.png"), IconsStorage.Icon_xhdpi_array);
-                    File.WriteAllBytes(Path.Combine($"{iconsFolder}hdpi-v4", "ic_launcher.png"), IconsStorage.Icon_hdpi_array);
-                    File.WriteAllBytes(Path.Combine($"{iconsFolder}mdpi-v4", "ic_launcher.png"), IconsStorage.Icon_mdpi_array);
-                    
+                    DeleteIcon("xxhdpi-v4");
+                    DeleteIcon("xhdpi-v4");
+                    DeleteIcon("hdpi-v4");
+                    DeleteIcon("mdpi-v4");
+
+                    void WriteIcon(string folder, Property<BitmapSource> property) =>
+                        File.WriteAllBytes(Path.Combine($"{iconsFolder}{folder}", "ic_launcher.png"), property.Value.ToBitmap().ToByteArray());
+
+                    WriteIcon("xxhdpi-v4", IconsStorage.Icon_xxhdpi);
+                    WriteIcon("xhdpi-v4", IconsStorage.Icon_xhdpi);
+                    WriteIcon("hdpi-v4", IconsStorage.Icon_hdpi);
+                    WriteIcon("mdpi-v4", IconsStorage.Icon_mdpi);
+
                     SetStep(MainResources.Compiling);
 
                     if (!apk.Compile(out _))
                     {
-                        VisLog(MainResources.ErrorUp);
+                        Log(MainResources.ErrorUp);
                         return;
                     }
 
@@ -338,191 +276,152 @@ namespace SaveToGameWpf.Windows
                     Trace.WriteLine(ex.ToString());
                     Dispatcher.InvokeAction(() => throw ex);
 #endif
-                    VisLog($"{MainResources.ErrorUp}: {ex.Message}");
+                    Log($"{MainResources.ErrorUp}: {ex.Message}");
                 }
             });
             tsk.ContinueWith(a =>
             {
-                Working = false;
+                Working.Value = false;
                 Dispatcher.Invoke(new Action(() => TaskbarItemInfo.ProgressState = TaskbarItemProgressState.None));
             });
             tsk.Start();
         }
 
-        private void SetStep(string step)
-        {
-            WindowTitle = step;
-            VisLog(step);
-        }
+        #endregion
 
-        private readonly StringBuilder _log = new StringBuilder();
-
-        private void VisLog(string text)
-        {
-            _log.Append(text);
-            _log.Append('\n');
-            Dispatcher.Invoke(new Action(() =>
-            {
-                LogBox.Text = _log.ToString();
-            }));
-        }
+        #region Drag & Drop
 
         private void Apk_DragOver(object sender, DragEventArgs e)
         {
-            Utils.CheckDragOver(e, ".apk");
+            e.CheckDragOver(".apk");
         }
 
         private void Apk_DragDrop(object sender, DragEventArgs e)
         {
-            string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
-
-            if (files?.Length == 1 && Path.GetExtension(files[0]) == ".apk")
-                Apk = files[0];
-
-            e.Handled = true;
+            DropOneByEnd(e, ".apk", file => Apk.Value = file);
         }
 
         private void Save_DragOver(object sender, DragEventArgs e)
         {
-            Utils.CheckDragOver(e, ".tar.gz");
+            e.CheckDragOver(".tar.gz");
         }
 
         private void Save_DragDrop(object sender, DragEventArgs e)
         {
-            string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
-
-            if (files?.Length == 1 && files[0].EndsWith(".tar.gz", StringComparison.Ordinal))
-                Save = files[0];
-
-            e.Handled = true;
+            DropOneByEnd(e, ".tar.gz", file => Save.Value = file);
         }
 
         private void Data_DragOver(object sender, DragEventArgs e)
         {
-            Utils.CheckDragOver(e, ".zip");
+            e.CheckDragOver(".zip");
         }
 
         private void Data_DragDrop(object sender, DragEventArgs e)
         {
-            string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
-
-            if (files?.Length == 1 && Path.GetExtension(files[0]) == ".zip")
-                Data = files[0];
-
-            e.Handled = true;
+            DropOneByEnd(e, ".zip", file => Data.Value = file);
         }
 
         private void Obb_DragOver(object sender, DragEventArgs e)
         {
-            string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
-
-            if (files == null)
-                return;
-
-            e.Effects = files.All(f => Path.GetExtension(f) == ".obb") ? DragDropEffects.Move : DragDropEffects.None;
-
-            e.Handled = true;
+            e.CheckDragOver(".obb");
         }
 
         private void Obb_DragDrop(object sender, DragEventArgs e)
         {
-            string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+            DropManyByEnd(e, ".obb", files => Obb.Value = files);
+        }
 
-            if (files == null)
-                return;
+        private void Icon_DragOver(object sender, DragEventArgs e)
+        {
+            e.CheckDragOver(".png");
+        }
 
-            string[] obbs = files.Where(f => Path.GetExtension(f) == ".obb").ToArray();
+        private void Icon_Drop(object sender, DragEventArgs e)
+        {
+            DropOneByEnd(e, ".png", file =>
+            {
+                string tag = e.OriginalSource.As<Image>().Tag.As<string>();
+                SetIcon(file, tag);
+            });
+        }
 
-            if (obbs.Length > 0)
-                Obb = obbs;
+        #endregion
+
+        private static void DropOneByEnd(DragEventArgs e, string ext, Action<string> onSuccess)
+        {
+            string[] files = e.GetFilesDrop(ext);
+
+            if (files.Length == 1)
+                onSuccess(files[0]);
+
+            e.Handled = true;
+        }
+
+        private static void DropManyByEnd(DragEventArgs e, string ext, Action<string[]> onSuccess)
+        {
+            string[] files = e.GetFilesDrop(ext);
+
+            if (files.Length > 0)
+                onSuccess(files);
 
             e.Handled = true;
         }
 
         private void SetIcon(string imagePath, string tag)
         {
-            var img = new Bitmap(imagePath);
+            BitmapSource Resize(int size)
+            {
+                var img = new Bitmap(imagePath);
+
+                if (img.Height != img.Width || img.Height != size)
+                    img = img.Resize(size, size);
+
+                return img.ToBitmapSource();
+            }
 
             switch (tag)
             {
                 case "xxhdpi":
-                    if (img.Height != img.Width || img.Height != 144)
-                    {
-                        img = img.Resize(144, 144);
-                        IconsStorage.Icon_xxhdpi_array = img.ToByteArray();
-                    }
-                    else
-                    {
-                        IconsStorage.Icon_xxhdpi_array = File.ReadAllBytes(imagePath);
-                    }
-                    
+                    IconsStorage.Icon_xxhdpi.Value = Resize(144);
                     break;
                 case "xhdpi":
-                    if (img.Height != img.Width || img.Height != 96)
-                    {
-                        img = img.Resize(96, 96);
-                        IconsStorage.Icon_xhdpi_array = img.ToByteArray();
-                    }
-                    else
-                    {
-                        IconsStorage.Icon_xhdpi_array = File.ReadAllBytes(imagePath);
-                    }
-
+                    IconsStorage.Icon_xhdpi.Value = Resize(96);
                     break;
                 case "hdpi":
-                    if (img.Height != img.Width || img.Height != 72)
-                    {
-                        img = img.Resize(72, 72);
-                        IconsStorage.Icon_hdpi_array = img.ToByteArray();
-                    }
-                    else
-                    {
-                        IconsStorage.Icon_hdpi_array = File.ReadAllBytes(imagePath);
-                    }
-
+                    IconsStorage.Icon_hdpi.Value = Resize(72);
                     break;
                 case "mdpi":
-                    if (img.Height != img.Width || img.Height != 48)
-                    {
-                        img = img.Resize(48, 48);
-                        IconsStorage.Icon_mdpi_array = img.ToByteArray();
-                    }
-                    else
-                    {
-                        IconsStorage.Icon_mdpi_array = File.ReadAllBytes(imagePath);
-                    }
-
+                    IconsStorage.Icon_mdpi.Value = Resize(48);
                     break;
             }
         }
 
-        private void Icon_Drop(object sender, DragEventArgs e)
-        {
-            var files = (string[])e.Data.GetData(DataFormats.FileDrop);
-
-            if (files == null || files.Length == 0)
-                return;
-
-            string imagePath = files[0];
-
-            if (Path.GetExtension(imagePath) != ".png")
-                return;
-
-            string tag = e.OriginalSource.As<Image>().Tag.As<string>();
-
-            SetIcon(imagePath, tag);
-        }
-
         private void ChooseImage_Click(object sender, MouseButtonEventArgs e)
         {
-            OpenFileDialog dialog = new OpenFileDialog
+            var dialog = new OpenFileDialog
             {
                 CheckFileExists = true,
                 Filter = MainResources.Images + @" (*.png)|*.png"
             };
 
             if (dialog.ShowDialog() == true)
-                SetIcon(dialog.FileName, e.OriginalSource.As<Image>().Tag.As<string>());
+                SetIcon(dialog.FileName, e.OriginalSource.As<FrameworkElement>().Tag.As<string>());
+        }
+
+        private void SetStep(string step)
+        {
+            WindowTitle.Value = step;
+            Log(step);
+        }
+
+        private void Log(string text)
+        {
+            _log.Append(text);
+            _log.Append('\n');
+            Dispatcher.InvokeAction(() =>
+            {
+                LogBox.Text = _log.ToString();
+            });
         }
 
         #region PropertyChanged

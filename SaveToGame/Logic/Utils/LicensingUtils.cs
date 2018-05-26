@@ -10,12 +10,35 @@ using System.Windows;
 using SaveToGameWpf.Logic.Classes;
 using SaveToGameWpf.Resources.Localizations;
 using SaveToGameWpf.Windows;
+
 using File = Alphaleonis.Win32.Filesystem.File;
 
 namespace SaveToGameWpf.Logic.Utils
 {
     public static class LicensingUtils
     {
+        private static class ComputerInfo
+        {
+            public const string DiskDrive = "Win32_DiskDrive";
+            public const string Processor = "Win32_Processor";
+            public const string SystemProduct = "Win32_ComputerSystemProduct";
+            // ReSharper disable once InconsistentNaming
+            public const string CDROM = "Win32_CDROMDrive";
+            public const string Card = "CIM_Card";
+
+            /// <summary>
+            /// Returns all management objects from the provided place
+            /// </summary>
+            /// <param name="from">The place to selectfrom</param>
+            public static List<ManagementObject> GetQueryList(string from)
+            {
+                var winQuery = new ObjectQuery("SELECT * FROM " + from);
+                var searcher = new ManagementObjectSearcher(winQuery);
+
+                return searcher.Get().Cast<ManagementObject>().ToList();
+            }
+        }
+
         private const string RsaParamsInXml =
             "<RSAKeyValue><Modulus>smneh/6PWonzZSD4sPwd76llm6Qow0UhcG3vIVMqxhSBRC3QcvC47ej/XqsXc2h7Le60VO3n8UIR4DYaBwbDli2unfTrwnAq6sAINd0HathMce6njEuVSwWwhF8ioN9xDiwqs3iDq59hghHicaveAvgwkEo8v0tbnsLPt7l+FS6bjmwK9b9yMslJVw4Nu1Ar2F3pqOCCUfRwCU7PvGvfloLmcuG9dIVVaJEtNHDispQUMwprWN3hzKFVxvNTKPwJEouQ8MFOT0ycxzsZWJibeapQew8fz/An2FGi6hDQp0mcGN42HnPrPrYUmZnSbG6FYAvFoImBEpOTS0WxZgfkwQ==</Modulus><Exponent>AQAB</Exponent></RSAKeyValue>";
 
@@ -32,34 +55,34 @@ namespace SaveToGameWpf.Logic.Utils
 
         public static void GenerateNotActivatedLicense(string path)
         {
-            FileStream fileStream = File.Open(path, FileMode.Create, FileAccess.Write);
-            var binStream = new BinaryWriter(fileStream);
-
-            var sha = new SHA1Managed();
-
-            foreach (var (systemObjects, propertyName) in Utils.GetQueries())
+            using (FileStream fileStream = File.Open(path, FileMode.Create, FileAccess.Write))
             {
-                binStream.Write(systemObjects.Count);
-                foreach (ManagementObject systemObject in systemObjects)
+                var binStream = new BinaryWriter(fileStream);
+
+                var sha = new SHA1Managed();
+
+                foreach (var (_, systemObjects) in GetQueries())
                 {
-                    byte[] bytes = Encoding.UTF8.GetBytes(systemObject[propertyName].ToString());
-                    bytes = sha.ComputeHash(bytes);
+                    binStream.Write(systemObjects.Count);
+                    foreach (string systemObject in systemObjects)
+                    {
+                        byte[] bytes = sha.ComputeHash(systemObject.GetBytesUtf8());
 
-                    binStream.Write(bytes.Length);
-                    binStream.Write(bytes);
+                        binStream.Write(bytes.Length);
+                        binStream.Write(bytes);
+                    }
                 }
+
+                binStream.Write(1);
+
+                // key block
+                binStream.Write(1); // key block id
+                binStream.Write(sizeof(int)); // block size
+                binStream.Write(2); // version
+                // ---
+
+                binStream.Close();
             }
-
-            binStream.Write(1);
-
-            // key block
-            binStream.Write(1);             // key block id
-            binStream.Write(sizeof(int));   // block size
-            binStream.Write(2);             // version
-            // ---
-
-            binStream.Close();
-            fileStream.Close();
         }
 
         public static bool VerifySignature(byte[] hash, byte[] signedHash)
@@ -72,37 +95,45 @@ namespace SaveToGameWpf.Logic.Utils
             var memStream = new MemoryStream(license);
             var binReader = new BinaryReader(memStream);
 
-            var cdrom = new List<byte[]>();
-            var card = new List<byte[]>();
-            var diskDrive = new List<byte[]>();
-            var processor = new List<byte[]>();
-            var systemProduct = new List<byte[]>();
+            var fileHashes = new Dictionary<string, List<byte[]>>();
 
-            List<byte[]>[] array = { cdrom, card, diskDrive, processor, systemProduct };
-            string[] itemsArr = { "DeviceID", "SerialNumber", "SerialNumber", "ProcessorId", "UUID" };
-
-            foreach (List<byte[]> oneList in array)
+            void AddItem(string key)
             {
-                int len = binReader.ReadInt32();
+                var typeElements = new List<byte[]>();
 
-                for (var j = 0; j < len; j++)
+                int itemsCount = binReader.ReadInt32();
+  
+                for (var j = 0; j < itemsCount; j++)
                 {
-                    int oneLen = binReader.ReadInt32();
-
-                    byte[] bytes = binReader.ReadBytes(oneLen);
-
-                    oneList.Add(bytes);
+                    int itemBytesSize = binReader.ReadInt32();
+                    byte[] bytes = binReader.ReadBytes(itemBytesSize);
+                    typeElements.Add(bytes);
                 }
+
+                fileHashes.Add(key, typeElements);
             }
 
-            var queries = Utils.GetQueries();
+            AddItem(ComputerInfo.CDROM);
+            AddItem(ComputerInfo.Card);
+            AddItem(ComputerInfo.DiskDrive);
+            AddItem(ComputerInfo.Processor);
+            AddItem(ComputerInfo.SystemProduct);
+
+            var queries = GetQueries();
 
             int found = 0;
 
             var sha = new SHA1Managed();
-            // ReSharper disable once LoopCanBeConvertedToQuery
-            for (int i = 0; i < array.Length; i++)
-                found += array[i].Count(str => queries[i].systemObjects.Any(query => VerifySignature(sha.ComputeHash(Encoding.UTF8.GetBytes(query[itemsArr[i]].ToString())), str)));
+
+            foreach ((string elementSystemName, List<string> systemObjects) in queries)
+            {
+                List<byte[]> fileElementHashes = fileHashes[elementSystemName];
+                List<byte[]> systemElementHashes = systemObjects.ConvertAll(it => sha.ComputeHash(it.GetBytesUtf8()));
+
+                foreach (byte[] fileElementHash in fileElementHashes)
+                    if (systemElementHashes.Any(systemHash => VerifySignature(systemHash, fileElementHash)))
+                        found++;
+            }
 
             var keyVersion = 1;
 
@@ -155,6 +186,32 @@ namespace SaveToGameWpf.Logic.Utils
                 return false;
 
             return IsLicenseValid(license.Cast<byte>().ToArray());
+        }
+
+        private static (string sourceType, List<string> systemObjects)[] GetQueries()
+        {
+            (string from, string propName, Predicate<ManagementObject> checker)[] items =
+            {
+                (ComputerInfo.CDROM, "DeviceID", _ => true),
+                (ComputerInfo.Card, "SerialNumber", _ => true),
+                (ComputerInfo.DiskDrive, "SerialNumber", it => it["MediaType"]?.ToString() == "Fixed hard disk media"),
+                (ComputerInfo.Processor, "ProcessorId", _ => true),
+                (ComputerInfo.SystemProduct, "UUID", _ => true)
+            };
+
+            return Array.ConvertAll(items, item =>
+            {
+                var queries = ComputerInfo.GetQueryList(item.from);
+                return
+                (
+                    item.from,
+                    queries
+                        .Where(it => item.checker(it))
+                        .Select(it => it[item.propName]?.ToString())
+                        .Where(it => !string.IsNullOrEmpty(it))
+                        .ToList()
+                );
+            });
         }
     }
 }
