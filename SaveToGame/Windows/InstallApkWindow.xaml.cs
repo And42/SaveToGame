@@ -262,9 +262,9 @@ namespace SaveToGameWpf.Windows
                     SetStep(MainResources.AllDone);
 
                     if (MessBox.ShowDial(
-                            Properties.Resources.Path_to_file + resultFilePath,
-                            Properties.Resources.Successful,
-                            Properties.Resources.OK, MainResources.Open
+                            MainResources.Path_to_file + resultFilePath,
+                            MainResources.Successful,
+                            MainResources.OK, MainResources.Open
                         ) == MainResources.Open)
                     {
                         Process.Start("explorer.exe", $"/select,{resultFilePath}");

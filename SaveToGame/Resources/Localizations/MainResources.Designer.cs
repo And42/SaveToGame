@@ -133,11 +133,29 @@ namespace SaveToGameWpf.Resources.Localizations {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to www.androeed.ru.
+        /// </summary>
+        public static string Androeed_ru {
+            get {
+                return ResourceManager.GetString("Androeed_ru", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Андроид файлы.
         /// </summary>
         public static string AndroidFiles {
             get {
                 return ResourceManager.GetString("AndroidFiles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SaveToGame.
+        /// </summary>
+        public static string AppName {
+            get {
+                return ResourceManager.GetString("AppName", resourceCulture);
             }
         }
         
@@ -183,6 +201,60 @@ namespace SaveToGameWpf.Resources.Localizations {
         public static string CacheFiles {
             get {
                 return ResourceManager.GetString("CacheFiles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Не удалось загрузить сообщение из файла.
+        /// </summary>
+        public static string Cant_add_popup_message_from_file {
+            get {
+                return ResourceManager.GetString("Cant_add_popup_message_from_file", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Не удалось добавить сохранить в файл. Попробуйте сделать это вручную.
+        /// </summary>
+        public static string Cant_add_save {
+            get {
+                return ResourceManager.GetString("Cant_add_save", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Не удалось проверить ключ.
+        /// </summary>
+        public static string Cant_check_the_key {
+            get {
+                return ResourceManager.GetString("Cant_check_the_key", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Не удалось удалить временную папку..
+        /// </summary>
+        public static string Cant_delete_temp_folder {
+            get {
+                return ResourceManager.GetString("Cant_delete_temp_folder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Не удалось активировать программу.
+        /// </summary>
+        public static string Cant_make_program_pro {
+            get {
+                return ResourceManager.GetString("Cant_make_program_pro", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ошибка при обновлении программы.
+        /// </summary>
+        public static string Cant_update_program {
+            get {
+                return ResourceManager.GetString("Cant_update_program", resourceCulture);
             }
         }
         
@@ -277,6 +349,15 @@ namespace SaveToGameWpf.Resources.Localizations {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Электронная почта скопирована в буфер обмена.
+        /// </summary>
+        public static string Email_was_copied {
+            get {
+                return ResourceManager.GetString("Email_was_copied", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Ошибка.
         /// </summary>
         public static string Error {
@@ -291,6 +372,15 @@ namespace SaveToGameWpf.Resources.Localizations {
         public static string ErrorUp {
             get {
                 return ResourceManager.GetString("ErrorUp", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Файл или сохранение не выбраны!.
+        /// </summary>
+        public static string File_or_save_not_selected {
+            get {
+                return ResourceManager.GetString("File_or_save_not_selected", resourceCulture);
             }
         }
         
@@ -372,6 +462,24 @@ namespace SaveToGameWpf.Resources.Localizations {
         public static string InstallApkVersion {
             get {
                 return ResourceManager.GetString("InstallApkVersion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Эта лицензия недействительна.
+        /// </summary>
+        public static string Invalid_license_fullbtn {
+            get {
+                return ResourceManager.GetString("Invalid_license_fullbtn", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Java не найдена. Необходимо загрузить её с официального сайта. Ссылка скопирована в буфер обмена.
+        /// </summary>
+        public static string JavaNotFound {
+            get {
+                return ResourceManager.GetString("JavaNotFound", resourceCulture);
             }
         }
         
@@ -485,6 +593,24 @@ namespace SaveToGameWpf.Resources.Localizations {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Некоторые файлы не найдены!.
+        /// </summary>
+        public static string Not_enough_files {
+            get {
+                return ResourceManager.GetString("Not_enough_files", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to OK.
+        /// </summary>
+        public static string OK {
+            get {
+                return ResourceManager.GetString("OK", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Только сообщение.
         /// </summary>
         public static string OnlyMessage {
@@ -517,6 +643,15 @@ namespace SaveToGameWpf.Resources.Localizations {
         public static string Options {
             get {
                 return ResourceManager.GetString("Options", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Путь к файлу:.
+        /// </summary>
+        public static string Path_to_file {
+            get {
+                return ResourceManager.GetString("Path_to_file", resourceCulture);
             }
         }
         
@@ -557,6 +692,18 @@ namespace SaveToGameWpf.Resources.Localizations {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to - Задание текста всплывающего сообщения
+        ///- Возможность указать расположение главного smali файла (файла с методом onCreate). Может понадобиться, если программа не может найти его сама
+        ///- Встраивание кеша с использованием контейнера
+        ///- Добавление иконки и названия конечного файла к контейнеру.
+        /// </summary>
+        public static string ProVersionPlusses {
+            get {
+                return ResourceManager.GetString("ProVersionPlusses", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Сохранение.
         /// </summary>
         public static string Save {
@@ -593,6 +740,24 @@ namespace SaveToGameWpf.Resources.Localizations {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Странно, обнаружены неизвестные ошибки....
+        /// </summary>
+        public static string Some_Error_Found {
+            get {
+                return ResourceManager.GetString("Some_Error_Found", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Готово.
+        /// </summary>
+        public static string Successful {
+            get {
+                return ResourceManager.GetString("Successful", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Поблагодарить:.
         /// </summary>
         public static string Support {
@@ -611,6 +776,15 @@ namespace SaveToGameWpf.Resources.Localizations {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Спасибо за покупку!.
+        /// </summary>
+        public static string Thanks {
+            get {
+                return ResourceManager.GetString("Thanks", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Лицензия активирована. Спасибо за покупку.
         /// </summary>
         public static string ThanksPurchase {
@@ -625,6 +799,15 @@ namespace SaveToGameWpf.Resources.Localizations {
         public static string Title {
             get {
                 return ResourceManager.GetString("Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Произошла неизвестная ошибка!.
+        /// </summary>
+        public static string Unknown_error {
+            get {
+                return ResourceManager.GetString("Unknown_error", resourceCulture);
             }
         }
         
@@ -652,6 +835,15 @@ namespace SaveToGameWpf.Resources.Localizations {
         public static string UpdateAvailable {
             get {
                 return ResourceManager.GetString("UpdateAvailable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Доступна новая версия. Обновить?.
+        /// </summary>
+        public static string UpdateNewVersion {
+            get {
+                return ResourceManager.GetString("UpdateNewVersion", resourceCulture);
             }
         }
         

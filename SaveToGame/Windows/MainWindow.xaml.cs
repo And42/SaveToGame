@@ -111,7 +111,7 @@ namespace SaveToGameWpf.Windows
         }
 
         public string MainWindowTitle
-            => Properties.Resources.AppName + (Pro ? " Pro" : "") + (CurrentApk != null ? " - " + CurrentApk : "");
+            => MainResources.AppName + (Pro ? " Pro" : "") + (CurrentApk != null ? " - " + CurrentApk : "");
 
         public BackupType CurrentBackupType
         {
@@ -215,7 +215,7 @@ namespace SaveToGameWpf.Windows
             if (!Apktools.StaticHasJava())
             {
                 Clipboard.SetText("http://www.oracle.com/technetwork/java/javase/downloads/jdk7-downloads-1880260.html");
-                MessBox.ShowDial(Properties.Resources.JavaNotFound);
+                MessBox.ShowDial(MainResources.JavaNotFound);
                 return;
             }
 
@@ -228,7 +228,7 @@ namespace SaveToGameWpf.Windows
                 (CurrentSave == null || !File.Exists(CurrentSave) && !Directory.Exists(CurrentSave))
             )
             {
-                MessBox.ShowDial(Properties.Resources.File_or_save_not_selected, Properties.Resources.Error);
+                MessBox.ShowDial(MainResources.File_or_save_not_selected, MainResources.Error);
                 return;
             }
 
@@ -515,10 +515,10 @@ namespace SaveToGameWpf.Windows
 
             if (
                 MessBox.ShowDial(
-                    Properties.Resources.Path_to_file + resultApkPath, 
-                    Properties.Resources.Successful,
-                    Properties.Resources.OK, Properties.Resources.Open
-                ) == Properties.Resources.Open)
+                    MainResources.Path_to_file + resultApkPath, 
+                    MainResources.Successful,
+                    MainResources.OK, MainResources.Open
+                ) == MainResources.Open)
             {
                 Process.Start("explorer.exe", $"/select,{resultApkPath}");
             }
@@ -664,7 +664,7 @@ namespace SaveToGameWpf.Windows
             Log($"Error: {errorText}");
             if (dialogMessage != null)
             {
-                Dispatcher.InvokeAction(() => MessBox.ShowDial(dialogMessage, Properties.Resources.Error));
+                Dispatcher.InvokeAction(() => MessBox.ShowDial(dialogMessage, MainResources.Error));
             }
         }
 

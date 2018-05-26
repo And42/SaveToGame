@@ -1,13 +1,14 @@
 ﻿<Window x:Class="SaveToGameWpf.Windows.InstallApkWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:localization="clr-namespace:SaveToGameWpf.Resources.Localizations"
+
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
-        FontSize="14" Title="{Binding WindowTitle.Value, Mode=OneWay}"
-        Style="{StaticResource VsWindowStyle}"
+        Title="{Binding WindowTitle.Value, Mode=OneWay}"
+        Style="{StaticResource CommonWindowStyle}"
         Width="600" Height="500"
         MinWidth="600" MinHeight="500"
-        WindowStartupLocation="CenterScreen"
-        xmlns:localization="clr-namespace:SaveToGameWpf.Resources.Localizations">
+        WindowStartupLocation="CenterScreen">
     <Grid Margin="5">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>

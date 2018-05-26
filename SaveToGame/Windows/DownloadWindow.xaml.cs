@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Net;
 using Alphaleonis.Win32.Filesystem;
 using SaveToGameWpf.Logic.Utils;
+using SaveToGameWpf.Resources.Localizations;
 using UsefulFunctionsLib;
 
 namespace SaveToGameWpf.Windows
@@ -63,7 +64,7 @@ namespace SaveToGameWpf.Windows
             }
             catch (Exception)
             {
-                MessBox.ShowDial(Properties.Resources.Cant_update_program, Properties.Resources.Error);
+                MessBox.ShowDial(MainResources.Cant_update_program, MainResources.Error);
                 Close();
             }
         }

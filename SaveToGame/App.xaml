@@ -16,7 +16,9 @@
                     <converters:ByteToMbConverter x:Key="ByteToMbConverter"/>
                     <converters:NotNullParameterConverter x:Key="NotNullParameterConverter"/>
                 </ResourceDictionary>
+
                 <ResourceDictionary Source="Styles\VS\VSThemeDictionary.xaml" />
+                <ResourceDictionary Source="Styles/Styles.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>     
     </Application.Resources>

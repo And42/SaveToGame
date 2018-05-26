@@ -7,7 +7,6 @@ using System.Windows.Media.Animation;
 using Alphaleonis.Win32.Filesystem;
 using Microsoft.Win32;
 using SaveToGameWpf.Logic.Utils;
-
 using Clipboard = System.Windows.Clipboard;
 using MessageBox = System.Windows.MessageBox;
 using Res = SaveToGameWpf.Resources.Localizations.MainResources;
@@ -22,7 +21,7 @@ namespace SaveToGameWpf.Windows
         public ActivateProgramWindow()
         {
             InitializeComponent();
-            PlussesBox.Text = Properties.Resources.ProVersionPlusses;
+            PlussesBox.Text = Res.ProVersionPlusses;
         }
 
         #region Button handlers

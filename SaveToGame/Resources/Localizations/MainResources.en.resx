@@ -334,4 +334,64 @@
     <value>Needed files not found. Program will not work.
 Missing files: {0}</value>
   </data>
+  <data name="Androeed_ru" xml:space="preserve">
+    <value>www.androeed.ru</value>
+  </data>
+  <data name="AppName" xml:space="preserve">
+    <value>SaveToGame</value>
+  </data>
+  <data name="Cant_add_popup_message_from_file" xml:space="preserve">
+    <value>Failed to set up message from file</value>
+  </data>
+  <data name="Cant_add_save" xml:space="preserve">
+    <value>Unable to add save to the file. Try to do it manually</value>
+  </data>
+  <data name="Cant_check_the_key" xml:space="preserve">
+    <value>Unable to verify the key</value>
+  </data>
+  <data name="Cant_delete_temp_folder" xml:space="preserve">
+    <value>Unable to remove the temporary folder.</value>
+  </data>
+  <data name="Cant_update_program" xml:space="preserve">
+    <value>Failed to update software</value>
+  </data>
+  <data name="Email_was_copied" xml:space="preserve">
+    <value>Email was copied to the clipboard</value>
+  </data>
+  <data name="Failed to activate the application" xml:space="preserve">
+    <value>Failed to activate the application</value>
+  </data>
+  <data name="File_or_save_not_selected" xml:space="preserve">
+    <value>File or save is not selected!</value>
+  </data>
+  <data name="Invalid_license_fullbtn" xml:space="preserve">
+    <value>The license is not valid</value>
+  </data>
+  <data name="JavaNotFound" xml:space="preserve">
+    <value>Java was not found. You need to download it from the official cite. Link was copied to the clipboard</value>
+  </data>
+  <data name="Not_enough_files" xml:space="preserve">
+    <value>Some files weren't found!</value>
+  </data>
+  <data name="OK" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="Path_to_file" xml:space="preserve">
+    <value>Path to the file:</value>
+  </data>
+  <data name="Some_Error_Found" xml:space="preserve">
+    <value>Hmm, I have some error...</value>
+  </data>
+  <data name="Successful" xml:space="preserve">
+    <value>All done</value>
+  </data>
+  <data name="Thanks" xml:space="preserve">
+    <value>Thank you for your purchase!</value>
+  </data>
+  <data name="Unknown_error" xml:space="preserve">
+    <value>Произошла неизвестная ошибка!</value>
+  </data>
+  <data name="UpdateNewVersion" xml:space="preserve">
+    <value>A new version is available. Update?</value>
+  </data>
 </root>
