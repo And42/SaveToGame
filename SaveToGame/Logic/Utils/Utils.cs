@@ -68,7 +68,7 @@ namespace SaveToGameWpf.Logic.Utils
                 mainWindow.OnlySave.Value = true;
             });
 
-            mainWindow.Pro = enable;
+            mainWindow.Pro.Value = enable;
         }
 
         public static void RunAsAdmin(string fileName, string anArguments)

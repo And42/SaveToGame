@@ -13,15 +13,15 @@
         WindowStartupLocation="CenterScreen">
     <DockPanel Margin="10,5,10,10">
         <Menu
-              DockPanel.Dock="Top"
-              FontSize="14"
-              HorizontalAlignment="Stretch"
-              Background="#F5F5F5"
-              ScrollViewer.VerticalScrollBarVisibility="Disabled">
+            DockPanel.Dock="Top"
+            FontSize="{Binding FontSize, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}, Mode=OneWay}"
+            Background="Transparent">
+
             <MenuItem 
-                    Header="{x:Static localization:MainResources.InstallApkVersion}" 
-                    Visibility="{Binding Pro, Converter={StaticResource TrueToVisibleConverter}}" 
-                    Click="InstallApkClick"/>
+                Header="{x:Static localization:MainResources.InstallApkVersion}" 
+                Visibility="{Binding Pro.Value, Converter={StaticResource TrueToVisibleConverter}}" 
+                Click="InstallApkClick"/>
+
             <MenuItem Header="{x:Static localization:MainResources.Settings}">
                 <MenuItem Header="{x:Static localization:MainResources.Language}">
                     <MenuItem IsCheckable="True" Header="Русский" Click="ChangeLanguageClick" Tag="ru" IsChecked="{Binding RuIsChecked, Mode=OneWay}" />
@@ -34,13 +34,15 @@
                     <MenuItem IsCheckable="True" IsChecked="{Binding LuckyPatcherIsChecked}" Header="Lucky Patcher"/>
                 </MenuItem>
             </MenuItem>
+
             <MenuItem 
-                    Header="{x:Static localization:MainResources.FullVersion}"
-                    Click="BuyItem_Click"
-                    Visibility="{Binding Pro, Converter={StaticResource FalseToVisibleConverter}}" />
+                Header="{x:Static localization:MainResources.FullVersion}"
+                Click="BuyItem_Click"
+                Visibility="{Binding Pro.Value, Converter={StaticResource FalseToVisibleConverter}}" />
+
             <MenuItem 
-                    Header="{x:Static localization:MainResources.AboutProgram}"
-                    Click="AboutProgramItem_Click" />
+                Header="{x:Static localization:MainResources.AboutProgram}"
+                Click="AboutProgramItem_Click" />
         </Menu>
 
         <Grid DockPanel.Dock="Top" Margin="0,5">
@@ -54,96 +56,121 @@
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
-            <Grid
-                    Height="60"
-                    Margin="0,0,0,5"
-                    HorizontalAlignment="Stretch">
-                
+            <Grid Height="60">
+                <Grid.Resources>
+                    <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+                        <Setter Property="Padding" Value="20,5"/>
+                        <Setter Property="FontSize" Value="15"/>
+                        <Setter Property="IsEnabled" Value="{Binding Working.Value, Converter={StaticResource InvertBoolConverter}}"/>
+                    </Style>
+                </Grid.Resources>
+
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="2*" />
                     <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition Width="5"/>
+                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition Width="5"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
                 
                 <Button 
-                    Grid.Column="0"
                     x:Name="ChooseApkButton"
-                    Click="ChooseApkBtn_Click" Padding="20,0"
+                    Click="ChooseApkBtn_Click"
                     Content="{x:Static localization:MainResources.ChooseApk}"
-                    FontSize="15" DragOver="Apk_DragOver" Drop="Apk_DragDrop" AllowDrop="True"/>
-                <Button 
-                    Grid.Column="1"
-                    x:Name="ChooseSaveButton"
-                    Margin="5,0" Padding="20,0"
-                    Click="ChooseSaveBtn_Click"
-                    Content="{x:Static localization:MainResources.ChooseSave}"
-                    FontSize="15" DragOver="Save_DragOver" Drop="Save_DragDrop" AllowDrop="True"/>
+                    DragOver="Apk_DragOver" Drop="Apk_DragDrop" AllowDrop="True"/>
+
                 <Button 
                     Grid.Column="2"
+                    Click="ChooseSaveBtn_Click"
+                    Content="{x:Static localization:MainResources.ChooseSave}"
+                    DragOver="Save_DragOver" Drop="Save_DragDrop" AllowDrop="True"
+                    ToolTip="{Binding CurrentSave.Value, Mode=OneWay}"/>
+
+                <Button 
+                    Grid.Column="4"
                     Click="StartBtn_Click"
-                    Content="{x:Static localization:MainResources.Begin}"
-                    FontSize="15" Padding="20,0"
-                    IsEnabled="{Binding Working.Value, Converter={StaticResource InvertBoolConverter}}" />
+                    Content="{x:Static localization:MainResources.Begin}"/>
             </Grid>
 
-            <Grid Grid.Row="1" Grid.Column="0">
+            <Grid Grid.Row="1" Grid.Column="0" Margin="0,5,0,0">
+                <Grid.Resources>
+                    <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
+                        <Setter Property="MaxLength" Value="1000"/>
+                        <Setter Property="IsEnabled" Value="{Binding Pro.Value, Mode=OneWay}"/>
+                        <Setter Property="Margin" Value="5,0,0,0"/>
+                    </Style>
+                    
+                    <Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
+                        <Setter Property="VerticalAlignment" Value="Center"/>
+                    </Style>
+                </Grid.Resources>
+
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="5"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition/>
                 </Grid.ColumnDefinitions>
 
-                <TextBlock Text="{x:Static localization:MainResources.MainSmaliName}" VerticalAlignment="Center"/>
-                <TextBox Grid.Row="0" Grid.Column="1" Margin="5,0,0,0" MaxLength="1000" IsEnabled="{Binding Pro}" Text="{Binding MainSmaliName.Value}" />
+                <TextBlock Text="{x:Static localization:MainResources.MainSmaliName}"/>
 
-                <TextBlock Grid.Row="2" Grid.Column="0" Text="{x:Static localization:MainResources.TextOfMessage}" VerticalAlignment="Center"/>
-                <TextBox Grid.Row="2" Grid.Column="1" Margin="5,0,0,0" MaxLength="1000" IsEnabled="{Binding Pro}" Text="{Binding PopupBoxText.Value}" AcceptsReturn="True" MaxLines="3"/>
+                <TextBox
+                    Grid.Row="0" Grid.Column="1"
+                    Text="{Binding MainSmaliName.Value}" />
+
+                <TextBlock
+                    Grid.Row="2" Grid.Column="0"
+                    Text="{x:Static localization:MainResources.TextOfMessage}"/>
+
+                <TextBox
+                    Grid.Row="2" Grid.Column="1"
+                    Text="{Binding PopupBoxText.Value}"
+                    AcceptsReturn="True" MaxLines="3"/>
             </Grid>
 
             <GroupBox
-                    x:Name="OptionsBox"
-                    Grid.Row="0"
-                    Grid.Column="1"
-                    Grid.RowSpan="2"
-                    Margin="5,-6,-1,0"
-                    HorizontalAlignment="Left"
-                    Header="{x:Static localization:MainResources.Options}"
-                    IsEnabled="{Binding Pro}">
-                <StackPanel 
-                        Orientation="Vertical"
-                        Margin="4,3,5,3">
+                Grid.Row="0" Grid.Column="1"
+                Grid.RowSpan="2"
+                Margin="5,-6,-1,0"
+                Header="{x:Static localization:MainResources.Options}"
+                IsEnabled="{Binding Pro.Value, Mode=OneWay}">
+
+                <StackPanel Margin="4,3" Orientation="Vertical">
+                    <StackPanel.Resources>
+                        <Style TargetType="RadioButton" BasedOn="{StaticResource {x:Type RadioButton}}">
+                            <Setter Property="IsEnabled" Value="{Binding Working.Value, Converter={StaticResource InvertBoolConverter}}"/>
+                        </Style>
+                    </StackPanel.Resources>
 
                     <RadioButton
-                             Content="{x:Static localization:MainResources.OnlySave}"
-                             IsChecked="{Binding OnlySave.Value}"
-                             IsEnabled="{Binding Working.Value, Converter={StaticResource InvertBoolConverter}}" />
+                         Content="{x:Static localization:MainResources.OnlySave}"
+                         IsChecked="{Binding OnlySave.Value}"/>
+
                     <RadioButton 
-                        Margin="0,4"
+                        Margin="0,4,0,0"
                         Content="{x:Static localization:MainResources.SavePlusMessage}"
-                        IsChecked="{Binding SavePlusMess.Value}"
-                        IsEnabled="{Binding Working.Value, Converter={StaticResource InvertBoolConverter}}" />
+                        IsChecked="{Binding SavePlusMess.Value}"/>
                     
                     <RadioButton 
+                        Margin="0,4,0,0"
                         Content="{x:Static localization:MainResources.OnlyMessage}"
-                        IsChecked="{Binding OnlyMess.Value}"
-                        IsEnabled="{Binding Working.Value, Converter={StaticResource InvertBoolConverter}}" />
+                        IsChecked="{Binding OnlyMess.Value}"/>
+
                     <Slider 
                         Name="Sl"
-                        Margin="0,4"
+                        Margin="0,4,0,0"
                         Cursor="Hand"
                         IsEnabled="{Binding OnlySave.Value, Converter={StaticResource InvertBoolConverter}}"
                         IsSnapToTickEnabled="True"
-                        Maximum="5"
-                        Minimum="1"
-                        SmallChange="1"
+                        Minimum="1" Maximum="5" SmallChange="1"
                         Value="{Binding MessagesCount.Value}" />
+
                     <Label
-                        Content="{Binding Value, ElementName=Sl}"
+                        Margin="0,4,0,0"
+                        Content="{Binding Value, ElementName=Sl, Mode=OneWay}"
                         ContentStringFormat="{x:Static localization:MainResources.MessagesCount}" />
                 </StackPanel>
             </GroupBox>

@@ -298,7 +298,7 @@ namespace SaveToGameWpf.Windows
 
         private void Apk_DragDrop(object sender, DragEventArgs e)
         {
-            DropOneByEnd(e, ".apk", file => Apk.Value = file);
+            e.DropOneByEnd(".apk", file => Apk.Value = file);
         }
 
         private void Save_DragOver(object sender, DragEventArgs e)
@@ -308,7 +308,7 @@ namespace SaveToGameWpf.Windows
 
         private void Save_DragDrop(object sender, DragEventArgs e)
         {
-            DropOneByEnd(e, ".tar.gz", file => Save.Value = file);
+            e.DropOneByEnd(".tar.gz", file => Save.Value = file);
         }
 
         private void Data_DragOver(object sender, DragEventArgs e)
@@ -318,7 +318,7 @@ namespace SaveToGameWpf.Windows
 
         private void Data_DragDrop(object sender, DragEventArgs e)
         {
-            DropOneByEnd(e, ".zip", file => Data.Value = file);
+            e.DropOneByEnd(".zip", file => Data.Value = file);
         }
 
         private void Obb_DragOver(object sender, DragEventArgs e)
@@ -328,7 +328,7 @@ namespace SaveToGameWpf.Windows
 
         private void Obb_DragDrop(object sender, DragEventArgs e)
         {
-            DropManyByEnd(e, ".obb", files => Obb.Value = files);
+            e.DropManyByEnd(".obb", files => Obb.Value = files);
         }
 
         private void Icon_DragOver(object sender, DragEventArgs e)
@@ -338,7 +338,7 @@ namespace SaveToGameWpf.Windows
 
         private void Icon_Drop(object sender, DragEventArgs e)
         {
-            DropOneByEnd(e, ".png", file =>
+            e.DropOneByEnd(".png", file =>
             {
                 string tag = e.OriginalSource.As<Image>().Tag.As<string>();
                 SetIcon(file, tag);
@@ -346,26 +346,6 @@ namespace SaveToGameWpf.Windows
         }
 
         #endregion
-
-        private static void DropOneByEnd(DragEventArgs e, string ext, Action<string> onSuccess)
-        {
-            string[] files = e.GetFilesDrop(ext);
-
-            if (files.Length == 1)
-                onSuccess(files[0]);
-
-            e.Handled = true;
-        }
-
-        private static void DropManyByEnd(DragEventArgs e, string ext, Action<string[]> onSuccess)
-        {
-            string[] files = e.GetFilesDrop(ext);
-
-            if (files.Length > 0)
-                onSuccess(files);
-
-            e.Handled = true;
-        }
 
         private void SetIcon(string imagePath, string tag)
         {

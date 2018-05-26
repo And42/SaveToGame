@@ -36,16 +36,7 @@ namespace SaveToGameWpf.Windows
     {
         #region Properties     
 
-        public bool Pro
-        {
-            get => _pro;
-            set
-            {
-                if (this.SetProperty(ref _pro, value))
-                    RaisePropertyChanged(nameof(MainWindowTitle));
-            }
-        }
-        private bool _pro;
+        public Property<bool> Pro { get; } = new Property<bool>();
 
         public Property<bool> Working { get; } = new Property<bool>();
         public Property<bool> OnlySave { get; } = new Property<bool>();
@@ -57,23 +48,8 @@ namespace SaveToGameWpf.Windows
 
         public Property<string> MainSmaliName { get; } = new Property<string>(string.Empty);
 
-        public string CurrentApk
-        {
-            get => _currentApk;
-            set
-            {
-                if (!this.SetProperty(ref _currentApk, value))
-                    return;
-
-                _currentApkFile = new FileInfo(value);
-                RaisePropertyChanged(nameof(MainWindowTitle));
-            }
-        }
-        private string _currentApk;
-
-        private FileInfo _currentApkFile;
-
-        public string CurrentSave { get; set; }
+        public Property<string> CurrentApk { get; } = new Property<string>();
+        public Property<string> CurrentSave { get; } = new Property<string>();
 
         public static readonly Encoding DefaultSmaliEncoding = new UTF8Encoding(false);
 
@@ -111,7 +87,7 @@ namespace SaveToGameWpf.Windows
         }
 
         public string MainWindowTitle
-            => MainResources.AppName + (Pro ? " Pro" : "") + (CurrentApk != null ? " - " + CurrentApk : "");
+            => MainResources.AppName + (Pro.Value ? " Pro" : "") + (!string.IsNullOrEmpty(CurrentApk.Value) ? " - " + CurrentApk.Value : "");
 
         public BackupType CurrentBackupType
         {
@@ -151,6 +127,11 @@ namespace SaveToGameWpf.Windows
             InitializeComponent();
 
 		    TaskbarItemInfo = new TaskbarItemInfo();
+
+		    Pro.PropertyChanged += (sender, args) => RaisePropertyChanged(nameof(Pro));
+		    CurrentApk.PropertyChanged += (sender, args) => RaisePropertyChanged(nameof(CurrentApk));
+
+            PropertyChanged += OnPropertyChanged;
 		}
 
         #region Window events
@@ -162,7 +143,7 @@ namespace SaveToGameWpf.Windows
 
         private void MainWindow_OnClosed(object sender, EventArgs e)
         {
-            if (Pro)
+            if (Pro.Value)
             {
                 _settings.PopupMessage = PopupBoxText.Value;
             }
@@ -184,7 +165,7 @@ namespace SaveToGameWpf.Windows
             if (!success)
                 return;
 
-            CurrentApk = filePath;
+            CurrentApk.Value = filePath;
             ChooseApkButton.ToolTip = filePath;
         }
 
@@ -195,21 +176,22 @@ namespace SaveToGameWpf.Windows
                 var (success, filePath) = PickerUtils.PickFile(filter: MainResources.Archives + @" (*.tar.gz)|*.tar.gz");
 
                 if (success)
-                    CurrentSave = filePath;
+                    CurrentSave.Value = filePath;
             }
             else
             {
                 var (success, folderPath) = PickerUtils.PickFolder();
 
                 if (success)
-                    CurrentSave = folderPath;
+                    CurrentSave.Value = folderPath;
             }
-
-            ChooseSaveButton.ToolTip = CurrentSave;
         }
 
         private void StartBtn_Click(object sender, EventArgs e)
         {
+            var apkFile = CurrentApk.Value;
+            var saveFile = CurrentSave.Value;
+
             #region Проверка на наличие Java
 
             if (!Apktools.StaticHasJava())
@@ -223,9 +205,9 @@ namespace SaveToGameWpf.Windows
 
             #region Проверка на существование файлов
 
-            if (CurrentApk == null || !File.Exists(CurrentApk) ||
+            if (string.IsNullOrEmpty(apkFile) || !File.Exists(apkFile) ||
                 (SavePlusMess.Value || OnlySave.Value) &&
-                (CurrentSave == null || !File.Exists(CurrentSave) && !Directory.Exists(CurrentSave))
+                (string.IsNullOrEmpty(saveFile) || !File.Exists(saveFile) && !Directory.Exists(saveFile))
             )
             {
                 MessBox.ShowDial(MainResources.File_or_save_not_selected, MainResources.Error);
@@ -234,8 +216,10 @@ namespace SaveToGameWpf.Windows
 
             #endregion
 
-            _logger = new Logger(_currentApkFile.DirectoryName, false);
-            _logger.NewLog(true, Path.Combine(_currentApkFile.DirectoryName ?? string.Empty, $"{Path.GetFileNameWithoutExtension(CurrentApk)}_log.txt"));
+            var apkDir = Path.GetDirectoryName(apkFile);
+
+            _logger = new Logger(apkDir, false);
+            _logger.NewLog(true, Path.Combine(apkDir ?? string.Empty, $"{Path.GetFileNameWithoutExtension(apkFile)}_log.txt"));
 
             Task.Factory.StartNew(() =>
             {
@@ -281,12 +265,7 @@ namespace SaveToGameWpf.Windows
 
         private void Apk_DragDrop(object sender, DragEventArgs e)
         {
-            var files = e.GetFilesDrop(".apk");
-
-            if (files.Length == 1)
-                CurrentApk = files[0];
-
-            e.Handled = true;
+            e.DropOneByEnd(".apk", file => CurrentApk.Value = file);
         }
 
         private void Save_DragOver(object sender, DragEventArgs e)
@@ -296,12 +275,7 @@ namespace SaveToGameWpf.Windows
 
         private void Save_DragDrop(object sender, DragEventArgs e)
         {
-            var files = e.GetFilesDrop(".tar.gz");
-
-            if (files.Length == 1)
-                CurrentSave = files[0];
-
-            e.Handled = true;
+            e.DropOneByEnd(".tar.gz", file => CurrentSave.Value = file);
         }
 
         #endregion
@@ -338,11 +312,14 @@ namespace SaveToGameWpf.Windows
 
         private void Start()
         {
+            var apkFile = new FileInfo(CurrentApk.Value);
+            bool pro = Pro.Value;
+
             var tempFolder = Path.Combine(Path.GetTempPath(), "STG_temp");
 
             var processedApkPath = Path.Combine(tempFolder, "processed.apk");
-            var resultApkPath = _currentApkFile.GetFullFNWithoutExt() + "_mod.apk";
-            var pathToSave = CurrentSave;
+            var resultApkPath = apkFile.GetFullFNWithoutExt() + "_mod.apk";
+            var pathToSave = CurrentSave.Value;
 
             Utils.DeleteFolder(tempFolder);
             Directory.CreateDirectory(tempFolder);
@@ -365,7 +342,7 @@ namespace SaveToGameWpf.Windows
 
             #region Инициализация
 
-            File.Copy(CurrentApk, processedApkPath, true);
+            File.Copy(apkFile.FullName, processedApkPath, true);
 
 #if DEBUG
             var apktool = new Apktools(processedApkPath, GlobalVariables.PathToResources, tracing: true);
@@ -395,7 +372,7 @@ namespace SaveToGameWpf.Windows
 
             #region Замена текстов
 
-            if (Pro)
+            if (pro)
             {
                 var texts = new List<string> {" A P K M A N I A . C O M ", "Thanks for visiting APKMANIA.COM"};
 
@@ -413,7 +390,7 @@ namespace SaveToGameWpf.Windows
 
             #region Удаление известных баннеров
 
-            if (Pro)
+            if (pro)
             {
                 var bannersFile = Path.Combine(GlobalVariables.PathToExeFolder, "banners.txt");
 
@@ -684,6 +661,17 @@ namespace SaveToGameWpf.Windows
                         : TaskbarItemProgressState.None
                 );
             });
+        }
+
+        private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case nameof(Pro):
+                case nameof(CurrentApk):
+                    RaisePropertyChanged(nameof(MainWindowTitle));
+                    break;
+            }
         }
 
         #region PropertyChanged

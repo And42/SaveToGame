@@ -48,5 +48,25 @@ namespace SaveToGameWpf.Logic.Utils
 
             e.Handled = true;
         }
+
+        public static void DropOneByEnd(this DragEventArgs e, string ext, Action<string> onSuccess)
+        {
+            string[] files = e.GetFilesDrop(ext);
+
+            if (files.Length == 1)
+                onSuccess(files[0]);
+
+            e.Handled = true;
+        }
+
+        public static void DropManyByEnd(this DragEventArgs e, string ext, Action<string[]> onSuccess)
+        {
+            string[] files = e.GetFilesDrop(ext);
+
+            if (files.Length > 0)
+                onSuccess(files);
+
+            e.Handled = true;
+        }
     }
 }
