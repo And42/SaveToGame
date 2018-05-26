@@ -3,12 +3,12 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:localization="clr-namespace:SaveToGameWpf.Resources.Localizations"
 
-        Title="{Binding MainWindowTitle}"
+        Title="{Binding MainWindowTitle, Mode=OneWay}"
         Width="795" Height="500"
         MinWidth="795" MinHeight="500"
+        Loaded="MainWindow_Load"
         Closed="MainWindow_OnClosed"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
-        Loaded="MainWindow_Load"
         Style="{StaticResource CommonWindowStyle}"
         WindowStartupLocation="CenterScreen">
     <DockPanel Margin="10,5,10,10">
