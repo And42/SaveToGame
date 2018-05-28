@@ -65,11 +65,11 @@ namespace SaveToGameWpf.Logic.Utils
                 if (!enable)
                     return;
 
-                mainWindow.PopupBoxText.Value = DefaultSettingsContainer.Instance.PopupMessage ?? "";
-                mainWindow.OnlySave.Value = true;
+                mainWindow.ViewModel.PopupBoxText.Value = DefaultSettingsContainer.Instance.PopupMessage ?? "";
+                mainWindow.ViewModel.OnlySave.Value = true;
             });
 
-            mainWindow.Pro.Value = enable;
+            mainWindow.ViewModel.Pro.Value = enable;
         }
 
         public static void RunAsAdmin(string fileName, string anArguments)

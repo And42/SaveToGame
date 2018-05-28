@@ -155,6 +155,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Converters\BackupToCheckedConverter.cs" />
     <Compile Include="Converters\ByteToMbConverter.cs" />
     <Compile Include="Converters\DivideBy1024Converter.cs" />
     <Compile Include="Converters\FalseToHiddenConverter.cs" />
@@ -176,6 +177,7 @@
     <Compile Include="Logic\GlobalVariables.cs" />
     <Compile Include="Logic\Interfaces\IRaisePropertyChanged.cs" />
     <Compile Include="Logic\OrganisationItems\WindowManager.cs" />
+    <Compile Include="Logic\ViewModels\MainWindowViewModel.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>

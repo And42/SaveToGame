@@ -17,6 +17,7 @@
                     <converters:ByteToMbConverter x:Key="ByteToMbConverter"/>
                     <converters:NotNullParameterConverter x:Key="NotNullParameterConverter"/>
                     <converters:FalseToHiddenConverter x:Key="FalseToHiddenConverter"/>
+                    <converters:BackupToCheckedConverter x:Key="BackupToCheckedConverter"/>
                 </ResourceDictionary>
 
                 <ResourceDictionary Source="Styles/Light/ThemeResources.xaml"/>

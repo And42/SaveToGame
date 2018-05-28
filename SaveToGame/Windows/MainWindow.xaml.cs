@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Shell;
@@ -14,12 +12,11 @@ using AndroidHelper.Logic;
 using ApkModifer.Logic;
 using ICSharpCode.SharpZipLib.Zip;
 using MVVM_Tools.Code.Disposables;
-using MVVM_Tools.Code.Providers;
 using SaveToGameWpf.Logic;
 using SaveToGameWpf.Logic.Classes;
-using SaveToGameWpf.Logic.Interfaces;
 using SaveToGameWpf.Logic.OrganisationItems;
 using SaveToGameWpf.Logic.Utils;
+using SaveToGameWpf.Logic.ViewModels;
 using SaveToGameWpf.Resources.Localizations;
 using UsefulClasses;
 using UsefulFunctionsLib;
@@ -33,83 +30,9 @@ using Path = Alphaleonis.Win32.Filesystem.Path;
 
 namespace SaveToGameWpf.Windows
 {
-    public sealed partial class MainWindow : IRaisePropertyChanged, IDisposable
+    public sealed partial class MainWindow : IDisposable
     {
-        public Property<bool> Pro { get; } = new Property<bool>();
-
-        public Property<bool> Working { get; } = new Property<bool>();
-        public Property<bool> OnlySave { get; } = new Property<bool>();
-        public Property<bool> SavePlusMess { get; } = new Property<bool>(true);
-        public Property<bool> OnlyMess { get; } = new Property<bool>();
-
-        public Property<string> PopupBoxText { get; } = new Property<string>("Modified by SaveToGame");
-        public Property<int> MessagesCount { get; } = new Property<int>(1);
-
-        public Property<string> MainSmaliName { get; } = new Property<string>(string.Empty);
-
-        public Property<string> CurrentApk { get; } = new Property<string>();
-        public Property<string> CurrentSave { get; } = new Property<string>();
-
-        public Property<string> StatusLabel { get; } = new Property<string>(MainResources.AllDone);
-
-        public Property<int> StatusProgressNow { get; } = new Property<int>();
-        public Property<bool> StatusProgressIndeterminate { get; } = new Property<bool>();
-        public Property<bool> StatusProgressVisible { get; } = new Property<bool>();
-
-        public Property<bool> StatusProgressLabelVisible { get; } = new Property<bool>();
-
         public static readonly Encoding DefaultSmaliEncoding = new UTF8Encoding(false);
-
-        public bool RuIsChecked => Thread.CurrentThread.CurrentCulture.ToString().Contains("ru");
-        public bool EnIsChecked => Thread.CurrentThread.CurrentCulture.ToString().Contains("en");
-
-        public bool TitaniumIsChecked
-        {
-            get => CurrentBackupType == BackupType.Titanium;
-            set
-            {
-                if (value)
-                    CurrentBackupType = BackupType.Titanium;
-            }
-        }
-
-        public bool RomToolboxIsChecked
-        {
-            get => CurrentBackupType == BackupType.RomToolbox;
-            set
-            {
-                if (value)
-                    CurrentBackupType = BackupType.RomToolbox;
-            } 
-        }
-
-        public bool LuckyPatcherIsChecked
-        {
-            get => CurrentBackupType == BackupType.LuckyPatcher;
-            set
-            {
-                if (value)
-                    CurrentBackupType = BackupType.LuckyPatcher;
-            }
-        }
-
-        public string MainWindowTitle
-            => MainResources.AppName + (Pro.Value ? " Pro" : "") + (!string.IsNullOrEmpty(CurrentApk.Value) ? " - " + CurrentApk.Value : "");
-
-        public BackupType CurrentBackupType
-        {
-            get => _settings.BackupType;
-            set
-            {
-                _settings.BackupType = value;
-
-                RaisePropertyChanged(nameof(CurrentBackupType));
-
-                RaisePropertyChanged(nameof(TitaniumIsChecked));
-                RaisePropertyChanged(nameof(RomToolboxIsChecked));
-                RaisePropertyChanged(nameof(LuckyPatcherIsChecked));
-            }
-        }
 
         private static readonly string Line = new string('-', 50);
 
@@ -118,6 +41,12 @@ namespace SaveToGameWpf.Windows
         private bool _shutdownOnClose = true;
 
         private readonly DefaultSettingsContainer _settings = DefaultSettingsContainer.Instance;
+
+        public MainWindowViewModel ViewModel
+        {
+            get => DataContext as MainWindowViewModel;
+            set => DataContext = value;
+        }
 
         static MainWindow()
         {
@@ -129,14 +58,11 @@ namespace SaveToGameWpf.Windows
 
 		public MainWindow()
 		{
+		    ViewModel = new MainWindowViewModel();
+
             InitializeComponent();
 
 		    TaskbarItemInfo = new TaskbarItemInfo();
-
-		    Pro.PropertyChanged += (sender, args) => RaisePropertyChanged(nameof(Pro));
-		    CurrentApk.PropertyChanged += (sender, args) => RaisePropertyChanged(nameof(CurrentApk));
-
-            PropertyChanged += OnPropertyChanged;
 		}
 
         #region Window events
@@ -150,9 +76,9 @@ namespace SaveToGameWpf.Windows
 
         private void MainWindow_OnClosed(object sender, EventArgs e)
         {
-            if (Pro.Value)
+            if (ViewModel.Pro.Value)
             {
-                _settings.PopupMessage = PopupBoxText.Value;
+                _settings.PopupMessage = ViewModel.PopupBoxText.Value;
             }
 
             if (_shutdownOnClose)
@@ -172,37 +98,37 @@ namespace SaveToGameWpf.Windows
             if (!success)
                 return;
 
-            CurrentApk.Value = filePath;
+            ViewModel.CurrentApk.Value = filePath;
             ChooseApkButton.ToolTip = filePath;
         }
 
         private void ChooseSaveBtn_Click(object sender, EventArgs e)
         {
-            if (!LuckyPatcherIsChecked)
+            if (ViewModel.BackupType != BackupType.LuckyPatcher)
             {
                 var (success, filePath) = PickerUtils.PickFile(filter: MainResources.Archives + @" (*.tar.gz)|*.tar.gz");
 
                 if (success)
-                    CurrentSave.Value = filePath;
+                    ViewModel.CurrentSave.Value = filePath;
             }
             else
             {
                 var (success, folderPath) = PickerUtils.PickFolder();
 
                 if (success)
-                    CurrentSave.Value = folderPath;
+                    ViewModel.CurrentSave.Value = folderPath;
             }
         }
 
         private void StartBtn_Click(object sender, EventArgs e)
         {
-            var apkFile = CurrentApk.Value;
-            var saveFile = CurrentSave.Value;
+            var apkFile = ViewModel.CurrentApk.Value;
+            var saveFile = ViewModel.CurrentSave.Value;
 
             #region Проверка на существование файлов
 
             if (string.IsNullOrEmpty(apkFile) || !File.Exists(apkFile) ||
-                (SavePlusMess.Value || OnlySave.Value) &&
+                (ViewModel.SavePlusMess.Value || ViewModel.OnlySave.Value) &&
                 (string.IsNullOrEmpty(saveFile) || !File.Exists(saveFile) && !Directory.Exists(saveFile))
             )
             {
@@ -261,7 +187,7 @@ namespace SaveToGameWpf.Windows
 
         private void Apk_DragDrop(object sender, DragEventArgs e)
         {
-            e.DropOneByEnd(".apk", file => CurrentApk.Value = file);
+            e.DropOneByEnd(".apk", file => ViewModel.CurrentApk.Value = file);
         }
 
         private void Save_DragOver(object sender, DragEventArgs e)
@@ -271,7 +197,7 @@ namespace SaveToGameWpf.Windows
 
         private void Save_DragDrop(object sender, DragEventArgs e)
         {
-            e.DropOneByEnd(".tar.gz", file => CurrentSave.Value = file);
+            e.DropOneByEnd(".tar.gz", file => ViewModel.CurrentSave.Value = file);
         }
 
         #endregion
@@ -308,14 +234,24 @@ namespace SaveToGameWpf.Windows
 
         private void Start()
         {
-            var apkFile = new FileInfo(CurrentApk.Value);
-            bool pro = Pro.Value;
+            var apkFile = new FileInfo(ViewModel.CurrentApk.Value);
+            bool pro = ViewModel.Pro.Value;
+
+            bool onlySave = ViewModel.OnlySave.Value;
+            bool savePlusMessage = ViewModel.SavePlusMess.Value;
+            bool onlyMessage = ViewModel.OnlyMess.Value;
+
+            string popupText = ViewModel.PopupBoxText.Value;
+            string mainSmali = ViewModel.MainSmaliName.Value;
+            int messagesCount = ViewModel.MessagesCount.Value;
+
+            BackupType backupType = ViewModel.BackupType;
 
             var tempFolder = Path.Combine(Path.GetTempPath(), "STG_temp");
 
             var processedApkPath = Path.Combine(tempFolder, "processed.apk");
             var resultApkPath = apkFile.GetFullFNWithoutExt() + "_mod.apk";
-            var pathToSave = CurrentSave.Value;
+            var pathToSave = ViewModel.CurrentSave.Value;
 
             string pathToJre = Path.Combine(GlobalVariables.PathToPortableJre, "bin", "java.exe");
             if (!File.Exists(pathToJre))
@@ -326,19 +262,19 @@ namespace SaveToGameWpf.Windows
 
             const int totalSteps = 7;
 
-            StatusProgressIndeterminate.Value = false;
-            StatusProgressVisible.Value = true;
-            StatusProgressLabelVisible.Value = true;
+            ViewModel.StatusProgressIndeterminate.Value = false;
+            ViewModel.StatusProgressVisible.Value = true;
+            ViewModel.StatusProgressLabelVisible.Value = true;
 
             void SetStep(int currentStep, string status)
             {
-                StatusProgressNow.Value = (currentStep - 1) * 100 / totalSteps;
+                ViewModel.StatusProgressNow.Value = (currentStep - 1) * 100 / totalSteps;
                 SetStatus(status);
             }
 
             #region Подготовка
 
-            MainSmaliName.Value = MainSmaliName.Value.Replace('.', '\\').Replace('/', '\\');
+            ViewModel.MainSmaliName.Value = ViewModel.MainSmaliName.Value.Replace('.', '\\').Replace('/', '\\');
 
             Dispatcher.InvokeAction(() => LogBox.Clear());
 
@@ -407,7 +343,7 @@ namespace SaveToGameWpf.Windows
                     texts.AddRange(File.ReadLines(messageFile, Encoding.UTF8).Where(line => !string.IsNullOrWhiteSpace(line)));
                 }
 
-                ReplaceTexts(Path.Combine(folderOfProject, "smali"), texts, Utils.EncodeUnicode(PopupBoxText.Value));
+                ReplaceTexts(Path.Combine(folderOfProject, "smali"), texts, Utils.EncodeUnicode(ViewModel.PopupBoxText.Value));
             }
 
             #endregion
@@ -443,11 +379,11 @@ namespace SaveToGameWpf.Windows
 
             SetStep(5, MainResources.StepAddingData);
 
-            if (!string.IsNullOrEmpty(MainSmaliName.Value))
+            if (!string.IsNullOrEmpty(ViewModel.MainSmaliName.Value))
             {
-                var mainSmaliPath = Path.Combine(folderOfProject, "smali", MainSmaliName.Value);
+                var mainSmaliPath = Path.Combine(folderOfProject, "smali", mainSmali);
 
-                if (!MainSmaliName.Value.EndsWith(".smali", StringComparison.Ordinal))
+                if (!mainSmali.EndsWith(".smali", StringComparison.Ordinal))
                     mainSmaliPath += ".smali";
 
                 if (File.Exists(mainSmaliPath))
@@ -461,23 +397,14 @@ namespace SaveToGameWpf.Windows
             mng.GenerateIV();
             mng.GenerateKey();
 
-            var backupTypeDict = new List<(bool typeIsChecked, BackupType backupType)>
-            {
-                (TitaniumIsChecked, BackupType.Titanium),
-                (RomToolboxIsChecked, BackupType.RomToolbox),
-                (LuckyPatcherIsChecked, BackupType.LuckyPatcher)
-            };
-
-            var backupType = backupTypeDict.First(it => it.typeIsChecked).backupType;
-
             apkmodifer.AddSaveAndMessage(
                 iv: mng.IV,
                 key: mng.Key, 
-                addSave: OnlySave.Value || SavePlusMess.Value,
-                addMessage: SavePlusMess.Value || OnlyMess.Value,
+                addSave: onlySave || savePlusMessage,
+                addMessage: savePlusMessage || onlyMessage,
                 pathToSave: pathToSave,
-                message: PopupBoxText.Value,
-                messagesAmount: MessagesCount.Value, 
+                message: popupText,
+                messagesAmount: messagesCount, 
                 forceMethod: true, 
                 backupType: backupType
             );
@@ -533,8 +460,8 @@ namespace SaveToGameWpf.Windows
                 Process.Start("explorer.exe", $"/select,{resultApkPath}");
             }
 
-            StatusProgressVisible.Value = false;
-            StatusProgressLabelVisible.Value = false;
+            ViewModel.StatusProgressVisible.Value = false;
+            ViewModel.StatusProgressLabelVisible.Value = false;
         }
 
         private static void ReplaceTexts(string folderWithSmaliFiles, IList<string> itemsToReplace, string targetString)
@@ -677,11 +604,11 @@ namespace SaveToGameWpf.Windows
             if (promtRes != MainResources.Yes)
                 return;
 
-            StatusProgressNow.Value = 0;
+            ViewModel.StatusProgressNow.Value = 0;
 
             using (CreateWorking().With(ShowProgressBar(), ShowProgressLabel()))
             {
-                StatusProgressIndeterminate.Value = false;
+                ViewModel.StatusProgressIndeterminate.Value = false;
 
                 await DownloadJava();
             }
@@ -700,7 +627,7 @@ namespace SaveToGameWpf.Windows
 
             using (var client = new WebClient())
             {
-                client.DownloadProgressChanged += (sender, args) => StatusProgressNow.Value = args.ProgressPercentage;
+                client.DownloadProgressChanged += (sender, args) => ViewModel.StatusProgressNow.Value = args.ProgressPercentage;
 
                 while (true)
                 {
@@ -731,10 +658,10 @@ namespace SaveToGameWpf.Windows
 
             if (fileDownloaded)
             {
-                StatusLabel.Value = MainResources.JavaExtracting;
+                ViewModel.StatusLabel.Value = MainResources.JavaExtracting;
 
-                StatusProgressIndeterminate.Value = true;
-                StatusProgressLabelVisible.Value = false;
+                ViewModel.StatusProgressIndeterminate.Value = true;
+                ViewModel.StatusProgressLabelVisible.Value = false;
 
                 using (var zipFile = new ZipFile(fileLocation))
                 {
@@ -747,7 +674,7 @@ namespace SaveToGameWpf.Windows
 
         private void SetStatus(string status)
         {
-            StatusLabel.Value = status;
+            ViewModel.StatusLabel.Value = status;
         }
 
         public void Log(string text)
@@ -784,47 +711,25 @@ namespace SaveToGameWpf.Windows
 
         private CustomBoolDisposable ShowProgressBar()
         {
-            return new CustomBoolDisposable(val => StatusProgressVisible.Value = val);
+            return new CustomBoolDisposable(val => ViewModel.StatusProgressVisible.Value = val);
         }
 
         private CustomBoolDisposable ShowProgressLabel()
         {
-            return new CustomBoolDisposable(val => StatusProgressLabelVisible.Value = val);
+            return new CustomBoolDisposable(val => ViewModel.StatusProgressLabelVisible.Value = val);
         }
 
         private CustomBoolDisposable CreateWorking()
         {
             return new CustomBoolDisposable(val =>
             {
-                Working.Value = val;
+                ViewModel.Working.Value = val;
                 Dispatcher.InvokeAction(
                     () => TaskbarItemInfo.ProgressState = val 
                         ? TaskbarItemProgressState.Indeterminate
                         : TaskbarItemProgressState.None
                 );
             });
-        }
-
-        #endregion
-
-        private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            switch (e.PropertyName)
-            {
-                case nameof(Pro):
-                case nameof(CurrentApk):
-                    RaisePropertyChanged(nameof(MainWindowTitle));
-                    break;
-            }
-        }
-
-        #region PropertyChanged
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        public void RaisePropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         #endregion
