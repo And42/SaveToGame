@@ -1,21 +1,14 @@
-﻿using System;
-using System.Globalization;
+﻿using System.Globalization;
 using System.Windows;
-using System.Windows.Data;
+using MVVM_Tools.Code.Classes;
 
 namespace SaveToGameWpf.Converters
 {
-    class IconToVisibilityConverter : IValueConverter
+    public class IconToVisibilityConverter : ConverterBase<object, Visibility>
     {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public override Visibility ConvertInternal(object value, object parameter, CultureInfo culture)
         {
-            if (value == null) return Visibility.Collapsed;
-            return Visibility.Visible;
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
+            return value == null ? Visibility.Collapsed : Visibility.Visible;
         }
     }
 }

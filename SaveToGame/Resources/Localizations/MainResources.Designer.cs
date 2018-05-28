@@ -124,7 +124,7 @@ namespace SaveToGameWpf.Resources.Localizations {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Готово!.
+        ///   Looks up a localized string similar to Готово.
         /// </summary>
         public static string AllDone {
             get {
@@ -475,6 +475,44 @@ namespace SaveToGameWpf.Resources.Localizations {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Не удалось загрузить java.
+        ///Причина: &quot;{0}&quot;.
+        ///Попробовать ещё раз?.
+        /// </summary>
+        public static string JavaDownloadFailed {
+            get {
+                return ResourceManager.GetString("JavaDownloadFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Загрузка java.
+        /// </summary>
+        public static string JavaDownloading {
+            get {
+                return ResourceManager.GetString("JavaDownloading", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Распаковка файлов java.
+        /// </summary>
+        public static string JavaExtracting {
+            get {
+                return ResourceManager.GetString("JavaExtracting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Текущая версия java может вызывать ошибки при работе программы. Установить портативную версию, исправляющую это?.
+        /// </summary>
+        public static string JavaInvalidVersion {
+            get {
+                return ResourceManager.GetString("JavaInvalidVersion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Java не найдена. Необходимо загрузить её с официального сайта. Ссылка скопирована в буфер обмена.
         /// </summary>
         public static string JavaNotFound {
@@ -745,6 +783,69 @@ namespace SaveToGameWpf.Resources.Localizations {
         public static string Some_Error_Found {
             get {
                 return ResourceManager.GetString("Some_Error_Found", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Добавление данных.
+        /// </summary>
+        public static string StepAddingData {
+            get {
+                return ResourceManager.GetString("StepAddingData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Сборка проекта.
+        /// </summary>
+        public static string StepCompiling {
+            get {
+                return ResourceManager.GetString("StepCompiling", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Декомпиляция.
+        /// </summary>
+        public static string StepDecompiling {
+            get {
+                return ResourceManager.GetString("StepDecompiling", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Подготовка.
+        /// </summary>
+        public static string StepInitializing {
+            get {
+                return ResourceManager.GetString("StepInitializing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Удаление баннеров.
+        /// </summary>
+        public static string StepRemovingBanners {
+            get {
+                return ResourceManager.GetString("StepRemovingBanners", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Замена текстов.
+        /// </summary>
+        public static string StepReplacingTexts {
+            get {
+                return ResourceManager.GetString("StepReplacingTexts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Подпись файла.
+        /// </summary>
+        public static string StepSigning {
+            get {
+                return ResourceManager.GetString("StepSigning", resourceCulture);
             }
         }
         

@@ -11,13 +11,17 @@
                     <converters1:InvertBoolConverter x:Key="InvertBoolConverter"/>
                     <converters1:TrueToVisibleConverter x:Key="TrueToVisibleConverter"/>
                     <converters1:FalseToVisibleConverter x:Key="FalseToVisibleConverter"/>
+                    <converters1:NullToCollapsedConverter x:Key="NullToCollapsedConverter"/>
                     <converters:IconToVisibilityConverter x:Key="IconToVisibilityConverter"/>
                     <converters:DivideBy1024Converter x:Key="DivideBy1024Converter"/>
                     <converters:ByteToMbConverter x:Key="ByteToMbConverter"/>
                     <converters:NotNullParameterConverter x:Key="NotNullParameterConverter"/>
+                    <converters:FalseToHiddenConverter x:Key="FalseToHiddenConverter"/>
                 </ResourceDictionary>
 
-                <ResourceDictionary Source="Styles\VS\VSThemeDictionary.xaml" />
+                <ResourceDictionary Source="Styles/Light/ThemeResources.xaml"/>
+                <ResourceDictionary Source="Styles/Common/Brushes.xaml"/>
+                <ResourceDictionary Source="Styles/Elements/ThemeDictionary.xaml"/>
                 <ResourceDictionary Source="Styles/Styles.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>     

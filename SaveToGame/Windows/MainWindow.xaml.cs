@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Net;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
@@ -11,6 +12,7 @@ using System.Windows;
 using System.Windows.Shell;
 using AndroidHelper.Logic;
 using ApkModifer.Logic;
+using ICSharpCode.SharpZipLib.Zip;
 using MVVM_Tools.Code.Disposables;
 using MVVM_Tools.Code.Providers;
 using SaveToGameWpf.Logic;
@@ -23,7 +25,6 @@ using UsefulClasses;
 using UsefulFunctionsLib;
 
 using Application = System.Windows.Application;
-using Clipboard = System.Windows.Clipboard;
 using Directory = Alphaleonis.Win32.Filesystem.Directory;
 using DragEventArgs = System.Windows.DragEventArgs;
 using File = Alphaleonis.Win32.Filesystem.File;
@@ -34,13 +35,11 @@ namespace SaveToGameWpf.Windows
 {
     public sealed partial class MainWindow : IRaisePropertyChanged, IDisposable
     {
-        #region Properties     
-
         public Property<bool> Pro { get; } = new Property<bool>();
 
         public Property<bool> Working { get; } = new Property<bool>();
         public Property<bool> OnlySave { get; } = new Property<bool>();
-        public Property<bool> SavePlusMess { get; } = new Property<bool>();
+        public Property<bool> SavePlusMess { get; } = new Property<bool>(true);
         public Property<bool> OnlyMess { get; } = new Property<bool>();
 
         public Property<string> PopupBoxText { get; } = new Property<string>("Modified by SaveToGame");
@@ -50,6 +49,14 @@ namespace SaveToGameWpf.Windows
 
         public Property<string> CurrentApk { get; } = new Property<string>();
         public Property<string> CurrentSave { get; } = new Property<string>();
+
+        public Property<string> StatusLabel { get; } = new Property<string>(MainResources.AllDone);
+
+        public Property<int> StatusProgressNow { get; } = new Property<int>();
+        public Property<bool> StatusProgressIndeterminate { get; } = new Property<bool>();
+        public Property<bool> StatusProgressVisible { get; } = new Property<bool>();
+
+        public Property<bool> StatusProgressLabelVisible { get; } = new Property<bool>();
 
         public static readonly Encoding DefaultSmaliEncoding = new UTF8Encoding(false);
 
@@ -104,8 +111,6 @@ namespace SaveToGameWpf.Windows
             }
         }
 
-        #endregion
-
         private static readonly string Line = new string('-', 50);
 
         private Logger _logger;
@@ -136,9 +141,11 @@ namespace SaveToGameWpf.Windows
 
         #region Window events
 
-        private void MainWindow_Load(object sender, EventArgs e)
+        private async void MainWindow_Loaded(object sender, EventArgs e)
         {
             ApplicationUtils.LoadSettings();
+
+            await CheckJavaVersion();
         }
 
         private void MainWindow_OnClosed(object sender, EventArgs e)
@@ -192,17 +199,6 @@ namespace SaveToGameWpf.Windows
             var apkFile = CurrentApk.Value;
             var saveFile = CurrentSave.Value;
 
-            #region Проверка на наличие Java
-
-            if (!Apktools.StaticHasJava())
-            {
-                Clipboard.SetText("http://www.oracle.com/technetwork/java/javase/downloads/jdk7-downloads-1880260.html");
-                MessBox.ShowDial(MainResources.JavaNotFound);
-                return;
-            }
-
-            #endregion
-
             #region Проверка на существование файлов
 
             if (string.IsNullOrEmpty(apkFile) || !File.Exists(apkFile) ||
@@ -243,7 +239,7 @@ namespace SaveToGameWpf.Windows
                         });
 #else
                     HaveError(Environment.NewLine + ex);
-		            MessBox.ShowDial(Properties.Resources.Some_Error_Found);
+		            MessBox.ShowDial(MainResources.Some_Error_Found);
 #endif
                     }
                     finally
@@ -321,33 +317,57 @@ namespace SaveToGameWpf.Windows
             var resultApkPath = apkFile.GetFullFNWithoutExt() + "_mod.apk";
             var pathToSave = CurrentSave.Value;
 
-            Utils.DeleteFolder(tempFolder);
-            Directory.CreateDirectory(tempFolder);
+            string pathToJre = Path.Combine(GlobalVariables.PathToPortableJre, "bin", "java.exe");
+            if (!File.Exists(pathToJre))
+                pathToJre = null;
+
+            IOUtils.DeleteDir(tempFolder);
+            IOUtils.CreateDir(tempFolder);
+
+            const int totalSteps = 7;
+
+            StatusProgressIndeterminate.Value = false;
+            StatusProgressVisible.Value = true;
+            StatusProgressLabelVisible.Value = true;
+
+            void SetStep(int currentStep, string status)
+            {
+                StatusProgressNow.Value = (currentStep - 1) * 100 / totalSteps;
+                SetStatus(status);
+            }
 
             #region Подготовка
 
-            Dispatcher.InvokeAction(() =>
-            {
-                MainSmaliName.Value = MainSmaliName.Value.Replace('.', '\\').Replace('/', '\\');
-                LogBox.Clear();
-            });
+            MainSmaliName.Value = MainSmaliName.Value.Replace('.', '\\').Replace('/', '\\');
+
+            Dispatcher.InvokeAction(() => LogBox.Clear());
 
             #endregion
 
             #region Запись начала в лог
 
-            Log(string.Format("{0}{1}Start{1}{0}ExePath = {2}{0}Resources = {3}", Environment.NewLine, Line, GlobalVariables.PathToExe, GlobalVariables.PathToResources));
+            Log(
+                string.Format(
+                    "{0}{1}Start{1}{0}ExePath = {2}{0}Resources = {3}",
+                    Environment.NewLine,
+                    Line,
+                    GlobalVariables.PathToExe,
+                    GlobalVariables.PathToResources
+                )
+            );
 
             #endregion
 
             #region Инициализация
 
+            SetStep(1, MainResources.StepInitializing);
+
             File.Copy(apkFile.FullName, processedApkPath, true);
 
 #if DEBUG
-            var apktool = new Apktools(processedApkPath, GlobalVariables.PathToResources, tracing: true);
+            var apktool = new Apktools(processedApkPath, GlobalVariables.PathToResources, jrePath: pathToJre, tracing: true);
 #else
-            var apktool = new Apktools(processedApkPath, GlobalVariables.PathToResources);
+            var apktool = new Apktools(processedApkPath, GlobalVariables.PathToResources, jrePath: pathToJre);
 #endif
 
             apktool.Logging += Log;
@@ -360,8 +380,10 @@ namespace SaveToGameWpf.Windows
 
             #region Декомпиляция
             
+            SetStep(2, MainResources.StepDecompiling);
+
             Log(Line);
-            Log("Decompiling");
+            Log(MainResources.StepDecompiling);
             Log(Line);
             
             apktool.Baksmali();
@@ -371,6 +393,8 @@ namespace SaveToGameWpf.Windows
             #endregion
 
             #region Замена текстов
+
+            SetStep(3, MainResources.StepReplacingTexts);
 
             if (pro)
             {
@@ -389,6 +413,8 @@ namespace SaveToGameWpf.Windows
             #endregion
 
             #region Удаление известных баннеров
+
+            SetStep(4, MainResources.StepRemovingBanners);
 
             if (pro)
             {
@@ -414,6 +440,8 @@ namespace SaveToGameWpf.Windows
             #endregion
 
             #region Добавление данных
+
+            SetStep(5, MainResources.StepAddingData);
 
             if (!string.IsNullOrEmpty(MainSmaliName.Value))
             {
@@ -458,8 +486,10 @@ namespace SaveToGameWpf.Windows
 
             #region Сборка проекта
 
+            SetStep(6, MainResources.StepCompiling);
+
 			Log(Line);
-			Log("Building project");
+			Log(MainResources.StepCompiling);
 			Log(Line);
 
             var classesFiles = apktool.Smali();
@@ -468,11 +498,13 @@ namespace SaveToGameWpf.Windows
 
             #endregion
 
-            Log(Line);
-            Log("Signing file");
-            Log(Line);
-
             #region Подпись
+
+            SetStep(7, MainResources.StepSigning);
+
+            Log(Line);
+            Log(MainResources.StepSigning);
+            Log(Line);
 
             string signed;
 
@@ -486,9 +518,10 @@ namespace SaveToGameWpf.Windows
 
             #endregion
 
-            Utils.DeleteFolder(tempFolder);
+            IOUtils.DeleteDir(tempFolder);
 
-            Log("All done!");
+            SetStep(8, MainResources.AllDone);
+            Log(MainResources.AllDone);
 
             if (
                 MessBox.ShowDial(
@@ -499,6 +532,9 @@ namespace SaveToGameWpf.Windows
             {
                 Process.Start("explorer.exe", $"/select,{resultApkPath}");
             }
+
+            StatusProgressVisible.Value = false;
+            StatusProgressLabelVisible.Value = false;
         }
 
         private static void ReplaceTexts(string folderWithSmaliFiles, IList<string> itemsToReplace, string targetString)
@@ -561,7 +597,7 @@ namespace SaveToGameWpf.Windows
 
         private static void ReplaceFilesInApk(string pathToApk, IEnumerable<string> pathToFiles)
         {
-            using (var apkFile = new ICSharpCode.SharpZipLib.Zip.ZipFile(pathToApk))
+            using (var apkFile = new ZipFile(pathToApk))
             {
                 apkFile.BeginUpdate();
 
@@ -621,6 +657,99 @@ namespace SaveToGameWpf.Windows
             //}
         }*/
 
+        private async Task CheckJavaVersion()
+        {
+            if (Directory.Exists(GlobalVariables.PathToPortableJre))
+                return;
+
+            var (primary, secondary) = Utils.GetInstalledJavaVersion();
+
+            if (primary == 1 && secondary >= 5 && secondary <= 8)
+                return;
+
+            var promtRes = MessBox.ShowDial(
+                MainResources.JavaInvalidVersion,
+                MainResources.Information_Title,
+                MainResources.No,
+                MainResources.Yes
+            );
+
+            if (promtRes != MainResources.Yes)
+                return;
+
+            StatusProgressNow.Value = 0;
+
+            using (CreateWorking().With(ShowProgressBar(), ShowProgressLabel()))
+            {
+                StatusProgressIndeterminate.Value = false;
+
+                await DownloadJava();
+            }
+        }
+
+        private async Task DownloadJava()
+        {
+            SetStatus(MainResources.JavaDownloading);
+
+            bool fileDownloaded;
+
+            const string jreUrl = @"https://storage.googleapis.com/savetogame/jre_1.7.zip";
+            string fileLocation = Path.Combine(GlobalVariables.AppSettingsDir, "jre.zip");
+
+            IOUtils.CreateDir(GlobalVariables.AppSettingsDir);
+
+            using (var client = new WebClient())
+            {
+                client.DownloadProgressChanged += (sender, args) => StatusProgressNow.Value = args.ProgressPercentage;
+
+                while (true)
+                {
+                    try
+                    {
+                        await client.DownloadFileTaskAsync(jreUrl, fileLocation);
+
+                        fileDownloaded = true;
+                        break;
+                    }
+                    catch (Exception ex)
+                    {
+                        var promt = MessBox.ShowDial(
+                            string.Format(MainResources.JavaDownloadFailed, ex.Message),
+                            MainResources.Error,
+                            MainResources.No,
+                            MainResources.Yes
+                        );
+
+                        if (promt == MainResources.Yes)
+                            continue;
+
+                        fileDownloaded = false;
+                        break;
+                    }
+                }
+            }
+
+            if (fileDownloaded)
+            {
+                StatusLabel.Value = MainResources.JavaExtracting;
+
+                StatusProgressIndeterminate.Value = true;
+                StatusProgressLabelVisible.Value = false;
+
+                using (var zipFile = new ZipFile(fileLocation))
+                {
+                    await Task.Factory.StartNew(() => zipFile.ExtractAll(GlobalVariables.PathToPortableJre));
+                }
+            }
+
+            SetStatus(MainResources.AllDone);
+        }
+
+        private void SetStatus(string status)
+        {
+            StatusLabel.Value = status;
+        }
+
         public void Log(string text)
         {
             if (string.IsNullOrEmpty(text))
@@ -639,15 +768,28 @@ namespace SaveToGameWpf.Windows
         private void HaveError(string errorText, string dialogMessage = null)
         {
             Log($"Error: {errorText}");
-            if (dialogMessage != null)
-            {
-                Dispatcher.InvokeAction(() => MessBox.ShowDial(dialogMessage, MainResources.Error));
-            }
+
+            if (string.IsNullOrEmpty(dialogMessage))
+                return;
+
+            Dispatcher.InvokeAction(() => MessBox.ShowDial(dialogMessage, MainResources.Error));
         }
 
         public void Dispose()
         {
             _logger.Dispose();
+        }
+
+        #region Disposables
+
+        private CustomBoolDisposable ShowProgressBar()
+        {
+            return new CustomBoolDisposable(val => StatusProgressVisible.Value = val);
+        }
+
+        private CustomBoolDisposable ShowProgressLabel()
+        {
+            return new CustomBoolDisposable(val => StatusProgressLabelVisible.Value = val);
         }
 
         private CustomBoolDisposable CreateWorking()
@@ -662,6 +804,8 @@ namespace SaveToGameWpf.Windows
                 );
             });
         }
+
+        #endregion
 
         private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {

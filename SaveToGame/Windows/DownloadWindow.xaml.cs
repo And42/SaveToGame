@@ -46,7 +46,7 @@ namespace SaveToGameWpf.Windows
             }
             catch (Exception)
             {
-                Utils.DeleteFile(UpdateFilePath);
+                IOUtils.DeleteFile(UpdateFilePath);
             }
         }
 

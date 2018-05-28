@@ -139,7 +139,7 @@
     <value>Additional parameters</value>
   </data>
   <data name="AllDone" xml:space="preserve">
-    <value>All done!</value>
+    <value>All done</value>
   </data>
   <data name="AndroidFiles" xml:space="preserve">
     <value>Android files</value>
@@ -393,5 +393,40 @@ Missing files: {0}</value>
   </data>
   <data name="UpdateNewVersion" xml:space="preserve">
     <value>A new version is available. Update?</value>
+  </data>
+  <data name="JavaDownloading" xml:space="preserve">
+    <value>Downloading java</value>
+  </data>
+  <data name="JavaInvalidVersion" xml:space="preserve">
+    <value>Current java version may cause some errors while processing files. Do you want to install a portable version that fixes these errors?</value>
+  </data>
+  <data name="JavaDownloadFailed" xml:space="preserve">
+    <value>Java download failed.
+Reason: "{0}".
+Try again?</value>
+  </data>
+  <data name="JavaExtracting" xml:space="preserve">
+    <value>Extracting java files</value>
+  </data>
+  <data name="StepAddingData" xml:space="preserve">
+    <value>Adding data</value>
+  </data>
+  <data name="StepCompiling" xml:space="preserve">
+    <value>Building project</value>
+  </data>
+  <data name="StepDecompiling" xml:space="preserve">
+    <value>Decompiling</value>
+  </data>
+  <data name="StepInitializing" xml:space="preserve">
+    <value>Initializing</value>
+  </data>
+  <data name="StepRemovingBanners" xml:space="preserve">
+    <value>Removing banners</value>
+  </data>
+  <data name="StepReplacingTexts" xml:space="preserve">
+    <value>Replacing texts</value>
+  </data>
+  <data name="StepSigning" xml:space="preserve">
+    <value>Signing file</value>
   </data>
 </root>

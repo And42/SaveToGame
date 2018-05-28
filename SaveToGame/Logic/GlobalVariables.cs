@@ -1,9 +1,6 @@
-﻿using System.Reflection;
-using Alphaleonis.Win32.Filesystem;
-
-#if !DEBUG
+﻿using System;
 using System.Reflection;
-#endif
+using Alphaleonis.Win32.Filesystem;
 
 namespace SaveToGameWpf.Logic
 {
@@ -12,22 +9,27 @@ namespace SaveToGameWpf.Logic
         /// <summary>
         /// exe_folder/exe
         /// </summary>
-        public static string PathToExe;
+        public static readonly string PathToExe;
 
         /// <summary>
         /// exe_folder
         /// </summary>
-        public static string PathToExeFolder;
+        public static readonly string PathToExeFolder;
 
         /// <summary>
         /// exe_folder/Resources
         /// </summary>
-        public static string PathToResources;
+        public static readonly string PathToResources;
 
         /// <summary>
         /// exe_folder/Resources/jre
         /// </summary>
-        public static string PathToPortableJre;
+        public static readonly string PathToPortableJre;
+
+        /// <summary>
+        /// .../user/AppData/Local/SaveToGame
+        /// </summary>
+        public static readonly string AppSettingsDir;
 
         public static string AdditionalFilePassword;
 
@@ -40,7 +42,11 @@ namespace SaveToGameWpf.Logic
 #endif
             PathToExeFolder = Path.GetDirectoryName(PathToExe);
             PathToResources = Path.Combine(PathToExeFolder, "Resources");
-            PathToPortableJre = Path.Combine(PathToResources, "jre");
+            AppSettingsDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "SaveToGame");
+
+            var portableNearby = Path.Combine(PathToResources, "jre");
+
+            PathToPortableJre = Directory.Exists(portableNearby) ? portableNearby : Path.Combine(AppSettingsDir, "jre");
         }
     }
 }

@@ -1,19 +1,13 @@
-﻿using System;
-using System.Globalization;
-using System.Windows.Data;
+﻿using System.Globalization;
+using MVVM_Tools.Code.Classes;
 
 namespace SaveToGameWpf.Converters
 {
-    public class NotNullParameterConverter : IValueConverter
+    public class NotNullParameterConverter : ConverterBase<object, object>
     {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public override object ConvertInternal(object value, object parameter, CultureInfo culture)
         {
-            return value != null ? parameter : "";
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
+            return value != null ? parameter : string.Empty;
         }
     }
 }

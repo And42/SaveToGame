@@ -139,7 +139,7 @@
     <value>Дополнительные настройки</value>
   </data>
   <data name="AllDone" xml:space="preserve">
-    <value>Готово!</value>
+    <value>Готово</value>
   </data>
   <data name="AndroidFiles" xml:space="preserve">
     <value>Андроид файлы</value>
@@ -397,5 +397,40 @@
   </data>
   <data name="UpdateNewVersion" xml:space="preserve">
     <value>Доступна новая версия. Обновить?</value>
+  </data>
+  <data name="JavaDownloading" xml:space="preserve">
+    <value>Загрузка java</value>
+  </data>
+  <data name="JavaInvalidVersion" xml:space="preserve">
+    <value>Текущая версия java может вызывать ошибки при работе программы. Установить портативную версию, исправляющую это?</value>
+  </data>
+  <data name="JavaDownloadFailed" xml:space="preserve">
+    <value>Не удалось загрузить java.
+Причина: "{0}".
+Попробовать ещё раз?</value>
+  </data>
+  <data name="JavaExtracting" xml:space="preserve">
+    <value>Распаковка файлов java</value>
+  </data>
+  <data name="StepAddingData" xml:space="preserve">
+    <value>Добавление данных</value>
+  </data>
+  <data name="StepCompiling" xml:space="preserve">
+    <value>Сборка проекта</value>
+  </data>
+  <data name="StepDecompiling" xml:space="preserve">
+    <value>Декомпиляция</value>
+  </data>
+  <data name="StepInitializing" xml:space="preserve">
+    <value>Подготовка</value>
+  </data>
+  <data name="StepRemovingBanners" xml:space="preserve">
+    <value>Удаление баннеров</value>
+  </data>
+  <data name="StepReplacingTexts" xml:space="preserve">
+    <value>Замена текстов</value>
+  </data>
+  <data name="StepSigning" xml:space="preserve">
+    <value>Подпись файла</value>
   </data>
 </root>

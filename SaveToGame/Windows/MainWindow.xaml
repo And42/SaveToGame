@@ -6,180 +6,224 @@
         Title="{Binding MainWindowTitle, Mode=OneWay}"
         Width="795" Height="500"
         MinWidth="795" MinHeight="500"
-        Loaded="MainWindow_Load"
+        Loaded="MainWindow_Loaded"
         Closed="MainWindow_OnClosed"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
         Style="{StaticResource CommonWindowStyle}"
         WindowStartupLocation="CenterScreen">
-    <DockPanel Margin="10,5,10,10">
-        <Menu
-            DockPanel.Dock="Top"
-            FontSize="{Binding FontSize, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}, Mode=OneWay}"
-            Background="Transparent">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
 
-            <MenuItem 
-                Header="{x:Static localization:MainResources.InstallApkVersion}" 
-                Visibility="{Binding Pro.Value, Converter={StaticResource TrueToVisibleConverter}}" 
-                Click="InstallApkClick"/>
+        <DockPanel Margin="10,5,10,10">
+            <Menu
+                DockPanel.Dock="Top"
+                IsEnabled="{Binding Working.Value, Mode=OneWay, Converter={StaticResource InvertBoolConverter}}"
+                FontSize="{Binding FontSize, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}, Mode=OneWay}"
+                Background="Transparent">
 
-            <MenuItem Header="{x:Static localization:MainResources.Settings}">
-                <MenuItem Header="{x:Static localization:MainResources.Language}">
-                    <MenuItem IsCheckable="True" Header="Русский" Click="ChangeLanguageClick" Tag="ru" IsChecked="{Binding RuIsChecked, Mode=OneWay}" />
-                    <MenuItem IsCheckable="True" Header="English" Click="ChangeLanguageClick" Tag="en" IsChecked="{Binding EnIsChecked, Mode=OneWay}" />
+                <MenuItem 
+                    Header="{x:Static localization:MainResources.InstallApkVersion}" 
+                    Visibility="{Binding Pro.Value, Converter={StaticResource TrueToVisibleConverter}}" 
+                    Click="InstallApkClick"/>
+
+                <MenuItem Header="{x:Static localization:MainResources.Settings}">
+                    <MenuItem Header="{x:Static localization:MainResources.Language}">
+                        <MenuItem IsCheckable="True" Header="Русский" Click="ChangeLanguageClick" Tag="ru" IsChecked="{Binding RuIsChecked, Mode=OneWay}" />
+                        <MenuItem IsCheckable="True" Header="English" Click="ChangeLanguageClick" Tag="en" IsChecked="{Binding EnIsChecked, Mode=OneWay}" />
+                    </MenuItem>
+
+                    <MenuItem Header="{x:Static localization:MainResources.BackupType}">
+                        <MenuItem IsCheckable="True" IsChecked="{Binding TitaniumIsChecked}" Header="Titanium" />
+                        <MenuItem IsCheckable="True" IsChecked="{Binding RomToolboxIsChecked}" Header="ROM Toolbox"/>
+                        <MenuItem IsCheckable="True" IsChecked="{Binding LuckyPatcherIsChecked}" Header="Lucky Patcher"/>
+                    </MenuItem>
                 </MenuItem>
 
-                <MenuItem Header="{x:Static localization:MainResources.BackupType}">
-                    <MenuItem IsCheckable="True" IsChecked="{Binding TitaniumIsChecked}" Header="Titanium" />
-                    <MenuItem IsCheckable="True" IsChecked="{Binding RomToolboxIsChecked}" Header="ROM Toolbox"/>
-                    <MenuItem IsCheckable="True" IsChecked="{Binding LuckyPatcherIsChecked}" Header="Lucky Patcher"/>
-                </MenuItem>
-            </MenuItem>
+                <MenuItem 
+                    Header="{x:Static localization:MainResources.FullVersion}"
+                    Click="BuyItem_Click"
+                    Visibility="{Binding Pro.Value, Converter={StaticResource FalseToVisibleConverter}}" />
 
-            <MenuItem 
-                Header="{x:Static localization:MainResources.FullVersion}"
-                Click="BuyItem_Click"
-                Visibility="{Binding Pro.Value, Converter={StaticResource FalseToVisibleConverter}}" />
+                <MenuItem 
+                    Header="{x:Static localization:MainResources.AboutProgram}"
+                    Click="AboutProgramItem_Click" />
+            </Menu>
 
-            <MenuItem 
-                Header="{x:Static localization:MainResources.AboutProgram}"
-                Click="AboutProgramItem_Click" />
-        </Menu>
-
-        <Grid DockPanel.Dock="Top" Margin="0,5">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition/>
-            </Grid.RowDefinitions>
-            
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" MinWidth="500" MaxWidth="900"/>
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
-
-            <Grid Height="60">
-                <Grid.Resources>
-                    <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
-                        <Setter Property="Padding" Value="20,5"/>
-                        <Setter Property="FontSize" Value="15"/>
-                        <Setter Property="IsEnabled" Value="{Binding Working.Value, Converter={StaticResource InvertBoolConverter}}"/>
-                    </Style>
-                </Grid.Resources>
-
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="2*"/>
-                    <ColumnDefinition Width="5"/>
-                    <ColumnDefinition Width="2*"/>
-                    <ColumnDefinition Width="5"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                
-                <Button 
-                    x:Name="ChooseApkButton"
-                    Click="ChooseApkBtn_Click"
-                    Content="{x:Static localization:MainResources.ChooseApk}"
-                    DragOver="Apk_DragOver" Drop="Apk_DragDrop" AllowDrop="True"/>
-
-                <Button 
-                    Grid.Column="2"
-                    Click="ChooseSaveBtn_Click"
-                    Content="{x:Static localization:MainResources.ChooseSave}"
-                    DragOver="Save_DragOver" Drop="Save_DragDrop" AllowDrop="True"
-                    ToolTip="{Binding CurrentSave.Value, Mode=OneWay}"/>
-
-                <Button 
-                    Grid.Column="4"
-                    Click="StartBtn_Click"
-                    Content="{x:Static localization:MainResources.Begin}"/>
-            </Grid>
-
-            <Grid Grid.Row="1" Grid.Column="0" Margin="0,5,0,0">
-                <Grid.Resources>
-                    <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
-                        <Setter Property="MaxLength" Value="1000"/>
-                        <Setter Property="IsEnabled" Value="{Binding Pro.Value, Mode=OneWay}"/>
-                        <Setter Property="Margin" Value="5,0,0,0"/>
-                    </Style>
-                    
-                    <Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
-                        <Setter Property="VerticalAlignment" Value="Center"/>
-                    </Style>
-                </Grid.Resources>
-
+            <Grid DockPanel.Dock="Top" Margin="0,5">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="5"/>
-                    <RowDefinition Height="Auto"/>
+                    <RowDefinition/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition/>
+                    <ColumnDefinition Width="*" MinWidth="500" MaxWidth="900"/>
+                    <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
 
-                <TextBlock Text="{x:Static localization:MainResources.MainSmaliName}"/>
-
-                <TextBox
-                    Grid.Row="0" Grid.Column="1"
-                    Text="{Binding MainSmaliName.Value}" />
-
-                <TextBlock
-                    Grid.Row="2" Grid.Column="0"
-                    Text="{x:Static localization:MainResources.TextOfMessage}"/>
-
-                <TextBox
-                    Grid.Row="2" Grid.Column="1"
-                    Text="{Binding PopupBoxText.Value}"
-                    AcceptsReturn="True" MaxLines="3"/>
-            </Grid>
-
-            <GroupBox
-                Grid.Row="0" Grid.Column="1"
-                Grid.RowSpan="2"
-                Margin="5,-6,-1,0"
-                Header="{x:Static localization:MainResources.Options}"
-                IsEnabled="{Binding Pro.Value, Mode=OneWay}">
-
-                <StackPanel Margin="4,3" Orientation="Vertical">
-                    <StackPanel.Resources>
-                        <Style TargetType="RadioButton" BasedOn="{StaticResource {x:Type RadioButton}}">
+                <Grid Height="60">
+                    <Grid.Resources>
+                        <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+                            <Setter Property="Padding" Value="20,5"/>
+                            <Setter Property="FontSize" Value="15"/>
                             <Setter Property="IsEnabled" Value="{Binding Working.Value, Converter={StaticResource InvertBoolConverter}}"/>
                         </Style>
-                    </StackPanel.Resources>
+                    </Grid.Resources>
 
-                    <RadioButton
-                         Content="{x:Static localization:MainResources.OnlySave}"
-                         IsChecked="{Binding OnlySave.Value}"/>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="5"/>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="5"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
 
-                    <RadioButton 
-                        Margin="0,4,0,0"
-                        Content="{x:Static localization:MainResources.SavePlusMessage}"
-                        IsChecked="{Binding SavePlusMess.Value}"/>
+                    <Button 
+                        x:Name="ChooseApkButton"
+                        Click="ChooseApkBtn_Click"
+                        Content="{x:Static localization:MainResources.ChooseApk}"
+                        DragOver="Apk_DragOver" Drop="Apk_DragDrop" AllowDrop="True"/>
+
+                    <Button 
+                        Grid.Column="2"
+                        Click="ChooseSaveBtn_Click"
+                        Content="{x:Static localization:MainResources.ChooseSave}"
+                        DragOver="Save_DragOver" Drop="Save_DragDrop" AllowDrop="True"
+                        ToolTip="{Binding CurrentSave.Value, Mode=OneWay}"/>
+
+                    <Button 
+                        Grid.Column="4"
+                        Click="StartBtn_Click"
+                        Content="{x:Static localization:MainResources.Begin}"/>
+                </Grid>
+
+                <Grid Grid.Row="1" Grid.Column="0" Margin="0,5,0,0">
+                    <Grid.Resources>
+                        <Style TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
+                            <Setter Property="MaxLength" Value="1000"/>
+                            <Setter Property="IsEnabled" Value="{Binding Pro.Value, Mode=OneWay}"/>
+                            <Setter Property="Margin" Value="5,0,0,0"/>
+                        </Style>
+
+                        <Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
+                            <Setter Property="VerticalAlignment" Value="Center"/>
+                        </Style>
+                    </Grid.Resources>
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="5"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Text="{x:Static localization:MainResources.MainSmaliName}"/>
+
+                    <TextBox
+                        Grid.Row="0" Grid.Column="1"
+                        Text="{Binding MainSmaliName.Value}" />
+
+                    <TextBlock
+                        Grid.Row="2" Grid.Column="0"
+                        Text="{x:Static localization:MainResources.TextOfMessage}"/>
+
+                    <TextBox
+                        Grid.Row="2" Grid.Column="1"
+                        Text="{Binding PopupBoxText.Value}"
+                        AcceptsReturn="True" MaxLines="3"/>
+                </Grid>
+
+                <GroupBox
+                    Grid.Row="0" Grid.Column="1"
+                    Grid.RowSpan="2"
+                    Margin="5,-6,-1,0"
+                    Header="{x:Static localization:MainResources.Options}"
+                    IsEnabled="{Binding Pro.Value, Mode=OneWay}">
+
+                    <StackPanel Margin="4,3" Orientation="Vertical">
+                        <StackPanel.Resources>
+                            <Style TargetType="RadioButton" BasedOn="{StaticResource {x:Type RadioButton}}">
+                                <Setter Property="IsEnabled" Value="{Binding Working.Value, Converter={StaticResource InvertBoolConverter}}"/>
+                            </Style>
+                        </StackPanel.Resources>
+
+                        <RadioButton
+                             Content="{x:Static localization:MainResources.OnlySave}"
+                             IsChecked="{Binding OnlySave.Value}"/>
+
+                        <RadioButton 
+                            Margin="0,4,0,0"
+                            Content="{x:Static localization:MainResources.SavePlusMessage}"
+                            IsChecked="{Binding SavePlusMess.Value}"/>
+
+                        <RadioButton 
+                            Margin="0,4,0,0"
+                            Content="{x:Static localization:MainResources.OnlyMessage}"
+                            IsChecked="{Binding OnlyMess.Value}"/>
+
+                        <Slider 
+                            Name="Sl"
+                            Margin="0,4,0,0"
+                            Cursor="Hand"
+                            IsEnabled="{Binding OnlySave.Value, Converter={StaticResource InvertBoolConverter}}"
+                            IsSnapToTickEnabled="True"
+                            Minimum="1" Maximum="5" SmallChange="1"
+                            Value="{Binding MessagesCount.Value}" />
+
+                        <Label
+                            Margin="0,4,0,0"
+                            Content="{Binding Value, ElementName=Sl, Mode=OneWay}"
+                            ContentStringFormat="{x:Static localization:MainResources.MessagesCount}" />
+                    </StackPanel>
+                </GroupBox>
+            </Grid>
+
+            <TextBox 
+                x:Name="LogBox"
+                IsReadOnly="True"
+                VerticalScrollBarVisibility="Auto"
+                TextWrapping="Wrap"/>
+        </DockPanel>
+
+        <StatusBar Grid.Row="1">
+            <StatusBar.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                    </Grid>
+                </ItemsPanelTemplate>
+            </StatusBar.ItemsPanel>
+
+            <TextBlock
+                Text="{Binding StatusLabel.Value, Mode=OneWay}"
+                Foreground="White"/>
+
+            <StatusBarItem Grid.Column="1">
+                <StackPanel Orientation="Horizontal" Margin="0,1,0,0">
+                    <TextBlock
+                        Visibility="{Binding StatusProgressLabelVisible.Value, Mode=OneWay, Converter={StaticResource TrueToVisibleConverter}}"
+                        Foreground="White">
+
+                        <Run Text="{Binding StatusProgressNow.Value, Mode=OneWay}"/>
+                        <Run Text="%"/>
+                    </TextBlock>
                     
-                    <RadioButton 
-                        Margin="0,4,0,0"
-                        Content="{x:Static localization:MainResources.OnlyMessage}"
-                        IsChecked="{Binding OnlyMess.Value}"/>
-
-                    <Slider 
-                        Name="Sl"
-                        Margin="0,4,0,0"
-                        Cursor="Hand"
-                        IsEnabled="{Binding OnlySave.Value, Converter={StaticResource InvertBoolConverter}}"
-                        IsSnapToTickEnabled="True"
-                        Minimum="1" Maximum="5" SmallChange="1"
-                        Value="{Binding MessagesCount.Value}" />
-
-                    <Label
-                        Margin="0,4,0,0"
-                        Content="{Binding Value, ElementName=Sl, Mode=OneWay}"
-                        ContentStringFormat="{x:Static localization:MainResources.MessagesCount}" />
+                    <ProgressBar
+                        Margin="5,0,0,0"
+                        Height="15" Width="200"
+                        Value="{Binding StatusProgressNow.Value, Mode=OneWay}"
+                        Visibility="{Binding StatusProgressVisible.Value, Mode=OneWay, Converter={StaticResource FalseToHiddenConverter}}"
+                        IsIndeterminate="{Binding StatusProgressIndeterminate.Value, Mode=OneWay}"
+                        Maximum="100"/>
                 </StackPanel>
-            </GroupBox>
-        </Grid>
-
-        <TextBox 
-            x:Name="LogBox"
-            IsReadOnly="True"
-            VerticalScrollBarVisibility="Auto"
-            TextWrapping="Wrap"/>
-    </DockPanel>
+            </StatusBarItem>
+        </StatusBar>
+    </Grid>
 </Window>

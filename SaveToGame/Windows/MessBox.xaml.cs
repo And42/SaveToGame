@@ -5,9 +5,6 @@ using UsefulFunctionsLib;
 
 namespace SaveToGameWpf.Windows
 {
-    /// <summary>
-    /// Логика взаимодействия для MessBox.xaml
-    /// </summary>
     public partial class MessBox
     {
         private static string _result; 

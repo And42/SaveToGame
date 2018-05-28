@@ -1,8 +1,8 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
-
-    <Style x:Key="CommonWindowStyle" TargetType="Window" BasedOn="{StaticResource VsWindowStyle}">
+    
+    <Style x:Key="CommonWindowStyle" TargetType="Window" BasedOn="{StaticResource WindowStyle}">
         <Setter Property="FontSize" Value="14"/>
     </Style>
-
+    
 </ResourceDictionary>

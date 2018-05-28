@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows.Threading;
 using ICSharpCode.SharpZipLib.Zip;
 using SaveToGameWpf.Logic.Interfaces;
@@ -127,18 +128,6 @@ namespace SaveToGameWpf.Logic.Utils
             return fileInfo.FullName.Remove(fileInfo.FullName.Length - fileInfo.Extension.Length);
         }
 
-        public static void DeleteFile(string filePath)
-        {
-            if (File.Exists(filePath))
-                File.Delete(filePath);
-        }
-
-        public static void DeleteFolder(string folderPath)
-        {
-            if (Directory.Exists(folderPath))
-                Directory.Delete(folderPath, true);
-        }
-
         public static bool SetProperty<TClass, TValue>(this TClass sender, ref TValue storage, TValue value, [CallerMemberName] string propertyName = null) where TClass : IRaisePropertyChanged
         {
             if (EqualityComparer<TValue>.Default.Equals(storage, value))
@@ -158,6 +147,56 @@ namespace SaveToGameWpf.Logic.Utils
         public static T CloneTyped<T>(this T obj) where T : ICloneable
         {
             return (T) obj.Clone();
+        }
+
+        /// <summary>
+        /// Returns installed java version in a format of (primary, secondary) where result equals (-1, -1) if java was not found
+        /// </summary>
+        /// <returns>Java version or (-1, -1) if java was not found</returns>
+        public static (int primary, int secondary) GetInstalledJavaVersion()
+        {
+            Process process;
+
+            try
+            {
+                process = Process.Start(new ProcessStartInfo("java", "-version")
+                {
+                    CreateNoWindow = true,
+                    UseShellExecute = false,
+                    RedirectStandardError = true
+                });
+            }
+            catch (Exception)
+            {
+                return (-1, -1);
+            }
+
+            if (process == null)
+                return (-1, -1);
+
+            process.WaitForExit();
+
+            string output = process.StandardError.ReadLine();
+
+            var versionRegex = new Regex(@"\""(?<primary>\d+)\.(?<secondary>\d+)\.[^""]+\""");
+
+            Match match = versionRegex.Match(output ?? string.Empty);
+
+            // ReSharper disable once ConvertIfStatementToReturnStatement
+            if (!match.Success)
+                return (-1, -1);
+
+            return (int.Parse(match.Groups["primary"].Value), int.Parse(match.Groups["secondary"].Value));
+        }
+
+        public static DisposableUnion With(this IDisposable source, params IDisposable[] items)
+        {
+            var tmpItems = new IDisposable[items.Length + 1];
+
+            tmpItems[0] = source;
+            Array.Copy(items, 0, tmpItems, 1, items.Length);
+
+            return new DisposableUnion(tmpItems);
         }
     }
 }
