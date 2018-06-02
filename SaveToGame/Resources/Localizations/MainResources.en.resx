@@ -127,13 +127,13 @@
     <value>Activation code:</value>
   </data>
   <data name="AddingED" xml:space="preserve">
-    <value>Adding external data...</value>
+    <value>Adding external data</value>
   </data>
   <data name="AddingLD" xml:space="preserve">
-    <value>Adding local data...</value>
+    <value>Adding local data</value>
   </data>
   <data name="AddingObb" xml:space="preserve">
-    <value>Adding external obb...</value>
+    <value>Adding external obb</value>
   </data>
   <data name="AdditionalParameters" xml:space="preserve">
     <value>Additional parameters</value>
@@ -169,13 +169,13 @@
     <value>Choose save</value>
   </data>
   <data name="Compiling" xml:space="preserve">
-    <value>Compiling...</value>
+    <value>Compiling</value>
   </data>
   <data name="CopyingApk" xml:space="preserve">
-    <value>Copying apk...</value>
+    <value>Copying apk</value>
   </data>
   <data name="CopyingStgApk" xml:space="preserve">
-    <value>Copying StG apk...</value>
+    <value>Copying StG apk</value>
   </data>
   <data name="DeleteApkmaniaWindow" xml:space="preserve">
     <value>Delete apkmania window</value>
@@ -235,7 +235,7 @@
     <value>Number of shown messages: {0}</value>
   </data>
   <data name="MovingResult" xml:space="preserve">
-    <value>Moving result file...</value>
+    <value>Moving result file</value>
   </data>
   <data name="No" xml:space="preserve">
     <value>No</value>
@@ -256,7 +256,7 @@
     <value>Files' paths are too long. Please, give them short names and move to the root directory of one of your ligical drives</value>
   </data>
   <data name="Preparing" xml:space="preserve">
-    <value>Preparing...</value>
+    <value>Preparing</value>
   </data>
   <data name="Price" xml:space="preserve">
     <value>Price: 100 rub</value>
@@ -274,7 +274,7 @@
     <value>Settings</value>
   </data>
   <data name="Signing" xml:space="preserve">
-    <value>Signing...</value>
+    <value>Signing</value>
   </data>
   <data name="Support" xml:space="preserve">
     <value>Support:</value>
@@ -307,7 +307,7 @@
     <value>Zip archives</value>
   </data>
   <data name="Loading_Title" xml:space="preserve">
-    <value>Loading...</value>
+    <value>Loading</value>
   </data>
   <data name="Information_Title" xml:space="preserve">
     <value>Information</value>
@@ -380,7 +380,7 @@ Missing files: {0}</value>
     <value>Path to the file:</value>
   </data>
   <data name="Some_Error_Found" xml:space="preserve">
-    <value>Hmm, I have some error...</value>
+    <value>Hmm, I have some error</value>
   </data>
   <data name="Successful" xml:space="preserve">
     <value>All done</value>
@@ -428,5 +428,14 @@ Try again?</value>
   </data>
   <data name="StepSigning" xml:space="preserve">
     <value>Signing file</value>
+  </data>
+  <data name="Theme" xml:space="preserve">
+    <value>Theme</value>
+  </data>
+  <data name="ThemeDark" xml:space="preserve">
+    <value>Dark</value>
+  </data>
+  <data name="ThemeLight" xml:space="preserve">
+    <value>Light</value>
   </data>
 </root>

@@ -127,13 +127,13 @@
     <value>Код активации:</value>
   </data>
   <data name="AddingED" xml:space="preserve">
-    <value>Добавление внешних данных...</value>
+    <value>Добавление внешних данных</value>
   </data>
   <data name="AddingLD" xml:space="preserve">
-    <value>Добавление локальных данных...</value>
+    <value>Добавление локальных данных</value>
   </data>
   <data name="AddingObb" xml:space="preserve">
-    <value>Добавление кэша...</value>
+    <value>Добавление кэша</value>
   </data>
   <data name="AdditionalParameters" xml:space="preserve">
     <value>Дополнительные настройки</value>
@@ -169,13 +169,13 @@
     <value>Выбрать сохранение</value>
   </data>
   <data name="Compiling" xml:space="preserve">
-    <value>Компиляция...</value>
+    <value>Компиляция</value>
   </data>
   <data name="CopyingApk" xml:space="preserve">
-    <value>Копирование приложения...</value>
+    <value>Копирование приложения</value>
   </data>
   <data name="CopyingStgApk" xml:space="preserve">
-    <value>Копирование программы StG...</value>
+    <value>Копирование программы StG</value>
   </data>
   <data name="DeleteApkmaniaWindow" xml:space="preserve">
     <value>Удалять окно apkmania</value>
@@ -235,7 +235,7 @@
     <value>Количество показов сообщения: {0}</value>
   </data>
   <data name="MovingResult" xml:space="preserve">
-    <value>Перемещение готового файла...</value>
+    <value>Перемещение готового файла</value>
   </data>
   <data name="No" xml:space="preserve">
     <value>Нет</value>
@@ -253,7 +253,7 @@
     <value>Опции</value>
   </data>
   <data name="Preparing" xml:space="preserve">
-    <value>Подготовка...</value>
+    <value>Подготовка</value>
   </data>
   <data name="Price" xml:space="preserve">
     <value>Цена: 100 руб</value>
@@ -271,7 +271,7 @@
     <value>Настройки</value>
   </data>
   <data name="Signing" xml:space="preserve">
-    <value>Подпись...</value>
+    <value>Подпись</value>
   </data>
   <data name="Support" xml:space="preserve">
     <value>Поблагодарить:</value>
@@ -319,7 +319,7 @@
     <value>Номер счёта (WMZ) скопирован в буфер обмена</value>
   </data>
   <data name="Loading_Title" xml:space="preserve">
-    <value>Загрузка...</value>
+    <value>Загрузка</value>
   </data>
   <data name="Information_Title" xml:space="preserve">
     <value>Информация</value>
@@ -432,5 +432,14 @@
   </data>
   <data name="StepSigning" xml:space="preserve">
     <value>Подпись файла</value>
+  </data>
+  <data name="Theme" xml:space="preserve">
+    <value>Тема</value>
+  </data>
+  <data name="ThemeDark" xml:space="preserve">
+    <value>Тёмная</value>
+  </data>
+  <data name="ThemeLight" xml:space="preserve">
+    <value>Светлая</value>
   </data>
 </root>

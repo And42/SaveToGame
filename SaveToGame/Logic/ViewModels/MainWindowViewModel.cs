@@ -29,10 +29,14 @@ namespace SaveToGameWpf.Logic.ViewModels
         public Property<string> StatusLabel { get; private set; }
 
         public Property<int> StatusProgressNow { get; private set; }
+        public Property<int> StatusProgressMaximum { get; private set; }
         public Property<bool> StatusProgressIndeterminate { get; private set; }
         public Property<bool> StatusProgressVisible { get; private set; }
 
         public Property<bool> StatusProgressLabelVisible { get; private set; }
+
+        public Property<bool> StatusIndeterminateLabelVisible { get; private set; }
+        public Property<string> StatusIndeterminateLabelText { get; private set; }
 
         public string Title => FormatTitle();
 
@@ -69,10 +73,14 @@ namespace SaveToGameWpf.Logic.ViewModels
             BindProperty(() => StatusLabel, MainResources.AllDone);
 
             BindProperty(() => StatusProgressNow);
+            BindProperty(() => StatusProgressMaximum);
             BindProperty(() => StatusProgressIndeterminate);
             BindProperty(() => StatusProgressVisible);
 
             BindProperty(() => StatusProgressLabelVisible);
+
+            BindProperty(() => StatusIndeterminateLabelVisible);
+            BindProperty(() => StatusIndeterminateLabelText);
 
             PropertyChanged += OnPropertyChanged;
         }

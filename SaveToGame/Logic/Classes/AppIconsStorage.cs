@@ -1,6 +1,8 @@
 ﻿using System.Windows.Media.Imaging;
 using MVVM_Tools.Code.Classes;
 using MVVM_Tools.Code.Providers;
+using SaveToGameWpf.Logic.Utils;
+
 // ReSharper disable InconsistentNaming
 // ReSharper disable UnusedAutoPropertyAccessor.Local
 
@@ -20,5 +22,12 @@ namespace SaveToGameWpf.Logic.Classes
             BindProperty(() => Icon_hdpi);
             BindProperty(() => Icon_mdpi);
         }
+
+        public byte[] GetXxhdpiBytes() => GetBytes(Icon_xxhdpi);
+        public byte[] GetXhdpiBytes() => GetBytes(Icon_xhdpi);
+        public byte[] GetHdpiBytes() => GetBytes(Icon_hdpi);
+        public byte[] GetMdpiBytes() => GetBytes(Icon_mdpi);
+
+        private static byte[] GetBytes(Property<BitmapSource> property) => property.Value.ToBitmap().ToByteArray();
     }
 }

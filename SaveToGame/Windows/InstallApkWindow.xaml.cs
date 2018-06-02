@@ -13,6 +13,7 @@ using AndroidHelper.Logic;
 using ApkModifer.Logic;
 using ICSharpCode.SharpZipLib.Zip;
 using Microsoft.Win32;
+using MVVM_Tools.Code.Disposables;
 using MVVM_Tools.Code.Providers;
 using SaveToGameWpf.Logic;
 using SaveToGameWpf.Logic.Classes;
@@ -42,17 +43,19 @@ namespace SaveToGameWpf.Windows
 
         public Property<string> AppTitle { get; } = new Property<string>();
 
-        public Property<long> ProgressNow { get; } = new Property<long>();
-        public Property<long> ProgressMax { get; } = new Property<long>();
-
         private readonly DefaultSettingsContainer _settings = DefaultSettingsContainer.Instance;
 
         private readonly StringBuilder _log = new StringBuilder();
+        private readonly IVisualProgress _visualProgress;
 
         public InstallApkWindow()
         {
             InitializeComponent();
+
             TaskbarItemInfo = new TaskbarItemInfo();
+            _visualProgress = StatusProgress.GetVisualProgress();
+
+            _visualProgress.SetLabelText(MainResources.AllDone);
 
             var iconsFolder = Path.Combine(GlobalVariables.PathToResources, "icons");
 
@@ -114,161 +117,28 @@ namespace SaveToGameWpf.Windows
                 Obb.Value = filePaths;
         }
 
-        private void StartClick(object sender, RoutedEventArgs e)
+        private async void StartClick(object sender, RoutedEventArgs e)
         {
             string apkFile = Apk.Value;
-            string saveFile = Save.Value;
-            string androidDataFile = Data.Value;
-            string[] androidObbFiles = Obb.Value?.CloneTyped() ?? new string[0];
-            string appTitle = AppTitle.Value;
 
             if (string.IsNullOrEmpty(apkFile) || !File.Exists(apkFile))
                 return;
 
-            Working.Value = true;
-            TaskbarItemInfo.ProgressState = TaskbarItemProgressState.Indeterminate;
+            using (CreateWorking())
+            {
+                TaskbarItemInfo.ProgressState = TaskbarItemProgressState.Indeterminate;
 
-            _log.Clear();
-            LogBox.Text = "";
+                _log.Clear();
+                LogBox.Text = "";
 
-            Task tsk = new Task(() =>
-            {  
                 try
                 {
-                    SetStep(MainResources.Preparing);
+                    byte[] xxhdpi = IconsStorage.GetXxhdpiBytes();
+                    byte[] xhdpi = IconsStorage.GetXhdpiBytes();
+                    byte[] hdpi = IconsStorage.GetHdpiBytes();
+                    byte[] mdpi = IconsStorage.GetMdpiBytes();
 
-                    var tempProcessedFolder = Path.Combine(Path.GetTempPath(), "STG_temp");
-
-                    var containerApkPath = Path.Combine(tempProcessedFolder, "apk.apk");
-                    var copiedSourceApkPath = Path.Combine(tempProcessedFolder, "source.apk");
-                    var apkToModifyPath = Path.Combine(tempProcessedFolder, "mod.apk");
-
-                    var containerZipPath = Path.Combine(GlobalVariables.PathToResources, "apk.zip");
-
-                    var resultFilePath = Path.Combine(Path.GetDirectoryName(apkFile) ?? string.Empty, Path.GetFileNameWithoutExtension(apkFile) + "_mod.apk");
-
-                    IOHelper.DeleteFolder(tempProcessedFolder);
-                    Directory.CreateDirectory(tempProcessedFolder);
-
-                    File.Copy(apkFile, copiedSourceApkPath);
-
-                    Apktools apk = new Apktools(containerApkPath, GlobalVariables.PathToResources);
-                    apk.Logging += Log;
-
-                    {
-                        string signed;
-                        apk.Sign(copiedSourceApkPath, out signed);
-
-                        File.Move(signed, apkToModifyPath);
-                    }
-
-                    SetStep(MainResources.CopyingStgApk);
-
-                    using (var zip = new ZipFile(containerZipPath)
-                    {
-                        Password = GlobalVariables.AdditionalFilePassword
-                    })
-                    {
-                        zip.ExtractAll(apk.FolderOfProject);
-                    }
-
-                    var mod = new ApkModifer.Logic.ApkModifer(apk);
-
-                    var backType = _settings.BackupType;
-
-                    mod.ProgressChanged += (o, args) =>
-                    {
-                        ProgressMax.Value = args.Maximum;
-                        ProgressNow.Value = args.Now;
-                    };
-
-                    if (!string.IsNullOrEmpty(saveFile) && File.Exists(saveFile))
-                    {
-                        SetStep(MainResources.AddingLD);
-                        mod.AddLocalData(saveFile, backupType: backType);
-                    }
-
-                    if (!string.IsNullOrEmpty(androidDataFile) && File.Exists(androidDataFile))
-                    {
-                        SetStep(MainResources.AddingED);
-                        mod.AddExternalData(androidDataFile);
-                    }
-
-                    if (androidObbFiles.Length > 0)
-                    {
-                        SetStep(MainResources.AddingObb);
-                        mod.AddExternalObb(androidObbFiles);
-                    }
-
-                    SetStep(MainResources.CopyingApk);
-
-                    File.Copy(apkToModifyPath, Path.Combine(apk.FolderOfProject, "assets", "install.bin"), true);
-
-                    string package;
-
-                    {
-                        string instMan = new Apktools(apkToModifyPath, GlobalVariables.PathToResources).ExtractSimpleManifest();
-
-                        string temp = File.ReadAllText(instMan, Encoding.UTF8);
-
-                        const string packageStr = "package=\"";
-
-                        int startIndex = temp.IndexOf(packageStr, StringComparison.Ordinal) + packageStr.Length;
-                        int endIndex = temp.IndexOf('\"', startIndex);
-
-                        package = temp.Substring(startIndex, endIndex - startIndex);
-                    }
-
-                    File.WriteAllText(apk.PathToAndroidManifest,
-                        File.ReadAllText(apk.PathToAndroidManifest, Encoding.UTF8).Replace("change_package",
-                            package).Replace("@string/app_name", appTitle));
-
-                    string iconsFolder = Path.Combine(apk.FolderOfProject, "res", "mipmap-");
-
-                    void DeleteIcon(string folder) =>
-                        IOHelper.DeleteFile(Path.Combine($"{iconsFolder}{folder}", "ic_launcher.png"));
-
-                    DeleteIcon("xxhdpi-v4");
-                    DeleteIcon("xhdpi-v4");
-                    DeleteIcon("hdpi-v4");
-                    DeleteIcon("mdpi-v4");
-
-                    void WriteIcon(string folder, Property<BitmapSource> property) =>
-                        File.WriteAllBytes(Path.Combine($"{iconsFolder}{folder}", "ic_launcher.png"), property.Value.ToBitmap().ToByteArray());
-
-                    WriteIcon("xxhdpi-v4", IconsStorage.Icon_xxhdpi);
-                    WriteIcon("xhdpi-v4", IconsStorage.Icon_xhdpi);
-                    WriteIcon("hdpi-v4", IconsStorage.Icon_hdpi);
-                    WriteIcon("mdpi-v4", IconsStorage.Icon_mdpi);
-
-                    SetStep(MainResources.Compiling);
-
-                    if (!apk.Compile(out _))
-                    {
-                        Log(MainResources.ErrorUp);
-                        return;
-                    }
-
-                    SetStep(MainResources.Signing);
-
-                    apk.Sign();
-
-                    SetStep(MainResources.MovingResult);
-
-                    File.Copy(apk.SignedApk, resultFilePath, true);
-
-                    IOHelper.DeleteFolder(tempProcessedFolder);
-
-                    SetStep(MainResources.AllDone);
-
-                    if (MessBox.ShowDial(
-                            MainResources.Path_to_file + resultFilePath,
-                            MainResources.Successful,
-                            MainResources.OK, MainResources.Open
-                        ) == MainResources.Open)
-                    {
-                        Process.Start("explorer.exe", $"/select,{resultFilePath}");
-                    }
+                    await Task.Factory.StartNew(() => ProcessAll(xxhdpi, xhdpi, hdpi, mdpi));
                 }
                 catch (Exception ex)
                 {
@@ -278,13 +148,9 @@ namespace SaveToGameWpf.Windows
 #endif
                     Log($"{MainResources.ErrorUp}: {ex.Message}");
                 }
-            });
-            tsk.ContinueWith(a =>
-            {
-                Working.Value = false;
-                Dispatcher.Invoke(new Action(() => TaskbarItemInfo.ProgressState = TaskbarItemProgressState.None));
-            });
-            tsk.Start();
+
+                TaskbarItemInfo.ProgressState = TaskbarItemProgressState.None;
+            }
         }
 
         #endregion
@@ -347,6 +213,161 @@ namespace SaveToGameWpf.Windows
 
         #endregion
 
+        private void ProcessAll(byte[] xxhdpiBytes, byte[] xhdpiBytes, byte[] hdpiBytes, byte[] mdpiBytes)
+        {
+            string apkFile = Apk.Value;
+            string saveFile = Save.Value;
+            string androidDataFile = Data.Value;
+            string[] androidObbFiles = Obb.Value?.CloneTyped() ?? new string[0];
+            string appTitle = AppTitle.Value;
+
+            _visualProgress.SetBarIndeterminate();
+            _visualProgress.ShowBar();
+            _visualProgress.ShowIndeterminateLabel();
+            SetStep(MainResources.Preparing);
+
+            var tempProcessedFolder = Path.Combine(Path.GetTempPath(), "STG_temp");
+
+            var containerApkPath = Path.Combine(tempProcessedFolder, "apk.apk");
+            var copiedSourceApkPath = Path.Combine(tempProcessedFolder, "source.apk");
+            var apkToModifyPath = Path.Combine(tempProcessedFolder, "mod.apk");
+
+            var containerZipPath = Path.Combine(GlobalVariables.PathToResources, "apk.zip");
+
+            var resultFilePath = Path.Combine(Path.GetDirectoryName(apkFile) ?? string.Empty, Path.GetFileNameWithoutExtension(apkFile) + "_mod.apk");
+
+            IOHelper.DeleteFolder(tempProcessedFolder);
+            Directory.CreateDirectory(tempProcessedFolder);
+
+            File.Copy(apkFile, copiedSourceApkPath);
+
+            Apktools apk = new Apktools(containerApkPath, GlobalVariables.PathToResources);
+            apk.Logging += Log;
+
+            {
+                string signed;
+                apk.Sign(copiedSourceApkPath, out signed);
+
+                File.Move(signed, apkToModifyPath);
+            }
+
+            SetStep(MainResources.CopyingStgApk);
+
+            using (var zip = new ZipFile(containerZipPath)
+            {
+                Password = GlobalVariables.AdditionalFilePassword
+            })
+            {
+                zip.ExtractAll(apk.FolderOfProject);
+            }
+
+            var mod = new ApkModifer.Logic.ApkModifer(apk);
+
+            var backType = _settings.BackupType;
+
+            mod.ProgressChanged += (o, args) =>
+            {
+                _visualProgress.SetBarValue((int)(args.Now * 100 / args.Maximum));
+            };
+
+            _visualProgress.SetBarUsual();
+
+            if (!string.IsNullOrEmpty(saveFile) && File.Exists(saveFile))
+            {
+                _visualProgress.SetBarUsual();
+                SetStep(MainResources.AddingLD);
+                mod.AddLocalData(saveFile, backupType: backType);
+            }
+
+            if (!string.IsNullOrEmpty(androidDataFile) && File.Exists(androidDataFile))
+            {
+                _visualProgress.SetBarUsual();
+                SetStep(MainResources.AddingED);
+                mod.AddExternalData(androidDataFile);
+            }
+
+            if (androidObbFiles.Length > 0)
+            {
+                _visualProgress.SetBarUsual();
+                SetStep(MainResources.AddingObb);
+                mod.AddExternalObb(androidObbFiles);
+            }
+
+            _visualProgress.SetBarIndeterminate();
+
+            SetStep(MainResources.CopyingApk);
+
+            File.Copy(apkToModifyPath, Path.Combine(apk.FolderOfProject, "assets", "install.bin"), true);
+
+            string package;
+
+            {
+                string instMan = new Apktools(apkToModifyPath, GlobalVariables.PathToResources).ExtractSimpleManifest();
+
+                string temp = File.ReadAllText(instMan, Encoding.UTF8);
+
+                const string packageStr = "package=\"";
+
+                int startIndex = temp.IndexOf(packageStr, StringComparison.Ordinal) + packageStr.Length;
+                int endIndex = temp.IndexOf('\"', startIndex);
+
+                package = temp.Substring(startIndex, endIndex - startIndex);
+            }
+
+            File.WriteAllText(apk.PathToAndroidManifest,
+                File.ReadAllText(apk.PathToAndroidManifest, Encoding.UTF8).Replace("change_package",
+                    package).Replace("@string/app_name", appTitle));
+
+            string iconsFolder = Path.Combine(apk.FolderOfProject, "res", "mipmap-");
+
+            void DeleteIcon(string folder) =>
+                IOHelper.DeleteFile(Path.Combine($"{iconsFolder}{folder}", "ic_launcher.png"));
+
+            DeleteIcon("xxhdpi-v4");
+            DeleteIcon("xhdpi-v4");
+            DeleteIcon("hdpi-v4");
+            DeleteIcon("mdpi-v4");
+
+            void WriteIcon(string folder, byte[] imageBytes) =>
+                File.WriteAllBytes(Path.Combine($"{iconsFolder}{folder}", "ic_launcher.png"), imageBytes);
+
+            WriteIcon("xxhdpi-v4", xxhdpiBytes);
+            WriteIcon("xhdpi-v4", xhdpiBytes);
+            WriteIcon("hdpi-v4", hdpiBytes);
+            WriteIcon("mdpi-v4", mdpiBytes);
+
+            SetStep(MainResources.Compiling);
+
+            if (!apk.Compile(out _))
+            {
+                Log(MainResources.ErrorUp);
+                return;
+            }
+
+            SetStep(MainResources.Signing);
+
+            apk.Sign();
+
+            SetStep(MainResources.MovingResult);
+
+            File.Copy(apk.SignedApk, resultFilePath, true);
+
+            IOHelper.DeleteFolder(tempProcessedFolder);
+
+            _visualProgress.HideIndeterminateLabel();
+            _visualProgress.HideBar();
+            SetStep(MainResources.AllDone);
+
+            if (MessBox.ShowDial(
+                    MainResources.Path_to_file + resultFilePath,
+                    MainResources.Successful,
+                    MainResources.OK, MainResources.Open
+                ) == MainResources.Open)
+            {
+                Process.Start("explorer.exe", $"/select,{resultFilePath}");
+            }
+        }
+
         private void SetIcon(string imagePath, string tag)
         {
             BitmapSource Resize(int size)
@@ -392,6 +413,7 @@ namespace SaveToGameWpf.Windows
         {
             WindowTitle.Value = step;
             Log(step);
+            _visualProgress.SetLabelText(step);
         }
 
         private void Log(string text)
@@ -403,6 +425,15 @@ namespace SaveToGameWpf.Windows
                 LogBox.Text = _log.ToString();
             });
         }
+
+        #region Disposables
+
+        private CustomBoolDisposable CreateWorking()
+        {
+            return new CustomBoolDisposable(val => Working.Value = val);
+        }
+
+        #endregion
 
         #region PropertyChanged
 

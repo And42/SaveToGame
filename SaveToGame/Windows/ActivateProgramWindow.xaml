@@ -2,12 +2,14 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:localization="clr-namespace:SaveToGameWpf.Resources.Localizations"
+        xmlns:elements="clr-namespace:SaveToGameWpf.Styles.Elements"
 
         Title="{x:Static localization:MainResources.ProgramActivation}"
         Height="132" Width="450" 
         WindowStartupLocation="CenterScreen"
         Style="{StaticResource CommonWindowStyle}"
-        MaxWidth="10000">
+        elements:WindowThemeParameters.CanMinimize="False"
+        elements:WindowThemeParameters.IsResizable="False">
     <DockPanel>
         <Grid 
                 DockPanel.Dock="Top"    
@@ -42,7 +44,7 @@
                     Grid.Row="2"
                     Grid.Column="0"
                     VerticalOffset="3">
-                <Border BorderThickness="1" BorderBrush="{DynamicResource Vs2012WindowBorderBrushInactive}" Background="Azure">
+                <Border BorderThickness="1" BorderBrush="{DynamicResource BorderNormalBrush}" Background="{DynamicResource Window_Background}">
                     <StackPanel Orientation="Horizontal">
                         <Button Padding="5,4" Margin="3" Content="WebMoney (WMR)" Click="BuyWithWebMoneyWmrBtn_Click"/>
                         <Button Padding="5,4" Margin="0,3" Content="WebMoney (WMZ)" Click="BuyWithWebMoneyWmzBtn_Click"/>

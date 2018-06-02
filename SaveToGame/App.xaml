@@ -13,11 +13,10 @@
                     <converters1:FalseToVisibleConverter x:Key="FalseToVisibleConverter"/>
                     <converters1:NullToCollapsedConverter x:Key="NullToCollapsedConverter"/>
                     <converters:IconToVisibilityConverter x:Key="IconToVisibilityConverter"/>
-                    <converters:DivideBy1024Converter x:Key="DivideBy1024Converter"/>
-                    <converters:ByteToMbConverter x:Key="ByteToMbConverter"/>
                     <converters:NotNullParameterConverter x:Key="NotNullParameterConverter"/>
                     <converters:FalseToHiddenConverter x:Key="FalseToHiddenConverter"/>
                     <converters:BackupToCheckedConverter x:Key="BackupToCheckedConverter"/>
+                    <converters:ThemeToCheckedConverter x:Key="ThemeToCheckedConverter"/>
                 </ResourceDictionary>
 
                 <ResourceDictionary Source="Styles/Light/ThemeResources.xaml"/>

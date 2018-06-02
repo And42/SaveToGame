@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Net;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Windows.Threading;
 using ICSharpCode.SharpZipLib.Zip;
 using SaveToGameWpf.Logic.Interfaces;
 using SaveToGameWpf.Logic.OrganisationItems;
+using SaveToGameWpf.Resources.Localizations;
 using SaveToGameWpf.Windows;
 
 using Application = System.Windows.Application;
@@ -187,6 +190,64 @@ namespace SaveToGameWpf.Logic.Utils
                 return (-1, -1);
 
             return (int.Parse(match.Groups["primary"].Value), int.Parse(match.Groups["secondary"].Value));
+        }
+
+        public static async Task DownloadJava(IVisualProgress visualProgress)
+        {
+            visualProgress.SetLabelText(MainResources.JavaDownloading);
+            visualProgress.ShowIndeterminateLabel();
+
+            bool fileDownloaded;
+
+            const string jreUrl = @"https://storage.googleapis.com/savetogame/jre_1.7.zip";
+            string fileLocation = Path.Combine(GlobalVariables.AppSettingsDir, "jre.zip");
+
+            IOUtils.CreateDir(GlobalVariables.AppSettingsDir);
+
+            using (var client = new WebClient())
+            {
+                client.DownloadProgressChanged += (sender, args) => visualProgress.SetBarValue(args.ProgressPercentage);
+
+                while (true)
+                {
+                    try
+                    {
+                        await client.DownloadFileTaskAsync(jreUrl, fileLocation);
+
+                        fileDownloaded = true;
+                        break;
+                    }
+                    catch (Exception ex)
+                    {
+                        var promt = MessBox.ShowDial(
+                            string.Format(MainResources.JavaDownloadFailed, ex.Message),
+                            MainResources.Error,
+                            MainResources.No,
+                            MainResources.Yes
+                        );
+
+                        if (promt == MainResources.Yes)
+                            continue;
+
+                        fileDownloaded = false;
+                        break;
+                    }
+                }
+            }
+
+            if (fileDownloaded)
+            {
+                visualProgress.SetLabelText(MainResources.JavaExtracting);
+                visualProgress.SetBarIndeterminate();
+
+                using (var zipFile = new ZipFile(fileLocation))
+                {
+                    await Task.Factory.StartNew(() => zipFile.ExtractAll(GlobalVariables.PathToPortableJre));
+                }
+            }
+
+            visualProgress.HideIndeterminateLabel();
+            visualProgress.SetLabelText(MainResources.AllDone);
         }
 
         public static DisposableUnion With(this IDisposable source, params IDisposable[] items)

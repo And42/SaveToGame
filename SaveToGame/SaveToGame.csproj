@@ -84,6 +84,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>Libraries\ApkModifer.dll</HintPath>
     </Reference>
+    <Reference Include="Bugsnag, Version=2.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Bugsnag.2.1.0\lib\net40\Bugsnag.dll</HintPath>
+    </Reference>
     <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>C:\Users\andre\Desktop\SrcSamples\bin\ICSharpCode.SharpZipLib.dll</HintPath>
@@ -116,6 +119,7 @@
       <HintPath>Libraries\SettingsManager.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.IO, Version=2.6.10.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Bcl.1.1.10\lib\net40\System.IO.dll</HintPath>
@@ -125,11 +129,12 @@
     <Reference Include="System.Runtime, Version=2.6.10.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Bcl.1.1.10\lib\net40\System.Runtime.dll</HintPath>
     </Reference>
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Threading.Tasks, Version=2.6.10.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Bcl.1.1.10\lib\net40\System.Threading.Tasks.dll</HintPath>
     </Reference>
-    <Reference Include="System.ValueTuple, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.ValueTuple.4.4.0\lib\portable-net40+sl4+win8+wp8\System.ValueTuple.dll</HintPath>
+    <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.5.0\lib\portable-net40+sl4+win8+wp8\System.ValueTuple.dll</HintPath>
     </Reference>
     <Reference Include="System.Windows.Forms">
       <Private>True</Private>
@@ -155,24 +160,29 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Controls\StatusProgress.xaml.cs">
+      <DependentUpon>StatusProgress.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Converters\BackupToCheckedConverter.cs" />
-    <Compile Include="Converters\ByteToMbConverter.cs" />
-    <Compile Include="Converters\DivideBy1024Converter.cs" />
     <Compile Include="Converters\FalseToHiddenConverter.cs" />
     <Compile Include="Converters\IconToVisibilityConverter.cs" />
     <Compile Include="Converters\NotNullParameterConverter.cs" />
+    <Compile Include="Converters\ThemeToCheckedConverter.cs" />
     <Compile Include="Logic\Classes\AppIconsStorage.cs" />
     <Compile Include="Logic\Classes\BlockIds.cs" />
     <Compile Include="Logic\Classes\EnumEx.cs" />
+    <Compile Include="Logic\Interfaces\IVisualProgress.cs" />
     <Compile Include="Logic\OrganisationItems\DefaultSettingsContainer.cs" />
     <Compile Include="Logic\Classes\TraceWriter.cs" />
     <Compile Include="Logic\OrganisationItems\DisposableUnion.cs" />
     <Compile Include="Logic\Utils\ApplicationUtils.cs" />
     <Compile Include="Logic\Utils\BitmapUtils.cs" />
+    <Compile Include="Logic\Utils\CollectionUtils.cs" />
     <Compile Include="Logic\Utils\DragDropUtils.cs" />
     <Compile Include="Logic\Utils\IOUtils.cs" />
     <Compile Include="Logic\Utils\LicensingUtils.cs" />
     <Compile Include="Logic\Utils\PickerUtils.cs" />
+    <Compile Include="Logic\Utils\ThemeUtils.cs" />
     <Compile Include="Logic\Utils\Utils.cs" />
     <Compile Include="Logic\GlobalVariables.cs" />
     <Compile Include="Logic\Interfaces\IRaisePropertyChanged.cs" />
@@ -202,6 +212,9 @@
     <Compile Include="Windows\UpdateWindow.xaml.cs">
       <DependentUpon>UpdateWindow.xaml</DependentUpon>
     </Compile>
+    <Page Include="Controls\StatusProgress.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Styles\Common\Brushes.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -221,6 +234,9 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Styles\Dark\GridViewResources.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Styles\Dark\GroupBoxResources.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Styles\Dark\ListBoxResources.xaml">
@@ -295,6 +311,9 @@
     <Page Include="Styles\Elements\GridView.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Styles\Elements\GroupBox.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Styles\Elements\ListBox.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -365,6 +384,9 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Styles\Light\GridViewResources.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Styles\Light\GroupBoxResources.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Styles\Light\ListBoxResources.xaml">

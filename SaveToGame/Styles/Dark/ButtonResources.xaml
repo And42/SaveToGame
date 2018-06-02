@@ -32,7 +32,7 @@
         </GradientStopCollection>
     </LinearGradientBrush>
 
-    <SolidColorBrush x:Key="Button_BorderNormal"        Color="#ACACAC"/>
+    <SolidColorBrush x:Key="Button_BorderNormal"        Color="{DynamicResource BorderNormalColor}"/>
     <SolidColorBrush x:Key="Button_BorderOver"          Color="#7EB4EA"/>
     <SolidColorBrush x:Key="Button_BorderPressed"       Color="#569DE5"/>
     <SolidColorBrush x:Key="Button_BorderFocused"       Color="#569DE5"/>

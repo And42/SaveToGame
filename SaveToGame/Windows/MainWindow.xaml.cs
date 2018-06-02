@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Net;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,6 +13,7 @@ using ICSharpCode.SharpZipLib.Zip;
 using MVVM_Tools.Code.Disposables;
 using SaveToGameWpf.Logic;
 using SaveToGameWpf.Logic.Classes;
+using SaveToGameWpf.Logic.Interfaces;
 using SaveToGameWpf.Logic.OrganisationItems;
 using SaveToGameWpf.Logic.Utils;
 using SaveToGameWpf.Logic.ViewModels;
@@ -42,11 +42,9 @@ namespace SaveToGameWpf.Windows
 
         private readonly DefaultSettingsContainer _settings = DefaultSettingsContainer.Instance;
 
-        public MainWindowViewModel ViewModel
-        {
-            get => DataContext as MainWindowViewModel;
-            set => DataContext = value;
-        }
+        private readonly IVisualProgress _visualProgress;
+
+        public MainWindowViewModel ViewModel { get; }
 
         static MainWindow()
         {
@@ -60,10 +58,15 @@ namespace SaveToGameWpf.Windows
 		{
 		    ViewModel = new MainWindowViewModel();
 
+		    DataContext = ViewModel;
+
             InitializeComponent();
 
 		    TaskbarItemInfo = new TaskbarItemInfo();
-		}
+            _visualProgress = StatusProgress.GetVisualProgress();
+
+            _visualProgress.SetLabelText(MainResources.AllDone);
+        }
 
         #region Window events
 
@@ -164,8 +167,9 @@ namespace SaveToGameWpf.Windows
                             throw new Exception("Some exception occured", ex);
                         });
 #else
-                    HaveError(Environment.NewLine + ex);
-		            MessBox.ShowDial(MainResources.Some_Error_Found);
+                        HaveError(Environment.NewLine + ex);
+                        GlobalVariables.ErrorClient.Notify(ex);
+                        MessBox.ShowDial(MainResources.Some_Error_Found);
 #endif
                     }
                     finally
@@ -262,14 +266,13 @@ namespace SaveToGameWpf.Windows
 
             const int totalSteps = 7;
 
-            ViewModel.StatusProgressIndeterminate.Value = false;
-            ViewModel.StatusProgressVisible.Value = true;
-            ViewModel.StatusProgressLabelVisible.Value = true;
+            _visualProgress.SetBarUsual();
+            _visualProgress.ShowBar();
 
             void SetStep(int currentStep, string status)
             {
-                ViewModel.StatusProgressNow.Value = (currentStep - 1) * 100 / totalSteps;
-                SetStatus(status);
+                _visualProgress.SetBarValue((currentStep - 1) * 100 / totalSteps);
+                _visualProgress.SetLabelText(status);
             }
 
             #region Подготовка
@@ -297,6 +300,7 @@ namespace SaveToGameWpf.Windows
             #region Инициализация
 
             SetStep(1, MainResources.StepInitializing);
+            _visualProgress.ShowIndeterminateLabel();
 
             File.Copy(apkFile.FullName, processedApkPath, true);
 
@@ -379,7 +383,7 @@ namespace SaveToGameWpf.Windows
 
             SetStep(5, MainResources.StepAddingData);
 
-            if (!string.IsNullOrEmpty(ViewModel.MainSmaliName.Value))
+            if (!string.IsNullOrEmpty(mainSmali))
             {
                 var mainSmaliPath = Path.Combine(folderOfProject, "smali", mainSmali);
 
@@ -447,6 +451,7 @@ namespace SaveToGameWpf.Windows
 
             IOUtils.DeleteDir(tempFolder);
 
+            _visualProgress.HideIndeterminateLabel();
             SetStep(8, MainResources.AllDone);
             Log(MainResources.AllDone);
 
@@ -460,8 +465,7 @@ namespace SaveToGameWpf.Windows
                 Process.Start("explorer.exe", $"/select,{resultApkPath}");
             }
 
-            ViewModel.StatusProgressVisible.Value = false;
-            ViewModel.StatusProgressLabelVisible.Value = false;
+            _visualProgress.HideBar();
         }
 
         private static void ReplaceTexts(string folderWithSmaliFiles, IList<string> itemsToReplace, string targetString)
@@ -604,77 +608,17 @@ namespace SaveToGameWpf.Windows
             if (promtRes != MainResources.Yes)
                 return;
 
-            ViewModel.StatusProgressNow.Value = 0;
+            _visualProgress.SetBarValue(0);
 
-            using (CreateWorking().With(ShowProgressBar(), ShowProgressLabel()))
+            using (CreateWorking())
             {
-                ViewModel.StatusProgressIndeterminate.Value = false;
+                _visualProgress.SetBarUsual();
+                _visualProgress.ShowBar();
 
-                await DownloadJava();
+                await Utils.DownloadJava(_visualProgress);
+
+                _visualProgress.HideBar();
             }
-        }
-
-        private async Task DownloadJava()
-        {
-            SetStatus(MainResources.JavaDownloading);
-
-            bool fileDownloaded;
-
-            const string jreUrl = @"https://storage.googleapis.com/savetogame/jre_1.7.zip";
-            string fileLocation = Path.Combine(GlobalVariables.AppSettingsDir, "jre.zip");
-
-            IOUtils.CreateDir(GlobalVariables.AppSettingsDir);
-
-            using (var client = new WebClient())
-            {
-                client.DownloadProgressChanged += (sender, args) => ViewModel.StatusProgressNow.Value = args.ProgressPercentage;
-
-                while (true)
-                {
-                    try
-                    {
-                        await client.DownloadFileTaskAsync(jreUrl, fileLocation);
-
-                        fileDownloaded = true;
-                        break;
-                    }
-                    catch (Exception ex)
-                    {
-                        var promt = MessBox.ShowDial(
-                            string.Format(MainResources.JavaDownloadFailed, ex.Message),
-                            MainResources.Error,
-                            MainResources.No,
-                            MainResources.Yes
-                        );
-
-                        if (promt == MainResources.Yes)
-                            continue;
-
-                        fileDownloaded = false;
-                        break;
-                    }
-                }
-            }
-
-            if (fileDownloaded)
-            {
-                ViewModel.StatusLabel.Value = MainResources.JavaExtracting;
-
-                ViewModel.StatusProgressIndeterminate.Value = true;
-                ViewModel.StatusProgressLabelVisible.Value = false;
-
-                using (var zipFile = new ZipFile(fileLocation))
-                {
-                    await Task.Factory.StartNew(() => zipFile.ExtractAll(GlobalVariables.PathToPortableJre));
-                }
-            }
-
-            SetStatus(MainResources.AllDone);
-        }
-
-        private void SetStatus(string status)
-        {
-            ViewModel.StatusLabel.Value = status;
         }
 
         public void Log(string text)
@@ -709,16 +653,6 @@ namespace SaveToGameWpf.Windows
 
         #region Disposables
 
-        private CustomBoolDisposable ShowProgressBar()
-        {
-            return new CustomBoolDisposable(val => ViewModel.StatusProgressVisible.Value = val);
-        }
-
-        private CustomBoolDisposable ShowProgressLabel()
-        {
-            return new CustomBoolDisposable(val => ViewModel.StatusProgressLabelVisible.Value = val);
-        }
-
         private CustomBoolDisposable CreateWorking()
         {
             return new CustomBoolDisposable(val =>
@@ -733,5 +667,12 @@ namespace SaveToGameWpf.Windows
         }
 
         #endregion
+
+        private void ChangeTheme_OnClick(object sender, RoutedEventArgs e)
+        {
+            var theme = sender.As<FrameworkElement>().Tag.As<string>();
+
+            ThemeUtils.SetTheme(theme);
+        }
     }
 }

@@ -20,5 +20,8 @@
     <Setting Name="BackupType" Type="ApkModifer.ApkModifer.BackupType" Scope="User">
       <Value Profile="(Default)">Titanium</Value>
     </Setting>
+    <Setting Name="Theme" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Light</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

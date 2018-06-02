@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Configuration;
 using System.Reflection;
 using Alphaleonis.Win32.Filesystem;
+using Bugsnag;
 
 namespace SaveToGameWpf.Logic
 {
@@ -31,8 +33,10 @@ namespace SaveToGameWpf.Logic
         /// </summary>
         public static readonly string AppSettingsDir;
 
-        public static string AdditionalFilePassword;
+        public static readonly IClient ErrorClient = new Client(ConfigurationManager.AppSettings["BugsnagApiKey"]);
 
+        public static string AdditionalFilePassword;
+        
         static GlobalVariables()
         {
 #if DEBUG

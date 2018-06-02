@@ -28,6 +28,12 @@ namespace SaveToGameWpf.Logic.OrganisationItems
             set => SetValueInternal(value);
         }
 
+        public string Theme
+        {
+            get => GetValueInternal<string>();
+            set => SetValueInternal(value);
+        }
+
         public override void Save()
         {
             Settings.Default.Save();

@@ -42,10 +42,13 @@ namespace SaveToGameWpf
                 MessBox.ShowDial("Обнаружена непредвиденная ошибка. Текст ошибки скопирован в буфер обмена. Пожалуйста, свяжитесь с разработчиком");
                 Clipboard.SetText("Message: " + args.Exception.Message + "\nStackTrace: " + args.Exception.StackTrace);
                 args.Handled = true;
+
+                GlobalVariables.ErrorClient.Notify(args.Exception);
             };
 #endif
 
             ApplicationUtils.SetLanguageFromSettings();
+            ThemeUtils.SetThemeFromSettings();
 
             WindowManager.ActivateWindow<MainWindow>();
         }

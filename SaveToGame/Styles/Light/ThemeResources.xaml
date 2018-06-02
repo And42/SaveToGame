@@ -26,6 +26,7 @@
         <ResourceDictionary Source="ToolTipResources.xaml"/>
         <ResourceDictionary Source="TreeViewItemResources.xaml"/>
         <ResourceDictionary Source="SettingsWindowResources.xaml"/>
+        <ResourceDictionary Source="GroupBoxResources.xaml"/>
     </ResourceDictionary.MergedDictionaries>
     
 </ResourceDictionary>

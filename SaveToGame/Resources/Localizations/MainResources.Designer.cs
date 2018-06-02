@@ -88,7 +88,7 @@ namespace SaveToGameWpf.Resources.Localizations {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Добавление внешних данных....
+        ///   Looks up a localized string similar to Добавление внешних данных.
         /// </summary>
         public static string AddingED {
             get {
@@ -97,7 +97,7 @@ namespace SaveToGameWpf.Resources.Localizations {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Добавление локальных данных....
+        ///   Looks up a localized string similar to Добавление локальных данных.
         /// </summary>
         public static string AddingLD {
             get {
@@ -106,7 +106,7 @@ namespace SaveToGameWpf.Resources.Localizations {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Добавление кэша....
+        ///   Looks up a localized string similar to Добавление кэша.
         /// </summary>
         public static string AddingObb {
             get {
@@ -286,7 +286,7 @@ namespace SaveToGameWpf.Resources.Localizations {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Компиляция....
+        ///   Looks up a localized string similar to Компиляция.
         /// </summary>
         public static string Compiling {
             get {
@@ -295,7 +295,7 @@ namespace SaveToGameWpf.Resources.Localizations {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Копирование приложения....
+        ///   Looks up a localized string similar to Копирование приложения.
         /// </summary>
         public static string CopyingApk {
             get {
@@ -304,7 +304,7 @@ namespace SaveToGameWpf.Resources.Localizations {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Копирование программы StG....
+        ///   Looks up a localized string similar to Копирование программы StG.
         /// </summary>
         public static string CopyingStgApk {
             get {
@@ -567,7 +567,7 @@ namespace SaveToGameWpf.Resources.Localizations {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Загрузка....
+        ///   Looks up a localized string similar to Загрузка.
         /// </summary>
         public static string Loading_Title {
             get {
@@ -603,7 +603,7 @@ namespace SaveToGameWpf.Resources.Localizations {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Перемещение готового файла....
+        ///   Looks up a localized string similar to Перемещение готового файла.
         /// </summary>
         public static string MovingResult {
             get {
@@ -703,7 +703,7 @@ namespace SaveToGameWpf.Resources.Localizations {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Подготовка....
+        ///   Looks up a localized string similar to Подготовка.
         /// </summary>
         public static string Preparing {
             get {
@@ -769,7 +769,7 @@ namespace SaveToGameWpf.Resources.Localizations {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Подпись....
+        ///   Looks up a localized string similar to Подпись.
         /// </summary>
         public static string Signing {
             get {
@@ -891,6 +891,33 @@ namespace SaveToGameWpf.Resources.Localizations {
         public static string ThanksPurchase {
             get {
                 return ResourceManager.GetString("ThanksPurchase", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Тема.
+        /// </summary>
+        public static string Theme {
+            get {
+                return ResourceManager.GetString("Theme", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Тёмная.
+        /// </summary>
+        public static string ThemeDark {
+            get {
+                return ResourceManager.GetString("ThemeDark", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Светлая.
+        /// </summary>
+        public static string ThemeLight {
+            get {
+                return ResourceManager.GetString("ThemeLight", resourceCulture);
             }
         }
         
