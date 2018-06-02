@@ -50,13 +50,6 @@ namespace SaveToGameWpf.Windows
 
         public InstallApkWindow()
         {
-            InitializeComponent();
-
-            TaskbarItemInfo = new TaskbarItemInfo();
-            _visualProgress = StatusProgress.GetVisualProgress();
-
-            _visualProgress.SetLabelText(MainResources.AllDone);
-
             var iconsFolder = Path.Combine(GlobalVariables.PathToResources, "icons");
 
             BitmapSource GetImage(string name) =>
@@ -64,11 +57,18 @@ namespace SaveToGameWpf.Windows
 
             IconsStorage = new AppIconsStorage
             {
-                Icon_xxhdpi = {Value = GetImage("xxhdpi.png")},
-                Icon_xhdpi = {Value = GetImage("xhdpi.png")},
-                Icon_hdpi = {Value = GetImage("hdpi.png")},
-                Icon_mdpi = {Value = GetImage("mdpi.png")}
+                Icon_xxhdpi = { Value = GetImage("xxhdpi.png") },
+                Icon_xhdpi = { Value = GetImage("xhdpi.png") },
+                Icon_hdpi = { Value = GetImage("hdpi.png") },
+                Icon_mdpi = { Value = GetImage("mdpi.png") }
             };
+
+            InitializeComponent();
+
+            TaskbarItemInfo = new TaskbarItemInfo();
+            _visualProgress = StatusProgress.GetVisualProgress();
+
+            _visualProgress.SetLabelText(MainResources.AllDone);
 
             Apk.PropertyChanged += (sender, args) => AppTitle.Value = Path.GetFileNameWithoutExtension(Apk.Value) + " mod";
         }
