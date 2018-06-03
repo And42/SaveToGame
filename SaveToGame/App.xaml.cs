@@ -1,14 +1,13 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Windows;
-using Alphaleonis.Win32.Filesystem;
 using SaveToGameWpf.Logic;
 using SaveToGameWpf.Logic.OrganisationItems;
 using SaveToGameWpf.Logic.Utils;
 using SaveToGameWpf.Properties;
 using SaveToGameWpf.Resources.Localizations;
 using SaveToGameWpf.Windows;
-using UsefulFunctionsLib;
 
 namespace SaveToGameWpf
 {
@@ -51,6 +50,11 @@ namespace SaveToGameWpf
             ThemeUtils.SetThemeFromSettings();
 
             WindowManager.ActivateWindow<MainWindow>();
+
+#if !DEBUG
+            if (!ApplicationUtils.GetIsPortable())
+#endif
+                ApplicationUtils.CheckForUpdate();
         }
 
         private static bool CheckForFiles(out string[] notExistingFiles)

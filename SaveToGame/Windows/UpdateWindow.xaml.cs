@@ -4,7 +4,6 @@ using System.Text;
 using System.Windows;
 using System.Xml;
 using SaveToGameWpf.Logic.Utils;
-using SaveToGameWpf.Resources.Localizations;
 
 // ReSharper disable PossibleNullReferenceException
 
@@ -39,18 +38,7 @@ namespace SaveToGameWpf.Windows
 
         private void YesClick(object sender, RoutedEventArgs e)
         {
-            if (ApplicationUtils.GetIsAdmin())
-            {
-                Close();
-                new DownloadWindow().ShowDialog();
-            }
-            else
-            {
-                if (MessBox.ShowDial(MainResources.UpdateAdminRequired, null, MessBox.MessageButtons.Yes,
-                        MessBox.MessageButtons.No) != MessBox.MessageButtons.Yes) return;
-                Utils.RunAsAdmin(ApplicationUtils.GetPathToExe(), "");
-                Application.Current.Shutdown();
-            }
+            new DownloadWindow().ShowDialog();
         }
 
         private void NoClick(object sender, RoutedEventArgs e)

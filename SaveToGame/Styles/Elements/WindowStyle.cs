@@ -5,7 +5,7 @@ using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
 using Microsoft.Windows.Shell;
-using UsefulFunctionsLib;
+using SaveToGameWpf.Logic.Utils;
 
 namespace SaveToGameWpf.Styles.Elements
 {
@@ -59,7 +59,7 @@ namespace SaveToGameWpf.Styles.Elements
             while (element != null)
             {
                 element = VisualTreeHelper.GetParent(element);
-                if (element is Window) { action(element as Window); break; }
+                if (element is Window window) { action(window); break; }
             }
         }
 

@@ -4,8 +4,19 @@ using System.Linq;
 
 namespace SaveToGameWpf.Logic.Utils
 {
-    public static class CollectionUtils
+    internal static class CollectionUtils
     {
+        public static void ForEach<T>(this IEnumerable<T> collection, Action<T> action)
+        {
+            foreach (T item in collection)
+                action(item);
+        }
+
+        public static string JoinStr(this IEnumerable<string> elements, string separator)
+        {
+            return string.Join(separator, elements);
+        }
+
         public static IEnumerable<(int index, T value)> WithIndex<T>(this IEnumerable<T> collection)
         {
             return collection.Select((value, index) => (index, value));

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls;
-using UsefulFunctionsLib;
+using SaveToGameWpf.Logic.Utils;
 
 namespace SaveToGameWpf.Windows
 {

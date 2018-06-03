@@ -326,7 +326,7 @@
             <param name="fileName">Путь к файлу (*.apk)</param>
             <param name="pathToResources">Путь к папке с ресурсами</param>
             <param name="pathToApktool">Путь к apktool.jar</param>
-            <param name="jrePath">Путь к java.exe</param>
+            <param name="javaExePath">Путь к java.exe</param>
             <param name="mainSmaliEncoding">Кодировка главного smali</param>
             <param name="tracing">Включить ли трассировку действий</param>
         </member>

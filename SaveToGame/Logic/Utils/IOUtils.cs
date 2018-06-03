@@ -1,10 +1,21 @@
-﻿using Alphaleonis.Win32.Filesystem;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.IO;
 
 namespace SaveToGameWpf.Logic.Utils
 {
-    // ReSharper disable once UnusedMember.Global
-    public static class IOUtils
+    [SuppressMessage("ReSharper", "InconsistentNaming")]
+    internal static class IOUtils
     {
+        public static void RecreateDir(string path)
+        {
+            if (Directory.Exists(path))
+                Directory.Delete(path, true);
+            else if (File.Exists(path))
+                File.Delete(path);
+
+            Directory.CreateDirectory(path);
+        }
+
         public static void CreateDir(string path)
         {
             if (Directory.Exists(path))

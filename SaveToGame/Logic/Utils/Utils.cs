@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Net;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -14,11 +15,6 @@ using SaveToGameWpf.Resources.Localizations;
 using SaveToGameWpf.Windows;
 
 using Application = System.Windows.Application;
-using Directory = Alphaleonis.Win32.Filesystem.Directory;
-using File = Alphaleonis.Win32.Filesystem.File;
-using FileInfo = Alphaleonis.Win32.Filesystem.FileInfo;
-using Path = Alphaleonis.Win32.Filesystem.Path;
-using IOHelper = UsefulFunctionsLib.UsefulFunctions_IOHelper;
 
 namespace SaveToGameWpf.Logic.Utils
 {
@@ -107,15 +103,14 @@ namespace SaveToGameWpf.Logic.Utils
 
         public static void ExtractAll(this ZipFile zip, string folder)
         {
-            IOHelper.DeleteFolder(folder);
-            Directory.CreateDirectory(folder);
+            IOUtils.RecreateDir(folder);
 
             foreach (ZipEntry entry in zip)
             {
                 if (entry.IsDirectory)
                     continue;
 
-                Directory.CreateDirectory(Path.Combine(folder, Path.GetDirectoryName(entry.Name) ?? string.Empty));
+                IOUtils.CreateDir(Path.Combine(folder, Path.GetDirectoryName(entry.Name) ?? string.Empty));
 
                 using (var zipStream = zip.GetInputStream(entry))
                 using (var outputStream = File.Create(Path.Combine(folder, entry.Name)))
@@ -244,20 +239,14 @@ namespace SaveToGameWpf.Logic.Utils
                 {
                     await Task.Factory.StartNew(() => zipFile.ExtractAll(GlobalVariables.PathToPortableJre));
                 }
+
+                IOUtils.DeleteFile(fileLocation);
             }
 
             visualProgress.HideIndeterminateLabel();
             visualProgress.SetLabelText(MainResources.AllDone);
         }
 
-        public static DisposableUnion With(this IDisposable source, params IDisposable[] items)
-        {
-            var tmpItems = new IDisposable[items.Length + 1];
-
-            tmpItems[0] = source;
-            Array.Copy(items, 0, tmpItems, 1, items.Length);
-
-            return new DisposableUnion(tmpItems);
-        }
+        public static T As<T>(this object obj) => (T) obj;
     }
 }

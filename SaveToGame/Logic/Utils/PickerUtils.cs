@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 using Microsoft.WindowsAPICodePack.Dialogs;
+using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
 
 namespace SaveToGameWpf.Logic.Utils
 {
@@ -24,7 +25,7 @@ namespace SaveToGameWpf.Logic.Utils
                 Multiselect = false
             };
 
-            return openDialog.ShowDialog() == DialogResult.OK ? (true, openDialog.FileName) : (false, null);
+            return openDialog.ShowDialog() == true ? (true, openDialog.FileName) : (false, null);
         }
 
         public static (bool success, string[] filePaths) PickFiles(
@@ -45,7 +46,7 @@ namespace SaveToGameWpf.Logic.Utils
                 Multiselect = true
             };
 
-            return openDialog.ShowDialog() == DialogResult.OK ? (true, openDialog.FileNames) : (false, null);
+            return openDialog.ShowDialog() == true ? (true, openDialog.FileNames) : (false, null);
         }
 
         public static (bool success, string folderPath) PickFolder(string title = null)

@@ -48,7 +48,7 @@
             Возвращает AndroidManifest данного экзеипляра
             </summary>
         </member>
-        <member name="M:ApkModifer.Logic.ApkModifer.#ctor(AndroidHelper.Logic.Apktools,System.Boolean)">
+        <member name="M:ApkModifer.Logic.ApkModifer.#ctor(AndroidHelper.Logic.Apktools)">
             <summary>
             Создаёт экземпляр класса ApkModifer на основании apktools
             </summary>

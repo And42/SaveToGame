@@ -11,8 +11,6 @@ using SaveToGameWpf.Logic.Classes;
 using SaveToGameWpf.Resources.Localizations;
 using SaveToGameWpf.Windows;
 
-using File = Alphaleonis.Win32.Filesystem.File;
-
 namespace SaveToGameWpf.Logic.Utils
 {
     public static class LicensingUtils

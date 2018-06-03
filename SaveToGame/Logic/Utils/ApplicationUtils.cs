@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Net;
 using System.Reflection;
-using System.Security.Principal;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows;
-using Alphaleonis.Win32.Filesystem;
 using SaveToGameWpf.Logic.OrganisationItems;
 using SaveToGameWpf.Properties;
 using SaveToGameWpf.Windows;
@@ -18,13 +16,12 @@ namespace SaveToGameWpf.Logic.Utils
     {
         private static readonly Dictionary<string, string> AppLanguageToChangesLinkDict = new Dictionary<string, string>
         {
-            { "en", "http://things.pixelcurves.info/Pages/Updates.aspx?cmd=stg_changes&language=en" }
+            { "en", "https://storage.googleapis.com/savetogame/changes_en.xml" }
         };
 
         public static string GetVersion()
         {
-            Assembly assembly = Assembly.GetExecutingAssembly();
-            return assembly.GetName().Version.ToString();
+            return Assembly.GetExecutingAssembly().GetName().Version.ToString();
         }
 
         public static void LoadSettings()
@@ -36,19 +33,11 @@ namespace SaveToGameWpf.Logic.Utils
                     if (LicensingUtils.IsLicenseValid(Settings.Default.License))
                         Utils.ProVersionEnable(true);
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    // ignored
+                    GlobalVariables.ErrorClient.Notify(ex);
                 }
             });
-        }
-
-        public static bool GetIsAdmin()
-        {
-            WindowsIdentity id = WindowsIdentity.GetCurrent();
-            var p = new WindowsPrincipal(id);
-
-            return p.IsInRole(WindowsBuiltInRole.Administrator);
         }
 
         public static string GetPathToExe()
@@ -58,41 +47,32 @@ namespace SaveToGameWpf.Logic.Utils
 
         public static void CheckForUpdate()
         {
-            Task.Factory.StartNew(() =>
+            var webClient = new WebClient();
+
+            webClient.DownloadStringCompleted += (sender, args) =>
             {
-                using (var webClient = new WebClient
-                {
-                    Headers = { { "user-agent", "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1; Win64; x64; Trident/4.0; Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1) ; .NET CLR 2.0.50727; SLCC2; .NET CLR 3.5.30729; .NET CLR 3.0.30729; Media Center PC 6.0; Tablet PC 2.0; .NET4.0C; .NET4.0E)" } }
-                })
-                {
-                    string newVersion;
+                if (args.Error != null)
+                    return;
 
-                    try
-                    {
-                        newVersion = webClient.DownloadString("http://things.pixelcurves.info/Pages/Updates.aspx?cmd=stg_version");
-                    }
-                    catch (WebException)
-                    {
-                        return;
-                    }
+                string newVersion = args.Result;
 
-                    if (Utils.CompareVersions(GetVersion(), newVersion) >= 0)
-                        return;
+                if (false && Utils.CompareVersions(GetVersion(), newVersion) >= 0)
+                    return;
 
-                    string appLanguage = Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName.ToLower();
+                string appLanguage = Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName.ToLower();
 
-                    string changesLink;
-                    if (!AppLanguageToChangesLinkDict.TryGetValue(appLanguage, out changesLink))
-                        changesLink = "http://things.pixelcurves.info/Pages/Updates.aspx?cmd=stg_changes";
+                string changesLink;
+                if (!AppLanguageToChangesLinkDict.TryGetValue(appLanguage, out changesLink))
+                    changesLink = "https://storage.googleapis.com/savetogame/changes_ru.xml";
 
-                    string changes = webClient.DownloadString(changesLink);
+                string changes = webClient.DownloadString(changesLink);
 
-                    Application.Current.Dispatcher.InvokeAction(() =>
-                    {
-                        new UpdateWindow(GetVersion(), changes).ShowDialog();
-                    });
-                }
-            });
+                new UpdateWindow(GetVersion(), changes).ShowDialog();
+
+                webClient.Dispose();
+            };
+
+            webClient.DownloadStringAsync(new Uri("https://storage.googleapis.com/savetogame/latest_version.txt"));
         }
 
         public static bool GetIsPortable()

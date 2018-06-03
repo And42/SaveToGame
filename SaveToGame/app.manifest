@@ -23,6 +23,9 @@
 
   <compatibility xmlns="urn:schemas-microsoft-com:compatibility.v1">
     <application>
+      <windowsSettings>
+        <longPathAware xmlns="http://schemas.microsoft.com/SMI/2016/WindowsSettings">true</longPathAware>
+      </windowsSettings>
       <!-- Список версий Windows, для работы с которыми предназначено данное приложение. 
       Windows автоматически выберет наиболее совместимую среду.-->
 

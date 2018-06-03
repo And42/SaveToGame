@@ -72,10 +72,6 @@
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AlphaFS, Version=2.2.0.0, Culture=neutral, PublicKeyToken=4d31a58f7d7ad5c9, processorArchitecture=MSIL">
-      <HintPath>..\packages\AlphaFS.2.2.1\lib\net40\AlphaFS.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="AndroidHelper, Version=1.4.6662.38775, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>Libraries\AndroidHelper.dll</HintPath>
@@ -88,8 +84,7 @@
       <HintPath>..\packages\Bugsnag.2.1.0\lib\net40\Bugsnag.dll</HintPath>
     </Reference>
     <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Users\andre\Desktop\SrcSamples\bin\ICSharpCode.SharpZipLib.dll</HintPath>
+      <HintPath>..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Threading.Tasks, Version=1.0.12.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Bcl.Async.1.0.168\lib\net40\Microsoft.Threading.Tasks.dll</HintPath>
@@ -129,7 +124,6 @@
     <Reference Include="System.Runtime, Version=2.6.10.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Bcl.1.1.10\lib\net40\System.Runtime.dll</HintPath>
     </Reference>
-    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Threading.Tasks, Version=2.6.10.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Bcl.1.1.10\lib\net40\System.Threading.Tasks.dll</HintPath>
     </Reference>
@@ -147,10 +141,6 @@
     <Reference Include="UsefulClasses, Version=1.1.6419.29346, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>Libraries\UsefulClasses.dll</HintPath>
-    </Reference>
-    <Reference Include="UsefulFunctionsLib, Version=1.4.6537.36668, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>Libraries\UsefulFunctionsLib.dll</HintPath>
     </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
@@ -174,7 +164,6 @@
     <Compile Include="Logic\Interfaces\IVisualProgress.cs" />
     <Compile Include="Logic\OrganisationItems\DefaultSettingsContainer.cs" />
     <Compile Include="Logic\Classes\TraceWriter.cs" />
-    <Compile Include="Logic\OrganisationItems\DisposableUnion.cs" />
     <Compile Include="Logic\Utils\ApplicationUtils.cs" />
     <Compile Include="Logic\Utils\BitmapUtils.cs" />
     <Compile Include="Logic\Utils\CollectionUtils.cs" />
@@ -511,7 +500,9 @@
       <LastGenOutput>MainResources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <None Include="app.config" />
+    <None Include="app.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="app.manifest">
       <SubType>Designer</SubType>
     </None>
@@ -555,8 +546,6 @@
     <None Include="Libraries\zzz_dependencies.txt" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Libraries\AlphaFS.dll" />
-    <None Include="Libraries\AlphaFS.xml" />
     <None Include="Libraries\AndroidHelper.dll" />
     <None Include="Libraries\AndroidHelper.xml" />
     <None Include="Libraries\AndroidTranslator.dll" />
@@ -572,8 +561,6 @@
     <None Include="Libraries\SmaliParser.xml" />
     <None Include="Libraries\UsefulClasses.dll" />
     <None Include="Libraries\UsefulClasses.xml" />
-    <None Include="Libraries\UsefulFunctionsLib.dll" />
-    <None Include="Libraries\UsefulFunctionsLib.xml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Libraries\SettingsManager.dll" />

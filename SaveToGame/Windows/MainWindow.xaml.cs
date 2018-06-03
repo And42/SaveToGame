@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
@@ -19,14 +20,9 @@ using SaveToGameWpf.Logic.Utils;
 using SaveToGameWpf.Logic.ViewModels;
 using SaveToGameWpf.Resources.Localizations;
 using UsefulClasses;
-using UsefulFunctionsLib;
 
 using Application = System.Windows.Application;
-using Directory = Alphaleonis.Win32.Filesystem.Directory;
 using DragEventArgs = System.Windows.DragEventArgs;
-using File = Alphaleonis.Win32.Filesystem.File;
-using FileInfo = Alphaleonis.Win32.Filesystem.FileInfo;
-using Path = Alphaleonis.Win32.Filesystem.Path;
 
 namespace SaveToGameWpf.Windows
 {
@@ -45,14 +41,6 @@ namespace SaveToGameWpf.Windows
         private readonly IVisualProgress _visualProgress;
 
         public MainWindowViewModel ViewModel { get; }
-
-        static MainWindow()
-        {
-#if !DEBUG
-            if (!ApplicationUtils.GetIsPortable())
-#endif
-                ApplicationUtils.CheckForUpdate();
-        }
 
 		public MainWindow()
 		{
@@ -154,7 +142,7 @@ namespace SaveToGameWpf.Windows
                     {
                         Start();
                     }
-                    catch (System.IO.PathTooLongException ex)
+                    catch (PathTooLongException ex)
                     {
                         HaveError(Environment.NewLine + ex, MainResources.PathTooLongExceptionMessage);
                     }
@@ -257,9 +245,9 @@ namespace SaveToGameWpf.Windows
             var resultApkPath = apkFile.GetFullFNWithoutExt() + "_mod.apk";
             var pathToSave = ViewModel.CurrentSave.Value;
 
-            string pathToJre = Path.Combine(GlobalVariables.PathToPortableJre, "bin", "java.exe");
-            if (!File.Exists(pathToJre))
-                pathToJre = null;
+            string pathToJava = GlobalVariables.PathToPortableJavaExe;
+            if (!File.Exists(pathToJava))
+                pathToJava = null;
 
             IOUtils.DeleteDir(tempFolder);
             IOUtils.CreateDir(tempFolder);
@@ -305,9 +293,9 @@ namespace SaveToGameWpf.Windows
             File.Copy(apkFile.FullName, processedApkPath, true);
 
 #if DEBUG
-            var apktool = new Apktools(processedApkPath, GlobalVariables.PathToResources, jrePath: pathToJre, tracing: true);
+            var apktool = new Apktools(processedApkPath, GlobalVariables.PathToResources, javaExePath: pathToJava, tracing: true);
 #else
-            var apktool = new Apktools(processedApkPath, GlobalVariables.PathToResources, jrePath: pathToJre);
+            var apktool = new Apktools(processedApkPath, GlobalVariables.PathToResources, javaExePath: pathToJava);
 #endif
 
             apktool.Logging += Log;
@@ -472,7 +460,7 @@ namespace SaveToGameWpf.Windows
         {
             var encodedText = Utils.EncodeUnicode(targetString);
 
-            var files = Directory.EnumerateFiles(folderWithSmaliFiles, "*.smali", System.IO.SearchOption.AllDirectories);
+            var files = Directory.EnumerateFiles(folderWithSmaliFiles, "*.smali", SearchOption.AllDirectories);
 
             foreach (string file in files)
             {
@@ -501,7 +489,7 @@ namespace SaveToGameWpf.Windows
 
         private static void RemoveCodeLines(string folderWithSmaliFiles, IList<string> linesToRemove)
         {
-            var files = Directory.EnumerateFiles(folderWithSmaliFiles, "*.smali", System.IO.SearchOption.AllDirectories);
+            var files = Directory.EnumerateFiles(folderWithSmaliFiles, "*.smali", SearchOption.AllDirectories);
 
             foreach (var name in files)
             {
@@ -651,6 +639,13 @@ namespace SaveToGameWpf.Windows
             _logger.Dispose();
         }
 
+        private void ChangeTheme_OnClick(object sender, RoutedEventArgs e)
+        {
+            var theme = sender.As<FrameworkElement>().Tag.As<string>();
+
+            ThemeUtils.SetTheme(theme);
+        }
+
         #region Disposables
 
         private CustomBoolDisposable CreateWorking()
@@ -667,12 +662,5 @@ namespace SaveToGameWpf.Windows
         }
 
         #endregion
-
-        private void ChangeTheme_OnClick(object sender, RoutedEventArgs e)
-        {
-            var theme = sender.As<FrameworkElement>().Tag.As<string>();
-
-            ThemeUtils.SetTheme(theme);
-        }
     }
 }

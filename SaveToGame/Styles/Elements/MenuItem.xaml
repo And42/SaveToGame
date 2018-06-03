@@ -229,7 +229,8 @@
                         Margin="6,0" 
                         Background="Transparent"
                         BorderThickness="1"
-                        BorderBrush="Transparent">
+                        VerticalAlignment="Center"
+                        BorderBrush="{DynamicResource MenuItem_CheckMarkBorder}">
                     <Path 
                         Name="CheckMark"
                         Width="7" Height="7" 

@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media.Animation;
-using Alphaleonis.Win32.Filesystem;
 using Microsoft.Win32;
 using SaveToGameWpf.Logic.Utils;
 using Clipboard = System.Windows.Clipboard;
@@ -43,7 +43,7 @@ namespace SaveToGameWpf.Windows
             {
                 LicensingUtils.GenerateNotActivatedLicense(sd.FileName);
             }
-            catch (System.IO.IOException)
+            catch (IOException)
             {
                 MessBox.ShowDial(Res.GenerateLicenseFileError);
             }

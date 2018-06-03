@@ -2,13 +2,13 @@
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using System.Windows.Shell;
-using Alphaleonis.Win32.Filesystem;
 using AndroidHelper.Logic;
 using ApkModifer.Logic;
 using ICSharpCode.SharpZipLib.Zip;
@@ -21,11 +21,9 @@ using SaveToGameWpf.Logic.Interfaces;
 using SaveToGameWpf.Logic.OrganisationItems;
 using SaveToGameWpf.Logic.Utils;
 using SaveToGameWpf.Resources.Localizations;
-using UsefulFunctionsLib;
 
 using DragEventArgs = System.Windows.DragEventArgs;
 using Image = System.Windows.Controls.Image;
-using IOHelper = UsefulFunctionsLib.UsefulFunctions_IOHelper;
 
 namespace SaveToGameWpf.Windows
 {
@@ -236,12 +234,15 @@ namespace SaveToGameWpf.Windows
 
             var resultFilePath = Path.Combine(Path.GetDirectoryName(apkFile) ?? string.Empty, Path.GetFileNameWithoutExtension(apkFile) + "_mod.apk");
 
-            IOHelper.DeleteFolder(tempProcessedFolder);
-            Directory.CreateDirectory(tempProcessedFolder);
+            IOUtils.RecreateDir(tempProcessedFolder);
 
             File.Copy(apkFile, copiedSourceApkPath);
 
-            Apktools apk = new Apktools(containerApkPath, GlobalVariables.PathToResources);
+            var javaPath = GlobalVariables.PathToPortableJavaExe;
+            if (!File.Exists(javaPath))
+                javaPath = null;
+
+            var apk = new Apktools(containerApkPath, GlobalVariables.PathToResources, javaExePath: javaPath);
             apk.Logging += Log;
 
             {
@@ -302,7 +303,7 @@ namespace SaveToGameWpf.Windows
             string package;
 
             {
-                string instMan = new Apktools(apkToModifyPath, GlobalVariables.PathToResources).ExtractSimpleManifest();
+                string instMan = new Apktools(apkToModifyPath, GlobalVariables.PathToResources, javaExePath: javaPath).ExtractSimpleManifest();
 
                 string temp = File.ReadAllText(instMan, Encoding.UTF8);
 
@@ -321,7 +322,7 @@ namespace SaveToGameWpf.Windows
             string iconsFolder = Path.Combine(apk.FolderOfProject, "res", "mipmap-");
 
             void DeleteIcon(string folder) =>
-                IOHelper.DeleteFile(Path.Combine($"{iconsFolder}{folder}", "ic_launcher.png"));
+                IOUtils.DeleteFile(Path.Combine($"{iconsFolder}{folder}", "ic_launcher.png"));
 
             DeleteIcon("xxhdpi-v4");
             DeleteIcon("xhdpi-v4");
@@ -352,7 +353,7 @@ namespace SaveToGameWpf.Windows
 
             File.Copy(apk.SignedApk, resultFilePath, true);
 
-            IOHelper.DeleteFolder(tempProcessedFolder);
+            IOUtils.DeleteDir(tempProcessedFolder);
 
             _visualProgress.HideIndeterminateLabel();
             _visualProgress.HideBar();

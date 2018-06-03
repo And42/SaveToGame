@@ -1,23 +1,23 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Diagnostics;
+using System.IO;
 using System.Net;
-using Alphaleonis.Win32.Filesystem;
+using MVVM_Tools.Code.Providers;
 using SaveToGameWpf.Logic.Utils;
 using SaveToGameWpf.Resources.Localizations;
-using UsefulFunctionsLib;
 
 namespace SaveToGameWpf.Windows
 {
     public partial class DownloadWindow
     {
-        private const string UserAgent =
-            "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1; Win64; x64; Trident/4.0; Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1) ; .NET CLR 2.0.50727; SLCC2; .NET CLR 3.5.30729; .NET CLR 3.0.30729; Media Center PC 6.0; Tablet PC 2.0; .NET4.0C; .NET4.0E)";
-
         private static readonly Uri UpdateExeUri =
-            new Uri("http://things.pixelcurves.info/Pages/Updates.aspx?cmd=stg_download");
+            new Uri("https://storage.googleapis.com/savetogame/latest_version_installer.exe");
 
         private static readonly string UpdateFilePath = 
             Path.Combine(Path.GetTempPath(), "STG Temp", "NewVersion.exe");
+
+        public Property<int> ProgressNow { get; } = new Property<int>();
 
         public DownloadWindow()
         {
@@ -30,17 +30,14 @@ namespace SaveToGameWpf.Windows
         {
             try
             {
-                var webClient = new WebClient
-                {
-                    Headers = { { "user-agent", UserAgent } }
-                };
+                var webClient = new WebClient();
 
                 webClient.DownloadProgressChanged += WebClient_DownloadProgressChanged;
                 webClient.DownloadFileCompleted += WebClient_DownloadFileCompleted;
 
                 var updateDir = Path.GetDirectoryName(UpdateFilePath);
 
-                Directory.CreateDirectory(updateDir);
+                IOUtils.CreateDir(updateDir);
 
                 webClient.DownloadFileAsync(UpdateExeUri, UpdateFilePath);
             }
@@ -59,7 +56,7 @@ namespace SaveToGameWpf.Windows
 
             try
             {
-                Utils.RunAsAdmin(UpdateFilePath, string.Empty);
+                Process.Start(UpdateFilePath);
                 Environment.Exit(0);
             }
             catch (Exception)
@@ -71,7 +68,7 @@ namespace SaveToGameWpf.Windows
 
         private void WebClient_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
         {
-            ProcessBar.Value = e.ProgressPercentage;
+            ProgressNow.Value = e.ProgressPercentage;
         }
 
         private void DownloadCS_Load(object sender, EventArgs e)

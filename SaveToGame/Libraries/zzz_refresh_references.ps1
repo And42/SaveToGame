@@ -56,10 +56,10 @@ function CopyAndCheckFile($file, $checkVersion = $true)
 			# Write-Host ("SourceHash: " + (GetFileHash $file)) -ForegroundColor Cyan
 			# Write-Host ("TargetHash: " + (GetFileHash $newFile)) -ForegroundColor Cyan
 		
-			$oldVersion = GetVersion $file
-			$newVersion = GetVersion $newFile
+			$newVersion = GetVersion $file
+			$oldVersion = GetVersion $newFile
 		
-			if ( ( (GetFileHash $file) -eq (GetFileHash $newFile) ) -and ( -not (IsNewer $oldVersion $newVersion) ) )
+			if ( ( (GetFileHash $file) -eq (GetFileHash $newFile) ) -or ( -not (IsNewer $oldVersion $newVersion) ) )
 			{
 				Write-Host "skipped" -ForegroundColor Gray
 				Return $false
@@ -94,10 +94,10 @@ function CopyDependency ($dependencyLib)
 	
 	if ($copied) {
 		Write-Host ("  ...\" + $pdbFileName + " ") -NoNewLine
-		CopyAndCheckFile $pdbFile $false
+		$tmp = CopyAndCheckFile $pdbFile $false
 		
 		Write-Host ("  ...\" + $docFileName + " ") -NoNewLine
-		CopyAndCheckFile $docFile $false
+		$tmp = CopyAndCheckFile $docFile $false
 	}
 }
 
@@ -114,10 +114,10 @@ function ProcessLibrary ($libraryPath, $includeDependencies)
 	
 	if ($copied) {
 		Write-Host ($pdbFile + " ") -NoNewLine
-		CopyAndCheckFile $pdbFile $false
+		$tmp = CopyAndCheckFile $pdbFile $false
 		
 		Write-Host ($docFile + " ") -NoNewLine
-		CopyAndCheckFile $docFile $false
+		$tmp = CopyAndCheckFile $docFile $false
 	}
 	
 	if ($includeDependencies -eq $FALSE)
