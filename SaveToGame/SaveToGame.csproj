@@ -160,7 +160,6 @@
     <Compile Include="Converters\ThemeToCheckedConverter.cs" />
     <Compile Include="Logic\Classes\AppIconsStorage.cs" />
     <Compile Include="Logic\Classes\BlockIds.cs" />
-    <Compile Include="Logic\Classes\EnumEx.cs" />
     <Compile Include="Logic\Interfaces\IVisualProgress.cs" />
     <Compile Include="Logic\OrganisationItems\DefaultSettingsContainer.cs" />
     <Compile Include="Logic\Classes\TraceWriter.cs" />
@@ -174,7 +173,6 @@
     <Compile Include="Logic\Utils\ThemeUtils.cs" />
     <Compile Include="Logic\Utils\Utils.cs" />
     <Compile Include="Logic\GlobalVariables.cs" />
-    <Compile Include="Logic\Interfaces\IRaisePropertyChanged.cs" />
     <Compile Include="Logic\OrganisationItems\WindowManager.cs" />
     <Compile Include="Logic\ViewModels\MainWindowViewModel.cs" />
     <Compile Include="Properties\Annotations.cs" />

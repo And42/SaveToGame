@@ -56,7 +56,7 @@ namespace SaveToGameWpf.Logic.Utils
 
                 string newVersion = args.Result;
 
-                if (false && Utils.CompareVersions(GetVersion(), newVersion) >= 0)
+                if (Utils.CompareVersions(GetVersion(), newVersion) >= 0)
                     return;
 
                 string appLanguage = Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName.ToLower();

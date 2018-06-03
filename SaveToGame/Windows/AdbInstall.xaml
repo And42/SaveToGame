@@ -4,8 +4,9 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         WindowStartupLocation="CenterScreen"
-        mc:Ignorable="d" Style="{StaticResource VsWindowStyle}" MaxHeight="10000" MaxWidth="10000"
-        Title="AdbInstall" Height="300" Width="300" FontSize="14">
+        mc:Ignorable="d" Style="{StaticResource CommonWindowStyle}"
+        MaxHeight="10000" MaxWidth="10000"
+        Title="AdbInstall" Height="300" Width="300">
     <Grid Margin="5">
         <Grid.Resources>
             <Style TargetType="Button">

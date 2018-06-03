@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
@@ -27,7 +26,7 @@ using Image = System.Windows.Controls.Image;
 
 namespace SaveToGameWpf.Windows
 {
-    public partial class InstallApkWindow : IRaisePropertyChanged
+    public partial class InstallApkWindow
     {
         public AppIconsStorage IconsStorage { get; }
 
@@ -432,17 +431,6 @@ namespace SaveToGameWpf.Windows
         private CustomBoolDisposable CreateWorking()
         {
             return new CustomBoolDisposable(val => Working.Value = val);
-        }
-
-        #endregion
-
-        #region PropertyChanged
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        public void RaisePropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         #endregion

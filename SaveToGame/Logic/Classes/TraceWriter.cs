@@ -11,10 +11,5 @@
                 System.Diagnostics.Trace.WriteLine(info);
             }
         }
-
-        public static void WriteLine<T>(T info)
-        {
-            WriteLine(info.ToString());
-        }
     }
 }

@@ -1,22 +1,13 @@
-﻿using System;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using SaveToGameWpf.Logic.Utils;
+using SaveToGameWpf.Resources.Localizations;
 
 namespace SaveToGameWpf.Windows
 {
     public partial class MessBox
     {
-        private static string _result; 
-
-        public struct MessageButtons
-        {
-            // ReSharper disable once InconsistentNaming
-            public const string OK = "OK";
-            public const string Yes = "Да";
-            public const string No = "Нет";
-            public const string Cancel = "Отмена";
-        }
+        private static string _result;
 
         public MessBox()
         {
@@ -25,7 +16,7 @@ namespace SaveToGameWpf.Windows
 
         public static string ShowDial(string message, string caption = null, params string[] buttons)
         {
-            Application.Current.Dispatcher.Invoke(new Action(() => new MessBox().ShowD(message, caption, buttons)));
+            Application.Current.Dispatcher.InvokeAction(() => new MessBox().ShowD(message, caption, buttons));
             return _result;
         }
 
@@ -36,7 +27,7 @@ namespace SaveToGameWpf.Windows
 
             if (buttons.Length == 0)
             {
-                FirstButton.Content = MessageButtons.OK;
+                FirstButton.Content = MainResources.OK;
             }
             else
             {

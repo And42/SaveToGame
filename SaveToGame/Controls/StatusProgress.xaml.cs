@@ -1,6 +1,4 @@
-﻿using System;
-using System.ComponentModel;
-using System.Threading;
+﻿using System.Threading;
 using MVVM_Tools.Code.Providers;
 using SaveToGameWpf.Logic.Interfaces;
 
@@ -12,13 +10,9 @@ namespace SaveToGameWpf.Controls
         {
             private readonly StatusProgress _control;
 
-            public event Action<(int current, int maximum)> ProgressChanged;
-
             public VisualProgress(StatusProgress control)
             {
                 _control = control;
-
-                _control.StatusProgressNow.PropertyChanged += OnProgressChanged;
             }
 
             public void SetLabelText(string text)
@@ -63,11 +57,6 @@ namespace SaveToGameWpf.Controls
             public void SetBarValue(int value)
             {
                 _control.StatusProgressNow.Value = value;
-            }
-
-            private void OnProgressChanged(object sender, PropertyChangedEventArgs e)
-            {
-                ProgressChanged?.Invoke((_control.StatusProgressNow.Value, 100));
             }
         }
 

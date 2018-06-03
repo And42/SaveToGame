@@ -2,9 +2,6 @@
 
 namespace SaveToGameWpf.Windows
 {
-    /// <summary>
-    /// Логика взаимодействия для AdbInstall.xaml
-    /// </summary>
     public partial class AdbInstall
     {
         public ObservableCollection<Device> Devices { get; } = new ObservableCollection<Device>(); 

@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
-using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -71,19 +69,6 @@ namespace SaveToGameWpf.Logic.Utils
             mainWindow.ViewModel.Pro.Value = enable;
         }
 
-        public static void RunAsAdmin(string fileName, string anArguments)
-        {
-            var processInfo = new ProcessStartInfo
-            {
-                FileName = fileName,
-                Arguments = anArguments,
-                UseShellExecute = true,
-                Verb = "runas"
-            };
-
-            Process.Start(processInfo);
-        }
-
         public static void InvokeAction(this Dispatcher dispatcher, Action action)
         {
             dispatcher.Invoke(action);
@@ -124,17 +109,6 @@ namespace SaveToGameWpf.Logic.Utils
         public static string GetFullFNWithoutExt(this FileInfo fileInfo)
         {
             return fileInfo.FullName.Remove(fileInfo.FullName.Length - fileInfo.Extension.Length);
-        }
-
-        public static bool SetProperty<TClass, TValue>(this TClass sender, ref TValue storage, TValue value, [CallerMemberName] string propertyName = null) where TClass : IRaisePropertyChanged
-        {
-            if (EqualityComparer<TValue>.Default.Equals(storage, value))
-                return false;
-
-            storage = value;
-            sender.RaisePropertyChanged(propertyName);
-
-            return true;
         }
 
         public static byte[] GetBytesUtf8(this string input)
