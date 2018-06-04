@@ -1,11 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.Net;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
+using SaveToGameWpf.Logic.JsonMappings;
 using SaveToGameWpf.Logic.OrganisationItems;
 using SaveToGameWpf.Properties;
 using SaveToGameWpf.Windows;
@@ -14,24 +14,19 @@ namespace SaveToGameWpf.Logic.Utils
 {
     public static class ApplicationUtils
     {
-        private static readonly Dictionary<string, string> AppLanguageToChangesLinkDict = new Dictionary<string, string>
-        {
-            { "en", "https://storage.googleapis.com/savetogame/changes_en.xml" }
-        };
-
         public static string GetVersion()
         {
             return Assembly.GetExecutingAssembly().GetName().Version.ToString();
         }
 
-        public static void LoadSettings()
+        public static Task CheckProVersion()
         {
-            Task.Factory.StartNew(() =>
+            return Task.Factory.StartNew(() =>
             {
                 try
                 {
                     if (LicensingUtils.IsLicenseValid(Settings.Default.License))
-                        Utils.ProVersionEnable(true);
+                        Utils.EnableProVersion(true);
                 }
                 catch (Exception ex)
                 {
@@ -47,32 +42,55 @@ namespace SaveToGameWpf.Logic.Utils
 
         public static void CheckForUpdate()
         {
-            var webClient = new WebClient();
-
-            webClient.DownloadStringCompleted += (sender, args) =>
+            WebUtils.DownloadStringAsync(new Uri("https://storage.googleapis.com/savetogame/config.json"), args =>
             {
                 if (args.Error != null)
                     return;
 
-                string newVersion = args.Result;
+                WebConfig config;
+                try
+                {
+                    config = JsonConvert.DeserializeObject<WebConfig>(args.Result);
+                }
+                catch (Exception ex)
+                {
+#if DEBUG
+                    throw;
+#endif
 
-                if (Utils.CompareVersions(GetVersion(), newVersion) >= 0)
+                    GlobalVariables.ErrorClient.Notify(ex);
+                    return;
+                }
+
+                if (Utils.CompareVersions(GetVersion(), config.Version) >= 0)
                     return;
 
                 string appLanguage = Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName.ToLower();
 
                 string changesLink;
-                if (!AppLanguageToChangesLinkDict.TryGetValue(appLanguage, out changesLink))
-                    changesLink = "https://storage.googleapis.com/savetogame/changes_ru.xml";
 
-                string changes = webClient.DownloadString(changesLink);
+                try
+                {
+                    if (!config.ChangesLinks.TryGetValue(appLanguage, out changesLink))
+                        changesLink = config.ChangesLinks["default"];
+                }
+                catch (Exception ex)
+                {
+#if DEBUG
+                    throw;
+#endif
+                    GlobalVariables.ErrorClient.Notify(ex);
+                    return;
+                }
 
-                new UpdateWindow(GetVersion(), changes).ShowDialog();
+                WebUtils.DownloadStringAsync(new Uri(changesLink), ar =>
+                {
+                    if (ar.Error != null)
+                        return;
 
-                webClient.Dispose();
-            };
-
-            webClient.DownloadStringAsync(new Uri("https://storage.googleapis.com/savetogame/latest_version.txt"));
+                    new UpdateWindow(GetVersion(), ar.Result).ShowDialog();
+                });
+            });
         }
 
         public static bool GetIsPortable()

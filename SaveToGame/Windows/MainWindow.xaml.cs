@@ -20,22 +20,17 @@ using SaveToGameWpf.Logic.OrganisationItems;
 using SaveToGameWpf.Logic.Utils;
 using SaveToGameWpf.Logic.ViewModels;
 using SaveToGameWpf.Resources.Localizations;
-using UsefulClasses;
 
 using Application = System.Windows.Application;
 using DragEventArgs = System.Windows.DragEventArgs;
 
 namespace SaveToGameWpf.Windows
 {
-    public sealed partial class MainWindow : IDisposable
+    public sealed partial class MainWindow
     {
         public static readonly Encoding DefaultSmaliEncoding = new UTF8Encoding(false);
 
         private static readonly string Line = new string('-', 50);
-
-        private Logger _logger;
-
-        private bool _shutdownOnClose = true;
 
         private readonly DefaultSettingsContainer _settings = DefaultSettingsContainer.Instance;
 
@@ -43,7 +38,11 @@ namespace SaveToGameWpf.Windows
 
         public MainWindowViewModel ViewModel { get; }
 
-		public MainWindow()
+        private StreamWriter _currentLog;
+
+        private bool _shutdownOnClose = true;
+
+        public MainWindow()
 		{
 		    ViewModel = new MainWindowViewModel();
 
@@ -61,8 +60,7 @@ namespace SaveToGameWpf.Windows
 
         private async void MainWindow_Loaded(object sender, EventArgs e)
         {
-            ApplicationUtils.LoadSettings();
-
+            await ApplicationUtils.CheckProVersion();
             await CheckJavaVersion();
         }
 
@@ -124,7 +122,7 @@ namespace SaveToGameWpf.Windows
                 (string.IsNullOrEmpty(saveFile) || !File.Exists(saveFile) && !Directory.Exists(saveFile))
             )
             {
-                MessBox.ShowDial(MainResources.File_or_save_not_selected, MainResources.Error);
+                HaveError(MainResources.File_or_save_not_selected, MainResources.File_or_save_not_selected);
                 return;
             }
 
@@ -132,8 +130,38 @@ namespace SaveToGameWpf.Windows
 
             var apkDir = Path.GetDirectoryName(apkFile);
 
-            _logger = new Logger(apkDir, false);
-            _logger.NewLog(true, Path.Combine(apkDir ?? string.Empty, $"{Path.GetFileNameWithoutExtension(apkFile)}_log.txt"));
+            string GenLogName(int index)
+            {
+                if (index == 1)
+                    return Path.Combine(apkDir ?? string.Empty, $"{Path.GetFileNameWithoutExtension(apkFile)}_log.txt");
+
+                return Path.Combine(apkDir ?? string.Empty, $"{Path.GetFileNameWithoutExtension(apkFile)}_log ({index}).txt");
+            }
+
+            int i = 1;
+            while (true)
+            {
+                try
+                {
+                    _currentLog = new StreamWriter(GenLogName(i++), false, Encoding.UTF8);
+                    break;
+                }
+                catch (Exception
+#if !DEBUG
+                    ex
+#endif
+                )
+                {
+                    if (i <= 50)
+                        continue;
+
+#if !DEBUG
+                    GlobalVariables.ErrorClient.Notify(ex);
+#else
+                    throw;
+#endif
+                }
+            }
 
             var currentCulture = Thread.CurrentThread.CurrentUICulture;
             Task.Factory.StartNew(() =>
@@ -154,20 +182,17 @@ namespace SaveToGameWpf.Windows
                     catch (Exception ex)
                     {
 #if DEBUG
-                        Dispatcher.InvokeAction(() =>
-                        {
-                            TraceWriter.WriteLine(ex.ToString());
-                            throw new Exception("Some exception occured", ex);
-                        });
+                        TraceWriter.WriteLine(ex.ToString());
+                        throw;
 #else
-                        HaveError(Environment.NewLine + ex);
                         GlobalVariables.ErrorClient.Notify(ex);
-                        MessBox.ShowDial(MainResources.Some_Error_Found);
+                        HaveError(Environment.NewLine + ex, MainResources.Some_Error_Found);
 #endif
                     }
                     finally
                     {
-                        _logger.Stop();
+                        _currentLog?.Close();
+                        _currentLog = null;
                     }
                 }
             });
@@ -227,7 +252,7 @@ namespace SaveToGameWpf.Windows
             new AboutWindow().ShowDialog();
         }
 
-        #endregion
+#endregion
 
         private void Start()
         {
@@ -268,15 +293,15 @@ namespace SaveToGameWpf.Windows
                 _visualProgress.SetLabelText(status);
             }
 
-            #region Подготовка
+#region Подготовка
 
             ViewModel.MainSmaliName.Value = ViewModel.MainSmaliName.Value.Replace('.', '\\').Replace('/', '\\');
 
             Dispatcher.InvokeAction(() => LogBox.Clear());
 
-            #endregion
+#endregion
 
-            #region Запись начала в лог
+#region Запись начала в лог
 
             Log(
                 string.Format(
@@ -288,9 +313,9 @@ namespace SaveToGameWpf.Windows
                 )
             );
 
-            #endregion
+#endregion
 
-            #region Инициализация
+#region Инициализация
 
             SetStep(1, MainResources.StepInitializing);
             _visualProgress.ShowIndeterminateLabel();
@@ -309,9 +334,9 @@ namespace SaveToGameWpf.Windows
 
             string folderOfProject = apktool.FolderOfProject;
 
-            #endregion
+#endregion
 
-            #region Декомпиляция
+#region Декомпиляция
             
             SetStep(2, MainResources.StepDecompiling);
 
@@ -323,9 +348,9 @@ namespace SaveToGameWpf.Windows
 
             apktool.Manifest = apkmodifer.Apktools.GetSimpleManifest();
 
-            #endregion
+#endregion
 
-            #region Замена текстов
+#region Замена текстов
 
             SetStep(3, MainResources.StepReplacingTexts);
 
@@ -343,9 +368,9 @@ namespace SaveToGameWpf.Windows
                 ReplaceTexts(Path.Combine(folderOfProject, "smali"), texts, Utils.EncodeUnicode(ViewModel.PopupBoxText.Value));
             }
 
-            #endregion
+#endregion
 
-            #region Удаление известных баннеров
+#region Удаление известных баннеров
 
             SetStep(4, MainResources.StepRemovingBanners);
 
@@ -370,9 +395,9 @@ namespace SaveToGameWpf.Windows
                 }
             }
 
-            #endregion
+#endregion
 
-            #region Добавление данных
+#region Добавление данных
 
             SetStep(5, MainResources.StepAddingData);
 
@@ -406,9 +431,9 @@ namespace SaveToGameWpf.Windows
                 backupType: backupType
             );
 
-            #endregion
+#endregion
 
-            #region Сборка проекта
+#region Сборка проекта
 
             SetStep(6, MainResources.StepCompiling);
 
@@ -420,9 +445,9 @@ namespace SaveToGameWpf.Windows
 
             ReplaceFilesInApk(apktool.FileName, classesFiles);
 
-            #endregion
+#endregion
 
-            #region Подпись
+#region Подпись
 
             SetStep(7, MainResources.StepSigning);
 
@@ -440,7 +465,7 @@ namespace SaveToGameWpf.Windows
 
             File.Copy(signed, resultApkPath, true);
 
-            #endregion
+#endregion
 
             IOUtils.DeleteDir(tempFolder);
 
@@ -619,7 +644,7 @@ namespace SaveToGameWpf.Windows
             if (string.IsNullOrEmpty(text))
                 return;
 
-            _logger.Log(text);
+            _currentLog?.WriteLine(text);
             TraceWriter.WriteLine(text);
 
             Application.Current.Dispatcher.InvokeAction(() =>
@@ -631,17 +656,12 @@ namespace SaveToGameWpf.Windows
 
         private void HaveError(string errorText, string dialogMessage = null)
         {
-            Log($"Error: {errorText}");
+            Log($"{MainResources.Error}: {errorText}");
 
             if (string.IsNullOrEmpty(dialogMessage))
                 return;
 
-            Dispatcher.InvokeAction(() => MessBox.ShowDial(dialogMessage, MainResources.Error));
-        }
-
-        public void Dispose()
-        {
-            _logger.Dispose();
+            MessBox.ShowDial(dialogMessage, MainResources.Error);
         }
 
         private void ChangeTheme_OnClick(object sender, RoutedEventArgs e)
@@ -651,7 +671,7 @@ namespace SaveToGameWpf.Windows
             ThemeUtils.SetTheme(theme);
         }
 
-        #region Disposables
+#region Disposables
 
         private CustomBoolDisposable CreateWorking()
         {
@@ -666,6 +686,6 @@ namespace SaveToGameWpf.Windows
             });
         }
 
-        #endregion
+#endregion
     }
 }

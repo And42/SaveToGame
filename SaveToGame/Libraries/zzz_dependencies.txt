@@ -1,6 +1,5 @@
 ﻿G:\Programming\MyLang\Libs\AndroidHelper\AndroidHelper\bin\Release\AndroidHelper.dll
 G:\Programming\MyLang\Libs\ApkModifer\ApkModifer\bin\Release\ApkModifer.dll
-G:\Programming\MyLang\Libs\UsefulClasses\bin\Release\UsefulClasses.dll
 G:\Programming\MyLang\Libs\MVVM Tools\MVVM Tools\bin\Release\MVVM_Tools.dll
 G:\Programming\MyLang\Libs\SettingsManager\SettingsManager\bin\Release\SettingsManager.dll
 only_dll

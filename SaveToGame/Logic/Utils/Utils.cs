@@ -53,7 +53,7 @@ namespace SaveToGameWpf.Logic.Utils
             return 0;
         }
 
-        public static void ProVersionEnable(bool enable = false)
+        public static void EnableProVersion(bool enable = false)
         {
             var mainWindow = WindowManager.GetActiveWindow<MainWindow>();
 

@@ -26,22 +26,10 @@ namespace SaveToGameWpf.Logic.ViewModels
         public Property<string> CurrentApk { get; private set; }
         public Property<string> CurrentSave { get; private set; }
 
-        public Property<string> StatusLabel { get; private set; }
-
-        public Property<int> StatusProgressNow { get; private set; }
-        public Property<int> StatusProgressMaximum { get; private set; }
-        public Property<bool> StatusProgressIndeterminate { get; private set; }
-        public Property<bool> StatusProgressVisible { get; private set; }
-
-        public Property<bool> StatusProgressLabelVisible { get; private set; }
-
-        public Property<bool> StatusIndeterminateLabelVisible { get; private set; }
-        public Property<string> StatusIndeterminateLabelText { get; private set; }
-
         public string Title => FormatTitle();
 
-        public bool RuIsChecked => GetThreadLang().Contains("ru");
-        public bool EnIsChecked => GetThreadLang().Contains("en");
+        public bool RuIsChecked => !EnIsChecked;
+        public bool EnIsChecked => Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName.ToLower() == "en";
 
         public BackupType BackupType
         {
@@ -70,18 +58,6 @@ namespace SaveToGameWpf.Logic.ViewModels
             BindProperty(() => CurrentApk);
             BindProperty(() => CurrentSave);
 
-            BindProperty(() => StatusLabel, MainResources.AllDone);
-
-            BindProperty(() => StatusProgressNow);
-            BindProperty(() => StatusProgressMaximum);
-            BindProperty(() => StatusProgressIndeterminate);
-            BindProperty(() => StatusProgressVisible);
-
-            BindProperty(() => StatusProgressLabelVisible);
-
-            BindProperty(() => StatusIndeterminateLabelVisible);
-            BindProperty(() => StatusIndeterminateLabelText);
-
             PropertyChanged += OnPropertyChanged;
         }
 
@@ -107,11 +83,6 @@ namespace SaveToGameWpf.Logic.ViewModels
                 result += " - " + CurrentApk.Value;
 
             return result;
-        }
-
-        private static string GetThreadLang()
-        {
-            return Thread.CurrentThread.CurrentUICulture.ToString();
         }
     }
 }

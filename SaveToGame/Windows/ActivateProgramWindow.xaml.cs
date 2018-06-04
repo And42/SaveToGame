@@ -76,7 +76,7 @@ namespace SaveToGameWpf.Windows
                 {
                     Properties.Settings.Default.License = new ArrayList(bytes);
                     Properties.Settings.Default.Save();
-                    Utils.ProVersionEnable(true);
+                    Utils.EnableProVersion(true);
                     MessBox.ShowDial(Res.ThanksPurchase);
                     Close();
                 }
