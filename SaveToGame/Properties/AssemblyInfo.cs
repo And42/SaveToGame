@@ -11,7 +11,7 @@ using System.Windows;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("ProgrammingMachines")]
 [assembly: AssemblyProduct("SaveToGame")]
-[assembly: AssemblyCopyright("Андрей Скобцов")]
+[assembly: AssemblyCopyright("Andrey Skobtsov")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -50,5 +50,5 @@ using System.Windows;
 // Можно задать все значения или принять номер построения и номер редакции по умолчанию, 
 // используя "*", как показано ниже:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("2.2.*")]
+[assembly: AssemblyVersion("2.3.*")]
 [assembly: NeutralResourcesLanguage("ru")]

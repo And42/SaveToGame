@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Shell;
@@ -134,8 +135,12 @@ namespace SaveToGameWpf.Windows
             _logger = new Logger(apkDir, false);
             _logger.NewLog(true, Path.Combine(apkDir ?? string.Empty, $"{Path.GetFileNameWithoutExtension(apkFile)}_log.txt"));
 
+            var currentCulture = Thread.CurrentThread.CurrentUICulture;
             Task.Factory.StartNew(() =>
             {
+                Thread.CurrentThread.CurrentCulture = currentCulture;
+                Thread.CurrentThread.CurrentUICulture = currentCulture;
+
                 using (CreateWorking())
                 {
                     try

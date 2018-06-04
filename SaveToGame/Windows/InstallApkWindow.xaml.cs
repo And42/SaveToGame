@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -135,7 +136,14 @@ namespace SaveToGameWpf.Windows
                     byte[] hdpi = IconsStorage.GetHdpiBytes();
                     byte[] mdpi = IconsStorage.GetMdpiBytes();
 
-                    await Task.Factory.StartNew(() => ProcessAll(xxhdpi, xhdpi, hdpi, mdpi));
+                    var currentCulture = Thread.CurrentThread.CurrentUICulture;
+                    await Task.Factory.StartNew(() =>
+                    {
+                        Thread.CurrentThread.CurrentCulture = currentCulture;
+                        Thread.CurrentThread.CurrentUICulture = currentCulture;
+
+                        ProcessAll(xxhdpi, xhdpi, hdpi, mdpi);
+                    });
                 }
                 catch (Exception ex)
                 {

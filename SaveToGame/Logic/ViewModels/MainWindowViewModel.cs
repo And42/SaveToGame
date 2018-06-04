@@ -111,7 +111,7 @@ namespace SaveToGameWpf.Logic.ViewModels
 
         private static string GetThreadLang()
         {
-            return Thread.CurrentThread.CurrentCulture.ToString();
+            return Thread.CurrentThread.CurrentUICulture.ToString();
         }
     }
 }
