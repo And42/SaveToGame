@@ -354,7 +354,7 @@ namespace SaveToGameWpf.Windows
 
             SetStep(MainResources.Signing);
 
-            apk.Sign();
+            apk.Sign(deleteMetaInf: _settings.AlternativeSigning);
 
             SetStep(MainResources.MovingResult);
 

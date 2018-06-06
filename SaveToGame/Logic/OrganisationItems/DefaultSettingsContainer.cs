@@ -34,6 +34,12 @@ namespace SaveToGameWpf.Logic.OrganisationItems
             set => SetValueInternal(value);
         }
 
+        public bool AlternativeSigning
+        {
+            get => GetValueInternal<bool>();
+            set => SetValueInternal(value);
+        }
+
         public override void Save()
         {
             Settings.Default.Save();

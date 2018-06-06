@@ -31,11 +31,6 @@
                 FontSize="{Binding FontSize, RelativeSource={RelativeSource FindAncestor, AncestorType=Window}, Mode=OneWay}"
                 Background="Transparent">
 
-                <MenuItem 
-                    Header="{x:Static localization:MainResources.InstallApkVersion}" 
-                    Visibility="{Binding Pro.Value, Converter={StaticResource TrueToVisibleConverter}}" 
-                    Click="InstallApkClick"/>
-
                 <MenuItem Header="{x:Static localization:MainResources.Settings}">
                     <MenuItem Header="{x:Static localization:MainResources.Language}">
                         <MenuItem IsCheckable="True" Header="Русский" Click="ChangeLanguageClick" Tag="ru" IsChecked="{Binding RuIsChecked, Mode=OneWay}" />
@@ -67,7 +62,19 @@
                             Header="Lucky Patcher" IsCheckable="True"
                             IsChecked="{Binding BackupType, Converter={StaticResource BackupToCheckedConverter}, ConverterParameter={x:Static logic:BackupType.LuckyPatcher}}"/>
                     </MenuItem>
+                    
+                    <MenuItem
+                        Header="{x:Static localization:MainResources.AlternativeSigning}"
+                        IsCheckable="True"
+                        IsChecked="{Binding AlternativeSigning, Source={x:Static organisationItems:DefaultSettingsContainer.Instance}}"
+                        ToolTip="{x:Static localization:MainResources.AlternativeSigningToolTip}"
+                        ToolTipService.ShowOnDisabled="True"/>
                 </MenuItem>
+
+                <MenuItem 
+                    Header="{x:Static localization:MainResources.InstallApkVersion}" 
+                    Visibility="{Binding Pro.Value, Converter={StaticResource TrueToVisibleConverter}}" 
+                    Click="InstallApkClick"/>
 
                 <MenuItem 
                     Header="{x:Static localization:MainResources.FullVersion}"
@@ -110,14 +117,17 @@
                         x:Name="ChooseApkButton"
                         Click="ChooseApkBtn_Click"
                         Content="{x:Static localization:MainResources.ChooseApk}"
-                        DragOver="Apk_DragOver" Drop="Apk_DragDrop" AllowDrop="True"/>
+                        DragOver="Apk_DragOver" Drop="Apk_DragDrop" AllowDrop="True"
+                        ToolTip="{Binding CurrentApk.Value, Mode=OneWay}"
+                        ToolTipService.ShowOnDisabled="True"/>
 
                     <Button 
                         Grid.Column="2"
                         Click="ChooseSaveBtn_Click"
                         Content="{x:Static localization:MainResources.ChooseSave}"
                         DragOver="Save_DragOver" Drop="Save_DragDrop" AllowDrop="True"
-                        ToolTip="{Binding CurrentSave.Value, Mode=OneWay}"/>
+                        ToolTip="{Binding CurrentSave.Value, Mode=OneWay}"
+                        ToolTipService.ShowOnDisabled="True"/>
 
                     <Button 
                         Grid.Column="4"

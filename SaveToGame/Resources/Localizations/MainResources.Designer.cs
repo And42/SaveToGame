@@ -133,6 +133,24 @@ namespace SaveToGameWpf.Resources.Localizations {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Альтернативный метод подписи.
+        /// </summary>
+        public static string AlternativeSigning {
+            get {
+                return ResourceManager.GetString("AlternativeSigning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Попробуйте эту опцию, если возникают ошибки во время работы готового приложения.
+        /// </summary>
+        public static string AlternativeSigningToolTip {
+            get {
+                return ResourceManager.GetString("AlternativeSigningToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to www.androeed.ru.
         /// </summary>
         public static string Androeed_ru {

@@ -442,4 +442,10 @@
   <data name="ThemeLight" xml:space="preserve">
     <value>Светлая</value>
   </data>
+  <data name="AlternativeSigning" xml:space="preserve">
+    <value>Альтернативный метод подписи</value>
+  </data>
+  <data name="AlternativeSigningToolTip" xml:space="preserve">
+    <value>Попробуйте эту опцию, если возникают ошибки во время работы готового приложения</value>
+  </data>
 </root>

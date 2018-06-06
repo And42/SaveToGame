@@ -438,4 +438,10 @@ Try again?</value>
   <data name="ThemeLight" xml:space="preserve">
     <value>Light</value>
   </data>
+  <data name="AlternativeSigning" xml:space="preserve">
+    <value>Alternative signing method</value>
+  </data>
+  <data name="AlternativeSigningToolTip" xml:space="preserve">
+    <value>Try this option if there are any errors while running the modded app</value>
+  </data>
 </root>

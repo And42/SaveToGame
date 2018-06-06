@@ -345,17 +345,19 @@
             Компилирует текущий файл и возвращает, успешна ли прошла компиляция
             </summary>
         </member>
-        <member name="M:AndroidHelper.Logic.Apktools.Sign">
+        <member name="M:AndroidHelper.Logic.Apktools.Sign(System.Boolean)">
             <summary>
             Подписывает текущий файл и возвращает, успешна ли прошла подпись
+            <param name="deleteMetaInf">Необходимо ли удалять META-INF перед подписью</param>
             </summary>
         </member>
-        <member name="M:AndroidHelper.Logic.Apktools.Sign(System.String,System.String@)">
+        <member name="M:AndroidHelper.Logic.Apktools.Sign(System.String,System.String@,System.Boolean)">
             <summary>
             Подписывает указанный файл
             </summary>
             <param name="file">Файл для подписи</param>
             <param name="signedFile">Путь к подписанному файлу</param>
+            <param name="deleteMetaInf">Необходимо ли удалять META-INF перед подписью</param>
         </member>
         <member name="M:AndroidHelper.Logic.Apktools.SignWithKeystore(System.String,System.String,System.String,System.String)">
             <summary>

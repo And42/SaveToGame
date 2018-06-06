@@ -85,7 +85,7 @@ namespace SaveToGameWpf.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("Titanium")]
-        public ApkModifer.Logic.BackupType BackupType {
+        public global::ApkModifer.Logic.BackupType BackupType {
             get {
                 return ((global::ApkModifer.Logic.BackupType)(this["BackupType"]));
             }
@@ -103,6 +103,18 @@ namespace SaveToGameWpf.Properties {
             }
             set {
                 this["Theme"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool AlternativeSigning {
+            get {
+                return ((bool)(this["AlternativeSigning"]));
+            }
+            set {
+                this["AlternativeSigning"] = value;
             }
         }
     }

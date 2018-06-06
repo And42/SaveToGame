@@ -258,6 +258,7 @@ namespace SaveToGameWpf.Windows
         {
             var apkFile = new FileInfo(ViewModel.CurrentApk.Value);
             bool pro = ViewModel.Pro.Value;
+            bool alternativeSigning = _settings.AlternativeSigning;
 
             bool onlySave = ViewModel.OnlySave.Value;
             bool savePlusMessage = ViewModel.SavePlusMess.Value;
@@ -457,7 +458,7 @@ namespace SaveToGameWpf.Windows
 
             string signed;
 
-            if (!apktool.Sign(apktool.FileName, out signed))
+            if (!apktool.Sign(apktool.FileName, out signed, deleteMetaInf: alternativeSigning))
             {
                 HaveError("Error while signing", "Error while signing");
                 return;
