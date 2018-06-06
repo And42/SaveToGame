@@ -254,7 +254,7 @@ namespace SaveToGameWpf.Windows
 
             {
                 string signed;
-                apk.Sign(copiedSourceApkPath, out signed);
+                apk.Sign(copiedSourceApkPath, out signed, deleteMetaInf: !_settings.AlternativeSigning);
 
                 File.Move(signed, apkToModifyPath);
             }
@@ -354,7 +354,7 @@ namespace SaveToGameWpf.Windows
 
             SetStep(MainResources.Signing);
 
-            apk.Sign(deleteMetaInf: _settings.AlternativeSigning);
+            apk.Sign(deleteMetaInf: !_settings.AlternativeSigning);
 
             SetStep(MainResources.MovingResult);
 

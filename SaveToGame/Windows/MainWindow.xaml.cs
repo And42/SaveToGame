@@ -458,7 +458,7 @@ namespace SaveToGameWpf.Windows
 
             string signed;
 
-            if (!apktool.Sign(apktool.FileName, out signed, deleteMetaInf: alternativeSigning))
+            if (!apktool.Sign(apktool.FileName, out signed, deleteMetaInf: !alternativeSigning))
             {
                 HaveError("Error while signing", "Error while signing");
                 return;
