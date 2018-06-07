@@ -509,6 +509,26 @@
             <param name="line">Строка с ошибкой</param>
             <param name="message">Сообщение</param>
         </member>
+        <member name="P:AndroidHelper.Logic.SharpZip.SharpZipEntry.Name">
+            <summary>
+            Entry name
+            </summary>
+        </member>
+        <member name="P:AndroidHelper.Logic.SharpZip.SharpZipEntry.PathInArchive">
+            <summary>
+            Entry path in archive
+            </summary>
+        </member>
+        <member name="P:AndroidHelper.Logic.SharpZip.SharpZipEntry.IsFile">
+            <summary>
+            Is entry a file
+            </summary>
+        </member>
+        <member name="P:AndroidHelper.Logic.SharpZip.SharpZipEntry.ZipEntry">
+            <summary>
+            Zip entry associated to the current one
+            </summary>
+        </member>
         <member name="T:AndroidHelper.Logic.MainSmali">
             <summary>
             Класс для работы с главным smali файлом

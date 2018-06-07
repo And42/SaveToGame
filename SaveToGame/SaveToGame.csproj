@@ -159,6 +159,9 @@
     <Compile Include="Converters\ThemeToCheckedConverter.cs" />
     <Compile Include="Logic\Classes\AppIconsStorage.cs" />
     <Compile Include="Logic\Classes\BlockIds.cs" />
+    <Compile Include="Logic\Classes\NotificationManager.cs" />
+    <Compile Include="Logic\Classes\TaskBarManager.cs" />
+    <Compile Include="Logic\Interfaces\ITaskBarManager.cs" />
     <Compile Include="Logic\Interfaces\IVisualProgress.cs" />
     <Compile Include="Logic\JsonMappings\WebConfig.cs" />
     <Compile Include="Logic\OrganisationItems\DefaultSettingsContainer.cs" />
@@ -555,7 +558,6 @@
     <None Include="Libraries\ICSharpCode.SharpZipLib.xml" />
     <None Include="Libraries\MVVM_Tools.dll" />
     <None Include="Libraries\MVVM_Tools.xml" />
-    <None Include="Libraries\SharpCompress.dll" />
     <None Include="Libraries\SmaliParser.dll" />
     <None Include="Libraries\SmaliParser.xml" />
   </ItemGroup>

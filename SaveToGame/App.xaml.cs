@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using SaveToGameWpf.Logic;
+using SaveToGameWpf.Logic.Classes;
 using SaveToGameWpf.Logic.OrganisationItems;
 using SaveToGameWpf.Logic.Utils;
 using SaveToGameWpf.Properties;
@@ -25,6 +26,8 @@ namespace SaveToGameWpf
 
         protected override void OnStartup(StartupEventArgs e)
         {
+            base.OnStartup(e);
+
             if (!CheckForFiles(out string[] files))
                 AppClose(files);
 
@@ -85,6 +88,13 @@ namespace SaveToGameWpf
             );
 
             Shutdown();
+        }
+
+        protected override void OnExit(ExitEventArgs e)
+        {
+            base.OnExit(e);
+
+            NotificationManager.Instance.Dispose();
         }
     }
 }

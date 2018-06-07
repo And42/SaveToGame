@@ -168,9 +168,6 @@
   <data name="ChooseSave" xml:space="preserve">
     <value>Выбрать сохранение</value>
   </data>
-  <data name="Compiling" xml:space="preserve">
-    <value>Компиляция</value>
-  </data>
   <data name="CopyingApk" xml:space="preserve">
     <value>Копирование приложения</value>
   </data>
@@ -252,9 +249,6 @@
   <data name="Options" xml:space="preserve">
     <value>Опции</value>
   </data>
-  <data name="Preparing" xml:space="preserve">
-    <value>Подготовка</value>
-  </data>
   <data name="Price" xml:space="preserve">
     <value>Цена: 100 руб</value>
   </data>
@@ -269,9 +263,6 @@
   </data>
   <data name="Settings" xml:space="preserve">
     <value>Настройки</value>
-  </data>
-  <data name="Signing" xml:space="preserve">
-    <value>Подпись</value>
   </data>
   <data name="Support" xml:space="preserve">
     <value>Поблагодарить:</value>
@@ -447,5 +438,14 @@
   </data>
   <data name="AlternativeSigningToolTip" xml:space="preserve">
     <value>Попробуйте эту опцию, если возникают ошибки во время работы готового приложения</value>
+  </data>
+  <data name="ModificationCompletedContent" xml:space="preserve">
+    <value>Модификация завершена</value>
+  </data>
+  <data name="Notifications" xml:space="preserve">
+    <value>Уведомления</value>
+  </data>
+  <data name="NotificationsTooltip" xml:space="preserve">
+    <value>Показывает уведомление об окончании процесса модификации</value>
   </data>
 </root>

@@ -35,6 +35,7 @@ namespace SaveToGameWpf.Windows
         private readonly DefaultSettingsContainer _settings = DefaultSettingsContainer.Instance;
 
         private readonly IVisualProgress _visualProgress;
+        private readonly ITaskBarManager _taskBarManager;
 
         public MainWindowViewModel ViewModel { get; }
 
@@ -50,7 +51,8 @@ namespace SaveToGameWpf.Windows
 
             InitializeComponent();
 
-		    TaskbarItemInfo = new TaskbarItemInfo();
+		    _taskBarManager = new TaskBarManager(TaskbarItemInfo = new TaskbarItemInfo());
+
             _visualProgress = StatusProgress.GetVisualProgress();
 
             _visualProgress.SetLabelText(MainResources.AllDone);
@@ -288,10 +290,16 @@ namespace SaveToGameWpf.Windows
             _visualProgress.SetBarUsual();
             _visualProgress.ShowBar();
 
+            _taskBarManager.SetProgress(0);
+            _taskBarManager.SetUsualState();
+            
             void SetStep(int currentStep, string status)
             {
-                _visualProgress.SetBarValue((currentStep - 1) * 100 / totalSteps);
+                int percentage = (currentStep - 1) * 100 / totalSteps;
+
+                _visualProgress.SetBarValue(percentage);
                 _visualProgress.SetLabelText(status);
+                _taskBarManager.SetProgress(percentage);
             }
 
 #region Подготовка
@@ -474,6 +482,11 @@ namespace SaveToGameWpf.Windows
             SetStep(8, MainResources.AllDone);
             Log(MainResources.AllDone);
 
+            if (_settings.Notifications)
+            {
+                NotificationManager.Instance.Show(MainResources.Information_Title, MainResources.ModificationCompletedContent);
+            }
+
             if (
                 MessBox.ShowDial(
                     MainResources.Path_to_file + resultApkPath, 
@@ -485,6 +498,7 @@ namespace SaveToGameWpf.Windows
             }
 
             _visualProgress.HideBar();
+            _taskBarManager.SetNoneState();
         }
 
         private static void ReplaceTexts(string folderWithSmaliFiles, IList<string> itemsToReplace, string targetString)
@@ -555,8 +569,10 @@ namespace SaveToGameWpf.Windows
                 {
                     var fileName = Path.GetFileName(pathToFile);
 
-                    apkFile.Delete(fileName);
-                    apkFile.Add(pathToFile, fileName);
+                    ZipEntry entry = apkFile.GetEntry(fileName);
+
+                    apkFile.Delete(entry);
+                    apkFile.Add(new StaticDiskDataSource(pathToFile), fileName, entry.CompressionMethod);
                 }
 
                 apkFile.CommitUpdate();
@@ -679,11 +695,6 @@ namespace SaveToGameWpf.Windows
             return new CustomBoolDisposable(val =>
             {
                 ViewModel.Working.Value = val;
-                Dispatcher.InvokeAction(
-                    () => TaskbarItemInfo.ProgressState = val 
-                        ? TaskbarItemProgressState.Indeterminate
-                        : TaskbarItemProgressState.None
-                );
             });
         }
 

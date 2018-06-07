@@ -69,6 +69,13 @@
                         IsChecked="{Binding AlternativeSigning, Source={x:Static organisationItems:DefaultSettingsContainer.Instance}}"
                         ToolTip="{x:Static localization:MainResources.AlternativeSigningToolTip}"
                         ToolTipService.ShowOnDisabled="True"/>
+
+                    <MenuItem
+                        Header="{x:Static localization:MainResources.Notifications}"
+                        IsCheckable="True"
+                        IsChecked="{Binding Notifications, Source={x:Static organisationItems:DefaultSettingsContainer.Instance}}"
+                        ToolTip="{x:Static localization:MainResources.NotificationsTooltip}"
+                        ToolTipService.ShowOnDisabled="True"/>
                 </MenuItem>
 
                 <MenuItem 

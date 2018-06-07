@@ -304,15 +304,6 @@ namespace SaveToGameWpf.Resources.Localizations {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Компиляция.
-        /// </summary>
-        public static string Compiling {
-            get {
-                return ResourceManager.GetString("Compiling", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Копирование приложения.
         /// </summary>
         public static string CopyingApk {
@@ -621,6 +612,15 @@ namespace SaveToGameWpf.Resources.Localizations {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Модификация завершена.
+        /// </summary>
+        public static string ModificationCompletedContent {
+            get {
+                return ResourceManager.GetString("ModificationCompletedContent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Перемещение готового файла.
         /// </summary>
         public static string MovingResult {
@@ -654,6 +654,24 @@ namespace SaveToGameWpf.Resources.Localizations {
         public static string Not_enough_files {
             get {
                 return ResourceManager.GetString("Not_enough_files", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Уведомления.
+        /// </summary>
+        public static string Notifications {
+            get {
+                return ResourceManager.GetString("Notifications", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Показывает уведомление об окончании процесса модификации.
+        /// </summary>
+        public static string NotificationsTooltip {
+            get {
+                return ResourceManager.GetString("NotificationsTooltip", resourceCulture);
             }
         }
         
@@ -721,15 +739,6 @@ namespace SaveToGameWpf.Resources.Localizations {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Подготовка.
-        /// </summary>
-        public static string Preparing {
-            get {
-                return ResourceManager.GetString("Preparing", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Цена: 100 руб.
         /// </summary>
         public static string Price {
@@ -783,15 +792,6 @@ namespace SaveToGameWpf.Resources.Localizations {
         public static string Settings {
             get {
                 return ResourceManager.GetString("Settings", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Подпись.
-        /// </summary>
-        public static string Signing {
-            get {
-                return ResourceManager.GetString("Signing", resourceCulture);
             }
         }
         

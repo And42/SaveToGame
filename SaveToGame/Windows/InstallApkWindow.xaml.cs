@@ -45,6 +45,7 @@ namespace SaveToGameWpf.Windows
 
         private readonly StringBuilder _log = new StringBuilder();
         private readonly IVisualProgress _visualProgress;
+        private readonly ITaskBarManager _taskBarManager;
 
         public InstallApkWindow()
         {
@@ -63,7 +64,7 @@ namespace SaveToGameWpf.Windows
 
             InitializeComponent();
 
-            TaskbarItemInfo = new TaskbarItemInfo();
+            _taskBarManager = new TaskBarManager(TaskbarItemInfo = new TaskbarItemInfo());
             _visualProgress = StatusProgress.GetVisualProgress();
 
             _visualProgress.SetLabelText(MainResources.AllDone);
@@ -124,8 +125,6 @@ namespace SaveToGameWpf.Windows
 
             using (CreateWorking())
             {
-                TaskbarItemInfo.ProgressState = TaskbarItemProgressState.Indeterminate;
-
                 _log.Clear();
                 LogBox.Text = "";
 
@@ -152,9 +151,12 @@ namespace SaveToGameWpf.Windows
                     Dispatcher.InvokeAction(() => throw ex);
 #endif
                     Log($"{MainResources.ErrorUp}: {ex.Message}");
-                }
 
-                TaskbarItemInfo.ProgressState = TaskbarItemProgressState.None;
+                    _visualProgress.SetLabelText(MainResources.AllDone);
+                    _visualProgress.HideIndeterminateLabel();
+                    _visualProgress.HideBar();
+                    _taskBarManager.SetNoneState();
+                }
             }
         }
 
@@ -229,7 +231,9 @@ namespace SaveToGameWpf.Windows
             _visualProgress.SetBarIndeterminate();
             _visualProgress.ShowBar();
             _visualProgress.ShowIndeterminateLabel();
-            SetStep(MainResources.Preparing);
+            _taskBarManager.SetProgress(0);
+            _taskBarManager.SetUsualState();
+            SetStep(MainResources.StepInitializing, 1);
 
             var tempProcessedFolder = Path.Combine(Path.GetTempPath(), "STG_temp");
 
@@ -259,7 +263,7 @@ namespace SaveToGameWpf.Windows
                 File.Move(signed, apkToModifyPath);
             }
 
-            SetStep(MainResources.CopyingStgApk);
+            SetStep(MainResources.CopyingStgApk, 2);
 
             using (var zip = new ZipFile(containerZipPath)
             {
@@ -278,32 +282,33 @@ namespace SaveToGameWpf.Windows
                 _visualProgress.SetBarValue((int)(args.Now * 100 / args.Maximum));
             };
 
-            _visualProgress.SetBarUsual();
+            SetStep(MainResources.AddingLD, 3);
 
             if (!string.IsNullOrEmpty(saveFile) && File.Exists(saveFile))
             {
                 _visualProgress.SetBarUsual();
-                SetStep(MainResources.AddingLD);
                 mod.AddLocalData(saveFile, backupType: backType);
             }
+
+            SetStep(MainResources.AddingED, 4);
 
             if (!string.IsNullOrEmpty(androidDataFile) && File.Exists(androidDataFile))
             {
                 _visualProgress.SetBarUsual();
-                SetStep(MainResources.AddingED);
                 mod.AddExternalData(androidDataFile);
             }
+
+            SetStep(MainResources.AddingObb, 5);
 
             if (androidObbFiles.Length > 0)
             {
                 _visualProgress.SetBarUsual();
-                SetStep(MainResources.AddingObb);
                 mod.AddExternalObb(androidObbFiles);
             }
 
             _visualProgress.SetBarIndeterminate();
 
-            SetStep(MainResources.CopyingApk);
+            SetStep(MainResources.CopyingApk, 6);
 
             File.Copy(apkToModifyPath, Path.Combine(apk.FolderOfProject, "assets", "install.bin"), true);
 
@@ -344,7 +349,7 @@ namespace SaveToGameWpf.Windows
             WriteIcon("hdpi-v4", hdpiBytes);
             WriteIcon("mdpi-v4", mdpiBytes);
 
-            SetStep(MainResources.Compiling);
+            SetStep(MainResources.StepCompiling, 7);
 
             if (!apk.Compile(out _))
             {
@@ -352,11 +357,11 @@ namespace SaveToGameWpf.Windows
                 return;
             }
 
-            SetStep(MainResources.Signing);
+            SetStep(MainResources.StepSigning, 8);
 
             apk.Sign(deleteMetaInf: !_settings.AlternativeSigning);
 
-            SetStep(MainResources.MovingResult);
+            SetStep(MainResources.MovingResult, 9);
 
             File.Copy(apk.SignedApk, resultFilePath, true);
 
@@ -364,7 +369,12 @@ namespace SaveToGameWpf.Windows
 
             _visualProgress.HideIndeterminateLabel();
             _visualProgress.HideBar();
-            SetStep(MainResources.AllDone);
+            SetStep(MainResources.AllDone, 10);
+
+            if (_settings.Notifications)
+            {
+                NotificationManager.Instance.Show(MainResources.Information_Title, MainResources.ModificationCompletedContent);
+            }
 
             if (MessBox.ShowDial(
                     MainResources.Path_to_file + resultFilePath,
@@ -374,6 +384,8 @@ namespace SaveToGameWpf.Windows
             {
                 Process.Start("explorer.exe", $"/select,{resultFilePath}");
             }
+
+            _taskBarManager.SetNoneState();
         }
 
         private void SetIcon(string imagePath, string tag)
@@ -417,11 +429,16 @@ namespace SaveToGameWpf.Windows
                 SetIcon(dialog.FileName, e.OriginalSource.As<FrameworkElement>().Tag.As<string>());
         }
 
-        private void SetStep(string step)
+        private void SetStep(string step, int stepNumber)
         {
             WindowTitle.Value = step;
             Log(step);
+
+            const int maxStep = 9;
+            int percentage = (stepNumber - 1) * 100 / maxStep;
+
             _visualProgress.SetLabelText(step);
+            _taskBarManager.SetProgress(percentage);
         }
 
         private void Log(string text)

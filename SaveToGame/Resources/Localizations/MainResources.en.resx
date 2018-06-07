@@ -168,9 +168,6 @@
   <data name="ChooseSave" xml:space="preserve">
     <value>Choose save</value>
   </data>
-  <data name="Compiling" xml:space="preserve">
-    <value>Compiling</value>
-  </data>
   <data name="CopyingApk" xml:space="preserve">
     <value>Copying apk</value>
   </data>
@@ -255,9 +252,6 @@
   <data name="PathTooLongExceptionMessage" xml:space="preserve">
     <value>Files' paths are too long. Please, give them short names and move to the root directory of one of your ligical drives</value>
   </data>
-  <data name="Preparing" xml:space="preserve">
-    <value>Preparing</value>
-  </data>
   <data name="Price" xml:space="preserve">
     <value>Price: 100 rub</value>
   </data>
@@ -272,9 +266,6 @@
   </data>
   <data name="Settings" xml:space="preserve">
     <value>Settings</value>
-  </data>
-  <data name="Signing" xml:space="preserve">
-    <value>Signing</value>
   </data>
   <data name="Support" xml:space="preserve">
     <value>Support:</value>
@@ -443,5 +434,14 @@ Try again?</value>
   </data>
   <data name="AlternativeSigningToolTip" xml:space="preserve">
     <value>Try this option if there are any errors while running the modded app</value>
+  </data>
+  <data name="ModificationCompletedContent" xml:space="preserve">
+    <value>Modification completed</value>
+  </data>
+  <data name="Notifications" xml:space="preserve">
+    <value>Notifications</value>
+  </data>
+  <data name="NotificationsTooltip" xml:space="preserve">
+    <value>Shows the notification about completing the modification process</value>
   </data>
 </root>
