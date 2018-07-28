@@ -343,7 +343,7 @@ namespace SaveToGameWpf.Windows
                     texts.AddRange(File.ReadLines(messageFile, Encoding.UTF8).Where(line => !string.IsNullOrWhiteSpace(line)));
                 }
 
-                ReplaceTexts(Path.Combine(folderOfProject, "smali"), texts, Utils.EncodeUnicode(ViewModel.PopupBoxText.Value));
+                ReplaceTexts(Path.Combine(folderOfProject, "smali"), texts, StringUtils.ToUnicodeSequence(ViewModel.PopupBoxText.Value));
             }
 
 #endregion
@@ -472,7 +472,7 @@ namespace SaveToGameWpf.Windows
 
         private static void ReplaceTexts(string folderWithSmaliFiles, IList<string> itemsToReplace, string targetString)
         {
-            var encodedText = Utils.EncodeUnicode(targetString);
+            var encodedText = StringUtils.ToUnicodeSequence(targetString);
 
             var files = Directory.EnumerateFiles(folderWithSmaliFiles, "*.smali", SearchOption.AllDirectories);
 

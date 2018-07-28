@@ -64,7 +64,7 @@ namespace SaveToGameWpf.Logic.Utils
                     binStream.Write(systemObjects.Count);
                     foreach (string systemObject in systemObjects)
                     {
-                        byte[] bytes = sha.ComputeHash(systemObject.GetBytesUtf8());
+                        byte[] bytes = sha.ComputeHash(Encoding.UTF8.GetBytes(systemObject));
 
                         binStream.Write(bytes.Length);
                         binStream.Write(bytes);
@@ -126,7 +126,7 @@ namespace SaveToGameWpf.Logic.Utils
             foreach ((string elementSystemName, List<string> systemObjects) in queries)
             {
                 List<byte[]> fileElementHashes = fileHashes[elementSystemName];
-                List<byte[]> systemElementHashes = systemObjects.ConvertAll(it => sha.ComputeHash(it.GetBytesUtf8()));
+                List<byte[]> systemElementHashes = systemObjects.ConvertAll(it => sha.ComputeHash(Encoding.UTF8.GetBytes(it)));
 
                 foreach (byte[] fileElementHash in fileElementHashes)
                     if (systemElementHashes.Any(systemHash => VerifySignature(systemHash, fileElementHash)))

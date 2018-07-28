@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Net;
 
 namespace SaveToGameWpf.Logic.Utils
@@ -17,6 +18,18 @@ namespace SaveToGameWpf.Logic.Utils
             };
 
             webClient.DownloadStringAsync(address);
+        }
+
+        public static void OpenLinkInBrowser(string link)
+        {
+            try
+            {
+                Process.Start(link);
+            }
+            catch (Exception)
+            {
+                Process.Start(new ProcessStartInfo("IExplore.exe", link));
+            }
         }
     }
 }

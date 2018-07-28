@@ -172,6 +172,7 @@
     <Compile Include="Logic\Utils\IOUtils.cs" />
     <Compile Include="Logic\Utils\LicensingUtils.cs" />
     <Compile Include="Logic\Utils\PickerUtils.cs" />
+    <Compile Include="Logic\Utils\StringUtils.cs" />
     <Compile Include="Logic\Utils\ThemeUtils.cs" />
     <Compile Include="Logic\Utils\Utils.cs" />
     <Compile Include="Logic\GlobalVariables.cs" />

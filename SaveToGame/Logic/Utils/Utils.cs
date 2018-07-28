@@ -2,7 +2,6 @@
 using System.Diagnostics;
 using System.IO;
 using System.Net;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Threading;
@@ -12,22 +11,10 @@ using SaveToGameWpf.Logic.OrganisationItems;
 using SaveToGameWpf.Resources.Localizations;
 using SaveToGameWpf.Windows;
 
-using Application = System.Windows.Application;
-
 namespace SaveToGameWpf.Logic.Utils
 {
     internal static class Utils
     {
-        public static string EncodeUnicode(string inputText)
-        {
-            var result = new StringBuilder(inputText.Length * 6);
-
-            foreach (char symbol in inputText)
-                result.Append($"\\u{$"{(int) symbol:x}".PadLeft(4, '0')}");
-
-            return result.ToString();
-        }
-
         public static int CompareVersions(string first, string second)
         {
             return 
@@ -55,35 +42,20 @@ namespace SaveToGameWpf.Logic.Utils
 
         public static void EnableProVersion(bool enable = false)
         {
-            var mainWindow = WindowManager.GetActiveWindow<MainWindow>();
+            var model = WindowManager.GetActiveWindow<MainWindow>().ViewModel;
 
-            Application.Current.Dispatcher.InvokeAction(() =>
-            {
-                if (!enable)
-                    return;
+            model.Pro.Value = enable;
 
-                mainWindow.ViewModel.PopupBoxText.Value = DefaultSettingsContainer.Instance.PopupMessage ?? "";
-                mainWindow.ViewModel.OnlySave.Value = true;
-            });
+            if (!enable)
+                return;
 
-            mainWindow.ViewModel.Pro.Value = enable;
+            model.PopupBoxText.Value = DefaultSettingsContainer.Instance.PopupMessage ?? "";
+            model.OnlySave.Value = true;
         }
 
         public static void InvokeAction(this Dispatcher dispatcher, Action action)
         {
             dispatcher.Invoke(action);
-        }
-
-        public static void OpenLinkInBrowser(string link)
-        {
-            try
-            {
-                Process.Start(link);
-            }
-            catch (Exception)
-            {
-                Process.Start(new ProcessStartInfo("IExplore.exe", link));
-            }
         }
 
         public static void ExtractAll(this ZipFile zip, string folder)
@@ -109,16 +81,6 @@ namespace SaveToGameWpf.Logic.Utils
         public static string GetFullFNWithoutExt(this FileInfo fileInfo)
         {
             return fileInfo.FullName.Remove(fileInfo.FullName.Length - fileInfo.Extension.Length);
-        }
-
-        public static byte[] GetBytesUtf8(this string input)
-        {
-            return Encoding.UTF8.GetBytes(input);
-        }
-
-        public static T CloneTyped<T>(this T obj) where T : ICloneable
-        {
-            return (T) obj.Clone();
         }
 
         /// <summary>

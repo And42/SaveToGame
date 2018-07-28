@@ -225,7 +225,7 @@ namespace SaveToGameWpf.Windows
             string apkFile = Apk.Value;
             string saveFile = Save.Value;
             string androidDataFile = Data.Value;
-            string[] androidObbFiles = Obb.Value?.CloneTyped() ?? new string[0];
+            string[] androidObbFiles = (string[]) Obb.Value?.Clone() ?? new string[0];
             string appTitle = AppTitle.Value;
 
             _visualProgress.SetBarIndeterminate();

@@ -17,12 +17,12 @@ namespace SaveToGameWpf.Windows
         
         private void DeveloperBtn_Clicked(object sender, EventArgs e)
         {
-            Utils.OpenLinkInBrowser("http://www.4pda.ru/forum/index.php?showuser=2114045");
+            WebUtils.OpenLinkInBrowser("http://www.4pda.ru/forum/index.php?showuser=2114045");
         }
 
         private void FourPdaBtn_Clicked(object sender, EventArgs e)
         {
-            Utils.OpenLinkInBrowser("http://4pda.ru/forum/index.php?act=rep&type=win_add&mid=2114045&p=23243303");
+            WebUtils.OpenLinkInBrowser("http://4pda.ru/forum/index.php?act=rep&type=win_add&mid=2114045&p=23243303");
         }
     }
 }
