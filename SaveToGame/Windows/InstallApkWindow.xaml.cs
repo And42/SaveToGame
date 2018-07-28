@@ -23,7 +23,6 @@ using SaveToGameWpf.Logic.Utils;
 using SaveToGameWpf.Resources.Localizations;
 
 using DragEventArgs = System.Windows.DragEventArgs;
-using Image = System.Windows.Controls.Image;
 
 namespace SaveToGameWpf.Windows
 {
@@ -213,7 +212,7 @@ namespace SaveToGameWpf.Windows
         {
             e.DropOneByEnd(".png", file =>
             {
-                string tag = e.OriginalSource.As<Image>().Tag.As<string>();
+                string tag = sender.As<FrameworkElement>().Tag.As<string>();
                 SetIcon(file, tag);
             });
         }
@@ -426,7 +425,7 @@ namespace SaveToGameWpf.Windows
             };
 
             if (dialog.ShowDialog() == true)
-                SetIcon(dialog.FileName, e.OriginalSource.As<FrameworkElement>().Tag.As<string>());
+                SetIcon(dialog.FileName, sender.As<FrameworkElement>().Tag.As<string>());
         }
 
         private void SetStep(string step, int stepNumber)
