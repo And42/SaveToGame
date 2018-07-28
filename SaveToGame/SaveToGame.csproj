@@ -165,7 +165,6 @@
     <Compile Include="Logic\Interfaces\IVisualProgress.cs" />
     <Compile Include="Logic\JsonMappings\WebConfig.cs" />
     <Compile Include="Logic\OrganisationItems\DefaultSettingsContainer.cs" />
-    <Compile Include="Logic\Classes\TraceWriter.cs" />
     <Compile Include="Logic\Utils\ApplicationUtils.cs" />
     <Compile Include="Logic\Utils\BitmapUtils.cs" />
     <Compile Include="Logic\Utils\CollectionUtils.cs" />

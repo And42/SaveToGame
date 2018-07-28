@@ -28,8 +28,10 @@ namespace SaveToGameWpf.Windows
 {
     public sealed partial class MainWindow
     {
-        public static readonly Encoding DefaultSmaliEncoding = new UTF8Encoding(false);
+        // how many times app should try to create log file for the apk file processing
+        private const int LogCreationTries = 50;
 
+        private static readonly Encoding DefaultSmaliEncoding = new UTF8Encoding(false);
         private static readonly string Line = new string('-', 50);
 
         private readonly DefaultSettingsContainer _settings = DefaultSettingsContainer.Instance;
@@ -114,8 +116,8 @@ namespace SaveToGameWpf.Windows
 
         private void StartBtn_Click(object sender, EventArgs e)
         {
-            var apkFile = ViewModel.CurrentApk.Value;
-            var saveFile = ViewModel.CurrentSave.Value;
+            string apkFile = ViewModel.CurrentApk.Value;
+            string saveFile = ViewModel.CurrentSave.Value;
 
             #region Проверка на существование файлов
 
@@ -130,40 +132,7 @@ namespace SaveToGameWpf.Windows
 
             #endregion
 
-            var apkDir = Path.GetDirectoryName(apkFile);
-
-            string GenLogName(int index)
-            {
-                if (index == 1)
-                    return Path.Combine(apkDir ?? string.Empty, $"{Path.GetFileNameWithoutExtension(apkFile)}_log.txt");
-
-                return Path.Combine(apkDir ?? string.Empty, $"{Path.GetFileNameWithoutExtension(apkFile)}_log ({index}).txt");
-            }
-
-            int i = 1;
-            while (true)
-            {
-                try
-                {
-                    _currentLog = new StreamWriter(GenLogName(i++), false, Encoding.UTF8);
-                    break;
-                }
-                catch (Exception
-#if !DEBUG
-                    ex
-#endif
-                )
-                {
-                    if (i <= 50)
-                        continue;
-
-#if !DEBUG
-                    GlobalVariables.ErrorClient.Notify(ex);
-#else
-                    throw;
-#endif
-                }
-            }
+            _currentLog = CreateLogFileForApp(apkFile);
 
             var currentCulture = Thread.CurrentThread.CurrentUICulture;
             Task.Factory.StartNew(() =>
@@ -184,7 +153,7 @@ namespace SaveToGameWpf.Windows
                     catch (Exception ex)
                     {
 #if DEBUG
-                        TraceWriter.WriteLine(ex.ToString());
+                        Debug.WriteLine(ex.ToString());
                         throw;
 #else
                         GlobalVariables.ErrorClient.Notify(ex);
@@ -662,7 +631,6 @@ namespace SaveToGameWpf.Windows
                 return;
 
             _currentLog?.WriteLine(text);
-            TraceWriter.WriteLine(text);
 
             Application.Current.Dispatcher.InvokeAction(() =>
             {
@@ -686,6 +654,42 @@ namespace SaveToGameWpf.Windows
             var theme = sender.As<FrameworkElement>().Tag.As<string>();
 
             ThemeUtils.SetTheme(theme);
+        }
+
+        private static StreamWriter CreateLogFileForApp(string pathToApkFile)
+        {
+            string apkDir = Path.GetDirectoryName(pathToApkFile) ?? string.Empty;
+
+            string GenLogName(int index)
+            {
+                string logStart = Path.Combine(apkDir, $"{Path.GetFileNameWithoutExtension(pathToApkFile)}_log");
+
+                return logStart + (index == 1 ? ".txt" : $" ({index}).txt");
+            }
+
+            int i = 1;
+            while (true)
+            {
+                try
+                {
+                    return new StreamWriter(GenLogName(i++), false, Encoding.UTF8);
+                }
+                catch (Exception
+#if !DEBUG
+                    ex
+#endif
+                )
+                {
+                    if (i <= LogCreationTries)
+                        continue;
+
+#if !DEBUG
+                    GlobalVariables.ErrorClient.Notify(ex);
+#else
+                    throw;
+#endif
+                }
+            }
         }
 
 #region Disposables
