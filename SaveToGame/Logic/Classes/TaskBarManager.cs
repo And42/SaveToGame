@@ -29,7 +29,7 @@ namespace SaveToGameWpf.Logic.Classes
                 throw new ArgumentOutOfRangeException(nameof(maximum));
 
             if (maximum != MaxProgress)
-                current = current * 100 / maximum;
+                current = current * MaxProgress / maximum;
 
             if (current == _currentProgress)
                 return;
