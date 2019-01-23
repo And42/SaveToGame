@@ -1,30 +1,28 @@
-﻿using System.ComponentModel;
-using System.Threading;
+﻿using System.Threading;
 using ApkModifer.Logic;
 using MVVM_Tools.Code.Classes;
 using MVVM_Tools.Code.Providers;
 using SaveToGameWpf.Logic.OrganisationItems;
 using SaveToGameWpf.Resources.Localizations;
-// ReSharper disable UnusedAutoPropertyAccessor.Local
 
 namespace SaveToGameWpf.Logic.ViewModels
 {
     public class MainWindowViewModel : BindableBase
     {
-        public Property<bool> Pro { get; private set; }
+        public Property<bool> Pro { get; }
 
-        public Property<bool> Working { get; private set; }
-        public Property<bool> OnlySave { get; private set; }
-        public Property<bool> SavePlusMess { get; private set; }
-        public Property<bool> OnlyMess { get; private set; }
+        public Property<bool> Working { get; }
+        public Property<bool> OnlySave { get; }
+        public Property<bool> SavePlusMess { get; }
+        public Property<bool> OnlyMess { get; }
 
-        public Property<string> PopupBoxText { get; private set; }
-        public Property<int> MessagesCount { get; private set; }
+        public Property<string> PopupBoxText { get; }
+        public Property<int> MessagesCount { get; }
 
-        public Property<string> MainSmaliName { get; private set; }
+        public Property<string> MainSmaliName { get; }
 
-        public Property<string> CurrentApk { get; private set; }
-        public Property<string> CurrentSave { get; private set; }
+        public Property<string> CurrentApk { get; }
+        public Property<string> CurrentSave { get; }
 
         public string Title => FormatTitle();
 
@@ -43,33 +41,23 @@ namespace SaveToGameWpf.Logic.ViewModels
 
         public MainWindowViewModel()
         {
-            BindProperty(() => Pro);
+            Pro = new Property<bool>();
 
-            BindProperty(() => Working);
-            BindProperty(() => OnlySave);
-            BindProperty(() => SavePlusMess, true);
-            BindProperty(() => OnlyMess);
+            Working = new Property<bool>();
+            OnlySave = new Property<bool>();
+            SavePlusMess = new Property<bool>(true);
+            OnlyMess = new Property<bool>();
 
-            BindProperty(() => PopupBoxText, "Modified by SaveToGame");
-            BindProperty(() => MessagesCount, 1);
+            PopupBoxText = new Property<string>("Modified by SaveToGame");
+            MessagesCount = new Property<int>(1);
 
-            BindProperty(() => MainSmaliName, string.Empty);
+            MainSmaliName = new Property<string>(string.Empty);
 
-            BindProperty(() => CurrentApk);
-            BindProperty(() => CurrentSave);
+            CurrentApk = new Property<string>();
+            CurrentSave = new Property<string>();
 
-            PropertyChanged += OnPropertyChanged;
-        }
-
-        private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            switch (e.PropertyName)
-            {
-                case nameof(Pro):
-                case nameof(CurrentApk):
-                    base.OnPropertyChanged(nameof(Title));
-                    break;
-            }
+            Pro.PropertyChanged += (sender, args) => OnPropertyChanged(nameof(Title));
+            CurrentApk.PropertyChanged += (sender, args) => OnPropertyChanged(nameof(CurrentApk));
         }
 
         private string FormatTitle()
