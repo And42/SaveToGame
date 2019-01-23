@@ -41,12 +41,12 @@
                         <MenuItem
                             Header="{x:Static localization:MainResources.ThemeLight}"
                             IsCheckable="True" Tag="Light" Click="ChangeTheme_OnClick" 
-                            IsChecked="{Binding Theme, Source={x:Static organisationItems:DefaultSettingsContainer.Instance}, Mode=OneWay, Converter={StaticResource ThemeToCheckedConverter}, ConverterParameter=Light}"/>
+                            IsChecked="{Binding Theme, Source={x:Static organisationItems:AppSettings.Instance}, Mode=OneWay, Converter={StaticResource ThemeToCheckedConverter}, ConverterParameter=Light}"/>
 
                         <MenuItem
                             Header="{x:Static localization:MainResources.ThemeDark}"
                             IsCheckable="True" Tag="Dark" Click="ChangeTheme_OnClick"
-                            IsChecked="{Binding Theme, Source={x:Static organisationItems:DefaultSettingsContainer.Instance}, Mode=OneWay, Converter={StaticResource ThemeToCheckedConverter}, ConverterParameter=Dark}"/>
+                            IsChecked="{Binding Theme, Source={x:Static organisationItems:AppSettings.Instance}, Mode=OneWay, Converter={StaticResource ThemeToCheckedConverter}, ConverterParameter=Dark}"/>
                     </MenuItem>
 
                     <MenuItem Header="{x:Static localization:MainResources.BackupType}">
@@ -66,14 +66,14 @@
                     <MenuItem
                         Header="{x:Static localization:MainResources.AlternativeSigning}"
                         IsCheckable="True"
-                        IsChecked="{Binding AlternativeSigning, Source={x:Static organisationItems:DefaultSettingsContainer.Instance}}"
+                        IsChecked="{Binding AlternativeSigning, Source={x:Static organisationItems:AppSettings.Instance}}"
                         ToolTip="{x:Static localization:MainResources.AlternativeSigningToolTip}"
                         ToolTipService.ShowOnDisabled="True"/>
 
                     <MenuItem
                         Header="{x:Static localization:MainResources.Notifications}"
                         IsCheckable="True"
-                        IsChecked="{Binding Notifications, Source={x:Static organisationItems:DefaultSettingsContainer.Instance}}"
+                        IsChecked="{Binding Notifications, Source={x:Static organisationItems:AppSettings.Instance}}"
                         ToolTip="{x:Static localization:MainResources.NotificationsTooltip}"
                         ToolTipService.ShowOnDisabled="True"/>
                 </MenuItem>

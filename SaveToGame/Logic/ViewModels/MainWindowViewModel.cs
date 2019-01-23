@@ -31,10 +31,10 @@ namespace SaveToGameWpf.Logic.ViewModels
 
         public BackupType BackupType
         {
-            get => DefaultSettingsContainer.Instance.BackupType;
+            get => AppSettings.Instance.BackupType;
             set
             {
-                DefaultSettingsContainer.Instance.BackupType = value;
+                AppSettings.Instance.BackupType = value;
                 base.OnPropertyChanged(nameof(BackupType));
             }
         }

@@ -1,9 +1,19 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.271
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SaveToGame", "SaveToGame\SaveToGame.csproj", "{F83C7E54-E4D6-4B43-BD0E-637FDA928802}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApkModifer", "ApkModifier\ApkModifer\ApkModifer.csproj", "{62B8F3E8-A92D-4F61-8A3F-CEDD7703B44F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AndroidHelper", "AndroidHelper\AndroidHelper\AndroidHelper.csproj", "{F3F675A7-CB78-43EE-8E6F-3CFBCE790568}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MVVM_Tools", "MVVM-Tools\MVVM Tools\MVVM_Tools.csproj", "{5E778515-60AD-4257-8BBE-0A3CFF7A91A2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SettingsManager", "SettingsManager\SettingsManager\SettingsManager.csproj", "{96EF6536-0C3F-4AAC-9B3B-9CCCF449A8A5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmaliParser", "SmaliParser\SmaliParser.csproj", "{B1727F95-4CDE-49B8-8529-CF45ACCEB72B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,8 +25,31 @@ Global
 		{F83C7E54-E4D6-4B43-BD0E-637FDA928802}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F83C7E54-E4D6-4B43-BD0E-637FDA928802}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F83C7E54-E4D6-4B43-BD0E-637FDA928802}.Release|Any CPU.Build.0 = Release|Any CPU
+		{62B8F3E8-A92D-4F61-8A3F-CEDD7703B44F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{62B8F3E8-A92D-4F61-8A3F-CEDD7703B44F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{62B8F3E8-A92D-4F61-8A3F-CEDD7703B44F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{62B8F3E8-A92D-4F61-8A3F-CEDD7703B44F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F3F675A7-CB78-43EE-8E6F-3CFBCE790568}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F3F675A7-CB78-43EE-8E6F-3CFBCE790568}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F3F675A7-CB78-43EE-8E6F-3CFBCE790568}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F3F675A7-CB78-43EE-8E6F-3CFBCE790568}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5E778515-60AD-4257-8BBE-0A3CFF7A91A2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5E778515-60AD-4257-8BBE-0A3CFF7A91A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5E778515-60AD-4257-8BBE-0A3CFF7A91A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5E778515-60AD-4257-8BBE-0A3CFF7A91A2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{96EF6536-0C3F-4AAC-9B3B-9CCCF449A8A5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{96EF6536-0C3F-4AAC-9B3B-9CCCF449A8A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{96EF6536-0C3F-4AAC-9B3B-9CCCF449A8A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{96EF6536-0C3F-4AAC-9B3B-9CCCF449A8A5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B1727F95-4CDE-49B8-8529-CF45ACCEB72B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B1727F95-4CDE-49B8-8529-CF45ACCEB72B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B1727F95-4CDE-49B8-8529-CF45ACCEB72B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B1727F95-4CDE-49B8-8529-CF45ACCEB72B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9CAE6ED3-3512-446D-9CD1-B2C08DFDDABE}
 	EndGlobalSection
 EndGlobal

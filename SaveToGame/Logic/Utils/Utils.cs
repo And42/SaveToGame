@@ -49,7 +49,7 @@ namespace SaveToGameWpf.Logic.Utils
             if (!enable)
                 return;
 
-            model.PopupBoxText.Value = DefaultSettingsContainer.Instance.PopupMessage ?? "";
+            model.PopupBoxText.Value = AppSettings.Instance.PopupMessage ?? "";
             model.OnlySave.Value = true;
         }
 

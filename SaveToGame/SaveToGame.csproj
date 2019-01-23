@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SaveToGameWpf</RootNamespace>
     <AssemblyName>SaveToGame</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
@@ -72,28 +72,14 @@
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AndroidHelper, Version=1.4.6662.38775, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>Libraries\AndroidHelper.dll</HintPath>
+    <Reference Include="Bugsnag, Version=2.2.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Bugsnag.2.2.0\lib\net45\Bugsnag.dll</HintPath>
     </Reference>
-    <Reference Include="ApkModifer, Version=1.3.6662.39042, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>Libraries\ApkModifer.dll</HintPath>
+    <Reference Include="ICSharpCode.SharpZipLib, Version=1.1.0.145, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpZipLib.1.1.0\lib\net45\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
-    <Reference Include="Bugsnag, Version=2.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Bugsnag.2.1.0\lib\net40\Bugsnag.dll</HintPath>
-    </Reference>
-    <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
-      <HintPath>..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Threading.Tasks, Version=1.0.12.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Bcl.Async.1.0.168\lib\net40\Microsoft.Threading.Tasks.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Threading.Tasks.Extensions, Version=1.0.12.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Bcl.Async.1.0.168\lib\net40\Microsoft.Threading.Tasks.Extensions.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Threading.Tasks.Extensions.Desktop, Version=1.0.168.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Bcl.Async.1.0.168\lib\net40\Microsoft.Threading.Tasks.Extensions.Desktop.dll</HintPath>
+    <Reference Include="JetBrains.Annotations, Version=2018.3.0.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
+      <HintPath>..\packages\JetBrains.Annotations.2018.3.0\lib\net20\JetBrains.Annotations.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Windows.Shell, Version=3.0.50506.1, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\WPF.Shell.Integration.Library.2.0\lib\net30\Microsoft.Windows.Shell.dll</HintPath>
@@ -104,35 +90,16 @@
     <Reference Include="Microsoft.WindowsAPICodePack.Shell, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\WindowsAPICodePack-Shell.1.1.1\lib\Microsoft.WindowsAPICodePack.Shell.dll</HintPath>
     </Reference>
-    <Reference Include="MVVM_Tools, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\TranslatorApk\TranslatorApk\Libraries\MVVM_Tools.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net40\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="PresentationFramework" />
-    <Reference Include="SettingsManager, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>Libraries\SettingsManager.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Drawing" />
-    <Reference Include="System.IO, Version=2.6.10.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Bcl.1.1.10\lib\net40\System.IO.dll</HintPath>
-    </Reference>
     <Reference Include="System.Management" />
     <Reference Include="System.Net" />
-    <Reference Include="System.Runtime, Version=2.6.10.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Bcl.1.1.10\lib\net40\System.Runtime.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Threading.Tasks, Version=2.6.10.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Bcl.1.1.10\lib\net40\System.Threading.Tasks.dll</HintPath>
-    </Reference>
-    <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.ValueTuple.4.5.0\lib\portable-net40+sl4+win8+wp8\System.ValueTuple.dll</HintPath>
-    </Reference>
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Windows.Forms">
       <Private>True</Private>
     </Reference>
@@ -164,7 +131,7 @@
     <Compile Include="Logic\Interfaces\ITaskBarManager.cs" />
     <Compile Include="Logic\Interfaces\IVisualProgress.cs" />
     <Compile Include="Logic\JsonMappings\WebConfig.cs" />
-    <Compile Include="Logic\OrganisationItems\DefaultSettingsContainer.cs" />
+    <Compile Include="Logic\OrganisationItems\AppSettings.cs" />
     <Compile Include="Logic\Utils\ApplicationUtils.cs" />
     <Compile Include="Logic\Utils\BitmapUtils.cs" />
     <Compile Include="Logic\Utils\CollectionUtils.cs" />
@@ -173,6 +140,7 @@
     <Compile Include="Logic\Utils\LicensingUtils.cs" />
     <Compile Include="Logic\Utils\PickerUtils.cs" />
     <Compile Include="Logic\Utils\StringUtils.cs" />
+    <Compile Include="Logic\Utils\TempUtils.cs" />
     <Compile Include="Logic\Utils\ThemeUtils.cs" />
     <Compile Include="Logic\Utils\Utils.cs" />
     <Compile Include="Logic\GlobalVariables.cs" />
@@ -508,8 +476,6 @@
     <None Include="app.manifest">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Libraries\zzz_refresh_references.ps1" />
-    <None Include="Libraries\zzz_refresh_references_pause.ps1" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>PublicSettingsSingleFileGenerator</Generator>
@@ -545,44 +511,32 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Libraries\zzz_dependencies.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Libraries\AndroidHelper.dll" />
-    <None Include="Libraries\AndroidHelper.xml" />
-    <None Include="Libraries\AndroidTranslator.dll" />
-    <None Include="Libraries\AndroidTranslator.xml" />
-    <None Include="Libraries\ApkModifer.dll" />
-    <None Include="Libraries\ApkModifer.xml" />
-    <None Include="Libraries\ICSharpCode.SharpZipLib.dll" />
-    <None Include="Libraries\ICSharpCode.SharpZipLib.xml" />
-    <None Include="Libraries\MVVM_Tools.dll" />
-    <None Include="Libraries\MVVM_Tools.xml" />
-    <None Include="Libraries\SmaliParser.dll" />
-    <None Include="Libraries\SmaliParser.xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Libraries\SettingsManager.dll" />
-    <Resource Include="Libraries\SettingsManager.xml" />
-    <Content Include="Libraries\System.IO.dll" />
-    <Resource Include="Libraries\System.IO.xml" />
-    <Content Include="Libraries\System.Runtime.dll" />
-    <Resource Include="Libraries\System.Runtime.xml" />
-    <Content Include="Libraries\System.Threading.Tasks.dll" />
-    <Resource Include="Libraries\System.Threading.Tasks.xml" />
+    <ProjectReference Include="..\AndroidHelper\AndroidHelper\AndroidHelper.csproj">
+      <Project>{f3f675a7-cb78-43ee-8e6f-3cfbce790568}</Project>
+      <Name>AndroidHelper</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ApkModifier\ApkModifer\ApkModifer.csproj">
+      <Project>{62b8f3e8-a92d-4f61-8a3f-cedd7703b44f}</Project>
+      <Name>ApkModifer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\MVVM-Tools\MVVM Tools\MVVM_Tools.csproj">
+      <Project>{5e778515-60ad-4257-8bbe-0a3cff7a91a2}</Project>
+      <Name>MVVM_Tools</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SettingsManager\SettingsManager\SettingsManager.csproj">
+      <Project>{96ef6536-0c3f-4aac-9b3b-9cccf449a8a5}</Project>
+      <Name>SettingsManager</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SmaliParser\SmaliParser.csproj">
+      <Project>{b1727f95-4cde-49b8-8529-cf45acceb72b}</Project>
+      <Name>SmaliParser</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>
     </PostBuildEvent>
   </PropertyGroup>
-  <Import Project="..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" />
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>Данный проект ссылается на пакеты NuGet, отсутствующие на этом компьютере. Используйте восстановление пакетов NuGet, чтобы скачать их.  Дополнительную информацию см. по адресу: http://go.microsoft.com/fwlink/?LinkID=322105. Отсутствует следующий файл: {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets'))" />
-  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

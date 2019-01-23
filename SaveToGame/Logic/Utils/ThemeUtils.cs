@@ -10,13 +10,10 @@ namespace SaveToGameWpf.Logic.Utils
     {
         public static void SetThemeFromSettings()
         {
-            var settings = DefaultSettingsContainer.Instance;
+            var settings = AppSettings.Instance;
 
             if (string.IsNullOrEmpty(settings.Theme))
-            {
                 settings.Theme = "Light";
-                settings.Save();
-            }
 
             SetTheme(settings.Theme);
         }
@@ -46,18 +43,15 @@ namespace SaveToGameWpf.Logic.Utils
             {
                 case "light":
                     InsertTheme("Light");
-                    DefaultSettingsContainer.Instance.Theme = "Light";
                     break;
                 case "dark":
                     InsertTheme("Dark");
-                    DefaultSettingsContainer.Instance.Theme = "Dark";
                     break;
                 default:
                     throw new Exception($"Unknown theme: \"{theme}\"");
             }
 
             mergedDicts.RemoveAt(current.index + 1);
-            DefaultSettingsContainer.Instance.Save();
         }
     }
 }

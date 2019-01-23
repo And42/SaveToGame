@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
@@ -10,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using System.Windows.Shell;
 using AndroidHelper.Logic;
+using AndroidHelper.Logic.Interfaces;
 using ApkModifer.Logic;
 using ICSharpCode.SharpZipLib.Zip;
 using Microsoft.Win32;
@@ -40,7 +42,7 @@ namespace SaveToGameWpf.Windows
 
         public Property<string> AppTitle { get; } = new Property<string>();
 
-        private readonly DefaultSettingsContainer _settings = DefaultSettingsContainer.Instance;
+        private readonly AppSettings _settings = AppSettings.Instance;
 
         private readonly StringBuilder _log = new StringBuilder();
         private readonly IVisualProgress _visualProgress;
@@ -227,6 +229,9 @@ namespace SaveToGameWpf.Windows
             string[] androidObbFiles = (string[]) Obb.Value?.Clone() ?? new string[0];
             string appTitle = AppTitle.Value;
 
+            ITempFileProvider tempFileProvider = TempUtils.CreateTempFileProvider();
+            ITempFolderProvider tempFolderProvider = TempUtils.CreateTempFolderProvider();
+
             _visualProgress.SetBarIndeterminate();
             _visualProgress.ShowBar();
             _visualProgress.ShowIndeterminateLabel();
@@ -252,33 +257,54 @@ namespace SaveToGameWpf.Windows
             if (!File.Exists(javaPath))
                 javaPath = null;
 
-            var apk = new Apktools(containerApkPath, GlobalVariables.PathToResources, javaExePath: javaPath);
-            apk.Logging += Log;
+            IApktool apktool = new Apktool.Builder()
+                .JavaPath(GlobalVariables.PathToPortableJavaExe)
+                .ApktoolPath(GlobalVariables.ApktoolPath)
+                .SignApkPath(GlobalVariables.SignApkPath)
+                .BaksmaliPath(GlobalVariables.BaksmaliPath)
+                .SmaliPath(GlobalVariables.SmaliPath)
+                .DefaultKeyPemPath(GlobalVariables.DefaultKeyPemPath)
+                .DefaultKeyPkPath(GlobalVariables.DefaultKeyPkPath)
+                .Build();
 
-            {
-                string signed;
-                apk.Sign(copiedSourceApkPath, out signed, deleteMetaInf: !_settings.AlternativeSigning);
+            IProcessDataHandler dataHandler = new ProcessDataCombinedHandler(Log);
 
-                File.Move(signed, apkToModifyPath);
-            }
+            apktool.Sign(
+                sourceApkPath: copiedSourceApkPath,
+                deleteMetaInf: !_settings.AlternativeSigning,
+                signedApkPath: apkToModifyPath,
+                tempFileProvider: tempFileProvider,
+                dataHandler: dataHandler
+            );
 
             SetStep(MainResources.CopyingStgApk, 2);
+
+            string folderOfProject =
+                Path.Combine(
+                    Path.GetDirectoryName(copiedSourceApkPath),
+                    Path.GetFileNameWithoutExtension(copiedSourceApkPath)
+                );
 
             using (var zip = new ZipFile(containerZipPath)
             {
                 Password = GlobalVariables.AdditionalFilePassword
             })
             {
-                zip.ExtractAll(apk.FolderOfProject);
+                zip.ExtractAll(folderOfProject);
             }
 
-            var mod = new ApkModifer.Logic.ApkModifer(apk);
+            var mod = new ApkModifer.Logic.ApkModifer(
+                apktool: apktool,
+                apkPath: apkToModifyPath,
+                tempFolderProvider: tempFolderProvider
+            );
 
-            var backType = _settings.BackupType;
+            BackupType backupType = _settings.BackupType;
 
-            mod.ProgressChanged += (o, args) =>
+            mod.ProgressChanged += progress =>
             {
-                _visualProgress.SetBarValue((int)(args.Now * 100 / args.Maximum));
+                (long current, long maximum) = progress;
+                _visualProgress.SetBarValue((int)(current * 100 / maximum));
             };
 
             SetStep(MainResources.AddingLD, 3);
@@ -286,7 +312,7 @@ namespace SaveToGameWpf.Windows
             if (!string.IsNullOrEmpty(saveFile) && File.Exists(saveFile))
             {
                 _visualProgress.SetBarUsual();
-                mod.AddLocalData(saveFile, backupType: backType);
+                mod.Backup(saveFile, backupType: backupType);
             }
 
             SetStep(MainResources.AddingED, 4);
@@ -294,7 +320,7 @@ namespace SaveToGameWpf.Windows
             if (!string.IsNullOrEmpty(androidDataFile) && File.Exists(androidDataFile))
             {
                 _visualProgress.SetBarUsual();
-                mod.AddExternalData(androidDataFile);
+                mod.ExternalData(androidDataFile);
             }
 
             SetStep(MainResources.AddingObb, 5);
@@ -302,21 +328,32 @@ namespace SaveToGameWpf.Windows
             if (androidObbFiles.Length > 0)
             {
                 _visualProgress.SetBarUsual();
-                mod.AddExternalObb(androidObbFiles);
+                mod.ExternalObb(androidObbFiles);
             }
+
+            mod.Process();
 
             _visualProgress.SetBarIndeterminate();
 
             SetStep(MainResources.CopyingApk, 6);
 
-            File.Copy(apkToModifyPath, Path.Combine(apk.FolderOfProject, "assets", "install.bin"), true);
+            File.Copy(
+                apkToModifyPath, 
+                Path.Combine(folderOfProject, "assets", "install.bin"), 
+                true
+            );
 
             string package;
+            string androidManifestPath = Path.Combine(folderOfProject, "AndroidManifest.xml");
 
-            {
-                string instMan = new Apktools(apkToModifyPath, GlobalVariables.PathToResources, javaExePath: javaPath).ExtractSimpleManifest();
+            {              
+                apktool.ExtractSimpleManifest(
+                    apkPath: apkToModifyPath,
+                    resultManifestPath: androidManifestPath,
+                    tempFolderProvider: tempFolderProvider
+                );
 
-                string temp = File.ReadAllText(instMan, Encoding.UTF8);
+                string temp = File.ReadAllText(androidManifestPath, Encoding.UTF8);
 
                 const string packageStr = "package=\"";
 
@@ -326,11 +363,14 @@ namespace SaveToGameWpf.Windows
                 package = temp.Substring(startIndex, endIndex - startIndex);
             }
 
-            File.WriteAllText(apk.PathToAndroidManifest,
-                File.ReadAllText(apk.PathToAndroidManifest, Encoding.UTF8).Replace("change_package",
-                    package).Replace("@string/app_name", appTitle));
+            File.WriteAllText(
+                androidManifestPath,
+                File.ReadAllText(androidManifestPath, Encoding.UTF8)
+                    .Replace("change_package", package)
+                    .Replace("@string/app_name", appTitle)
+            );
 
-            string iconsFolder = Path.Combine(apk.FolderOfProject, "res", "mipmap-");
+            string iconsFolder = Path.Combine(folderOfProject, "res", "mipmap-");
 
             void DeleteIcon(string folder) =>
                 IOUtils.DeleteFile(Path.Combine($"{iconsFolder}{folder}", "ic_launcher.png"));
@@ -350,7 +390,17 @@ namespace SaveToGameWpf.Windows
 
             SetStep(MainResources.StepCompiling, 7);
 
-            if (!apk.Compile(out _))
+            string compiledApkPath = Path.Combine(folderOfProject, "dist", Path.GetFileName(apkToModifyPath));
+
+            List<Error> errors;
+            apktool.Compile(
+                projectFolderPath: folderOfProject,
+                destinationApkPath: compiledApkPath,
+                dataHandler: dataHandler,
+                errors: out errors
+            );
+
+            if (errors.Count > 0)
             {
                 Log(MainResources.ErrorUp);
                 return;
@@ -358,11 +408,15 @@ namespace SaveToGameWpf.Windows
 
             SetStep(MainResources.StepSigning, 8);
 
-            apk.Sign(deleteMetaInf: !_settings.AlternativeSigning);
+            apktool.Sign(
+                deleteMetaInf: !_settings.AlternativeSigning,
+                sourceApkPath: compiledApkPath,
+                signedApkPath: resultFilePath,
+                tempFileProvider: tempFileProvider,
+                dataHandler: dataHandler
+            );
 
             SetStep(MainResources.MovingResult, 9);
-
-            File.Copy(apk.SignedApk, resultFilePath, true);
 
             IOUtils.DeleteDir(tempProcessedFolder);
 

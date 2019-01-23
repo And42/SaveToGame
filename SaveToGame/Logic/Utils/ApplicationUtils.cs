@@ -100,7 +100,7 @@ namespace SaveToGameWpf.Logic.Utils
 
         public static void SetLanguageFromSettings()
         {
-            string lang = DefaultSettingsContainer.Instance.Language;
+            string lang = AppSettings.Instance.Language;
 
             if (string.IsNullOrEmpty(lang))
                 return;

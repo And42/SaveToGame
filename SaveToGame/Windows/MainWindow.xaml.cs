@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
@@ -10,8 +9,8 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Shell;
 using AndroidHelper.Logic;
+using AndroidHelper.Logic.Interfaces;
 using ApkModifer.Logic;
-using ICSharpCode.SharpZipLib.Zip;
 using MVVM_Tools.Code.Disposables;
 using SaveToGameWpf.Logic;
 using SaveToGameWpf.Logic.Classes;
@@ -34,7 +33,7 @@ namespace SaveToGameWpf.Windows
         private static readonly Encoding DefaultSmaliEncoding = new UTF8Encoding(false);
         private static readonly string Line = new string('-', 50);
 
-        private readonly DefaultSettingsContainer _settings = DefaultSettingsContainer.Instance;
+        private readonly AppSettings _settings = AppSettings.Instance;
 
         private readonly IVisualProgress _visualProgress;
         private readonly ITaskBarManager _taskBarManager;
@@ -241,6 +240,8 @@ namespace SaveToGameWpf.Windows
 
             BackupType backupType = ViewModel.BackupType;
 
+            ITempFileProvider tempFileProvider = TempUtils.CreateTempFileProvider();
+            ITempFolderProvider tempFolderProvider = TempUtils.CreateTempFolderProvider();
             var tempFolder = Path.Combine(Path.GetTempPath(), "STG_temp");
 
             var processedApkPath = Path.Combine(tempFolder, "processed.apk");
@@ -300,17 +301,23 @@ namespace SaveToGameWpf.Windows
 
             File.Copy(apkFile.FullName, processedApkPath, true);
 
-#if DEBUG
-            var apktool = new Apktools(processedApkPath, GlobalVariables.PathToResources, javaExePath: pathToJava, tracing: true);
-#else
-            var apktool = new Apktools(processedApkPath, GlobalVariables.PathToResources, javaExePath: pathToJava);
-#endif
+            IApktool apktool = new Apktool.Builder()
+                .JavaPath(GlobalVariables.PathToPortableJavaExe)
+                .ApktoolPath(GlobalVariables.ApktoolPath)
+                .SignApkPath(GlobalVariables.SignApkPath)
+                .BaksmaliPath(GlobalVariables.BaksmaliPath)
+                .SmaliPath(GlobalVariables.SmaliPath)
+                .DefaultKeyPemPath(GlobalVariables.DefaultKeyPemPath)
+                .DefaultKeyPkPath(GlobalVariables.DefaultKeyPkPath)
+                .Build();
 
-            apktool.Logging += Log;
+            IProcessDataHandler dataHandler = new ProcessDataCombinedHandler(Log);
 
-            var apkmodifer = new ApkModifer.Logic.ApkModifer(apktool);
-
-            string folderOfProject = apktool.FolderOfProject;
+            string folderOfProject =
+                Path.Combine(
+                    Path.GetDirectoryName(processedApkPath),
+                    Path.GetFileNameWithoutExtension(processedApkPath)
+                );
 
 #endregion
 
@@ -320,58 +327,7 @@ namespace SaveToGameWpf.Windows
 
             Log(Line);
             Log(MainResources.StepDecompiling);
-            Log(Line);
-            
-            apktool.Baksmali();
-
-            apktool.Manifest = apkmodifer.Apktools.GetSimpleManifest();
-
-#endregion
-
-#region Замена текстов
-
-            SetStep(3, MainResources.StepReplacingTexts);
-
-            if (pro)
-            {
-                var texts = new List<string> {" A P K M A N I A . C O M ", "Thanks for visiting APKMANIA.COM"};
-
-                string messageFile = Path.Combine(GlobalVariables.PathToExeFolder, "Messages.txt");
-
-                if (File.Exists(messageFile))
-                {
-                    texts.AddRange(File.ReadLines(messageFile, Encoding.UTF8).Where(line => !string.IsNullOrWhiteSpace(line)));
-                }
-
-                ReplaceTexts(Path.Combine(folderOfProject, "smali"), texts, StringUtils.ToUnicodeSequence(ViewModel.PopupBoxText.Value));
-            }
-
-#endregion
-
-#region Удаление известных баннеров
-
-            SetStep(4, MainResources.StepRemovingBanners);
-
-            if (pro)
-            {
-                var bannersFile = Path.Combine(GlobalVariables.PathToExeFolder, "banners.txt");
-
-                if (File.Exists(bannersFile))
-                {
-                    var banners = File.ReadLines(bannersFile).Where(line => !string.IsNullOrWhiteSpace(line)).ToList();
-
-                    if (banners.Count == 0)
-                    {
-                        banners.AddRange(new []
-                        {
-                            "invoke-static {p0}, Lcom/apkmania/apkmania;->createInfoBox(Landroid/content/Context;)V",
-                            "invoke-static {p0}, LNORLAN/Box/Message;->NORLANBoxMessage(Landroid/content/Context;)V"
-                        });
-                    }
-
-                    RemoveCodeLines(Path.Combine(folderOfProject, "smali"), banners);
-                }
-            }
+            Log(Line);      
 
 #endregion
 
@@ -379,35 +335,26 @@ namespace SaveToGameWpf.Windows
 
             SetStep(5, MainResources.StepAddingData);
 
-            if (!string.IsNullOrEmpty(mainSmali))
-            {
-                var mainSmaliPath = Path.Combine(folderOfProject, "smali", mainSmali);
-
-                if (!mainSmali.EndsWith(".smali", StringComparison.Ordinal))
-                    mainSmaliPath += ".smali";
-
-                if (File.Exists(mainSmaliPath))
-                    apktool.Manifest.MainSmaliFile = new MainSmali(mainSmaliPath, apktool.Manifest.MainSmaliFile.MethodType, DefaultSmaliEncoding);
-                else
-                    Log($"Typed main smali was not found ({mainSmaliPath})");
-            }
-
-            AesManaged mng = new AesManaged { KeySize = 128 };
+            var mng = new AesManaged { KeySize = 128 };
 
             mng.GenerateIV();
             mng.GenerateKey();
 
-            apkmodifer.AddSaveAndMessage(
-                iv: mng.IV,
-                key: mng.Key, 
-                addSave: onlySave || savePlusMessage,
-                addMessage: savePlusMessage || onlyMessage,
-                pathToSave: pathToSave,
-                message: popupText,
-                messagesAmount: messagesCount, 
-                forceMethod: true, 
-                backupType: backupType
+            var apkModifer = new ApkModifer.Logic.ApkModifer(
+                apktool: apktool,
+                apkPath: processedApkPath,
+                tempFolderProvider: tempFolderProvider
             );
+
+            apkModifer.Encrypt(mng.IV, mng.Key);
+
+            if (onlySave || savePlusMessage)
+                apkModifer.Backup(pathToSave, backupType);
+
+            if (savePlusMessage || onlyMessage)
+                apkModifer.Message(popupText, messagesCount);
+
+            apkModifer.Process();
 
 #endregion
 
@@ -419,10 +366,6 @@ namespace SaveToGameWpf.Windows
 			Log(MainResources.StepCompiling);
 			Log(Line);
 
-            var classesFiles = apktool.Smali();
-
-            ReplaceFilesInApk(apktool.FileName, classesFiles);
-
 #endregion
 
 #region Подпись
@@ -433,15 +376,13 @@ namespace SaveToGameWpf.Windows
             Log(MainResources.StepSigning);
             Log(Line);
 
-            string signed;
-
-            if (!apktool.Sign(apktool.FileName, out signed, deleteMetaInf: !alternativeSigning))
-            {
-                HaveError("Error while signing", "Error while signing");
-                return;
-            }
-
-            File.Copy(signed, resultApkPath, true);
+            apktool.Sign(
+                sourceApkPath: processedApkPath,
+                signedApkPath: resultApkPath,
+                tempFileProvider: tempFileProvider,
+                dataHandler: dataHandler,
+                deleteMetaInf: !_settings.AlternativeSigning
+            );
 
 #endregion
 
@@ -528,70 +469,6 @@ namespace SaveToGameWpf.Windows
             }
         }
 
-        private static void ReplaceFilesInApk(string pathToApk, IEnumerable<string> pathToFiles)
-        {
-            using (var apkFile = new ZipFile(pathToApk))
-            {
-                apkFile.BeginUpdate();
-
-                foreach (var pathToFile in pathToFiles)
-                {
-                    var fileName = Path.GetFileName(pathToFile);
-
-                    ZipEntry entry = apkFile.GetEntry(fileName);
-
-                    apkFile.Delete(entry);
-                    apkFile.Add(new StaticDiskDataSource(pathToFile), fileName, entry.CompressionMethod);
-                }
-
-                apkFile.CommitUpdate();
-            }
-        }
-
-        /*private static void ReplaceFileInApk(string pathToApk, string pathToFile)
-        {
-            var fileName = Path.GetFileName(pathToFile);
-
-            //DotNextZip
-            //{
-            //    using (var apkFile = new Ionic.Zip.ZipFile(pathToApk))
-            //    {
-            //        apkFile.RemoveSelectedEntries($"name = {fileName}");
-            //        apkFile.AddFile(pathToFile, string.Empty);
-
-            //        apkFile.Save();
-            //    }
-            //}
-
-            // SharpZipLib
-            {
-                using (var apkFile = new ICSharpCode.SharpZipLib.Zip.ZipFile(pathToApk))
-                {
-                    apkFile.BeginUpdate();
-
-                    apkFile.Delete(fileName);
-                    apkFile.Add(pathToFile, fileName);
-
-                    apkFile.CommitUpdate();
-                }
-            }
-
-            //ZipStorer
-            //{
-            //    var zip = System.IO.Compression.ZipStorer.Open(apathToApk, FileAccess.ReadWrite);
-
-            //    var classesEntry = zip.ReadCentralDir().FirstOrNull(entry => entry.FilenameInZip == fileName);
-
-            //    if (classesEntry != null)
-            //        System.IO.Compression.ZipStorer.RemoveEntries(ref zip,
-            //            new List<System.IO.Compression.ZipStorer.ZipFileEntry> { classesEntry.Value });
-            //    zip.AddFile(System.IO.Compression.ZipStorer.Compression.Store,
-            //        pathToFile, fileName, string.Empty);
-
-            //    zip.Close();
-            //}
-        }*/
-
         private async Task CheckJavaVersion()
         {
             if (Directory.Exists(GlobalVariables.PathToPortableJre))
@@ -654,6 +531,7 @@ namespace SaveToGameWpf.Windows
             var theme = sender.As<FrameworkElement>().Tag.As<string>();
 
             ThemeUtils.SetTheme(theme);
+            AppSettings.Instance.Theme = theme;
         }
 
         private static StreamWriter CreateLogFileForApp(string pathToApkFile)
