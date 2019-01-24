@@ -257,7 +257,7 @@ namespace SaveToGameWpf.Windows
 
 #region Подготовка
 
-            Dispatcher.InvokeAction(() => LogBox.Clear());
+            Dispatcher.Invoke(() => LogBox.Clear());
 
 #endregion
 
@@ -403,7 +403,7 @@ namespace SaveToGameWpf.Windows
 
             _currentLog?.WriteLine(text);
 
-            Application.Current.Dispatcher.InvokeAction(() =>
+            Application.Current.Dispatcher.Invoke(() =>
             {
                 LogBox.AppendText(text + Environment.NewLine);
                 LogBox.ScrollToEnd();

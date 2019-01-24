@@ -37,11 +37,6 @@ namespace SaveToGameWpf.Logic.Utils
             return 0;
         }
 
-        public static void InvokeAction(this Dispatcher dispatcher, Action action)
-        {
-            dispatcher.Invoke(action);
-        }
-
         public static void ExtractAll(this ZipFile zip, string folder)
         {
             IOUtils.RecreateDir(folder);

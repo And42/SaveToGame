@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Windows.Shell;
 using SaveToGameWpf.Logic.Interfaces;
-using SaveToGameWpf.Logic.Utils;
 
 namespace SaveToGameWpf.Logic.Classes
 {
@@ -56,7 +55,7 @@ namespace SaveToGameWpf.Logic.Classes
 
         private void UpdateProgress()
         {
-            _taskbarItemInfo.Dispatcher.InvokeAction(() => _taskbarItemInfo.ProgressValue = _currentProgress / MaxProgressDouble);
+            _taskbarItemInfo.Dispatcher.Invoke(() => _taskbarItemInfo.ProgressValue = _currentProgress / MaxProgressDouble);
         }
 
         private void SetState(TaskbarItemProgressState state)
@@ -71,7 +70,7 @@ namespace SaveToGameWpf.Logic.Classes
 
         private void UpdateState()
         {
-            _taskbarItemInfo.Dispatcher.InvokeAction(() => _taskbarItemInfo.ProgressState = _currentState);
+            _taskbarItemInfo.Dispatcher.Invoke(() => _taskbarItemInfo.ProgressState = _currentState);
         }
     }
 }

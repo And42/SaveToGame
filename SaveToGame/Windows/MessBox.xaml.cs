@@ -16,7 +16,7 @@ namespace SaveToGameWpf.Windows
 
         public static string ShowDial(string message, string caption = null, params string[] buttons)
         {
-            Application.Current.Dispatcher.InvokeAction(() => new MessBox().ShowD(message, caption, buttons));
+            Application.Current.Dispatcher.Invoke(() => new MessBox().ShowD(message, caption, buttons));
             return _result;
         }
 

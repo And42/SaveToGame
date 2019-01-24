@@ -149,7 +149,7 @@ namespace SaveToGameWpf.Windows
                 {
 #if DEBUG
                     Trace.WriteLine(ex.ToString());
-                    Dispatcher.InvokeAction(() => throw ex);
+                    Dispatcher.Invoke(() => throw ex);
 #endif
                     Log($"{MainResources.ErrorUp}: {ex.Message}");
 
@@ -494,7 +494,7 @@ namespace SaveToGameWpf.Windows
         {
             _log.Append(text);
             _log.Append('\n');
-            Dispatcher.InvokeAction(() =>
+            Dispatcher.Invoke(() =>
             {
                 LogBox.Text = _log.ToString();
             });
