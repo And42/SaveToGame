@@ -19,22 +19,6 @@ namespace SaveToGameWpf.Logic.Utils
             return Assembly.GetExecutingAssembly().GetName().Version.ToString();
         }
 
-        public static Task CheckProVersion()
-        {
-            return Task.Factory.StartNew(() =>
-            {
-                try
-                {
-                    if (LicensingUtils.IsLicenseValid(Settings.Default.License))
-                        Utils.EnableProVersion(true);
-                }
-                catch (Exception ex)
-                {
-                    GlobalVariables.ErrorClient.Notify(ex);
-                }
-            });
-        }
-
         public static string GetPathToExe()
         {
             return Assembly.GetExecutingAssembly().Location;

@@ -9,8 +9,6 @@ namespace SaveToGameWpf.Logic.ViewModels
 {
     public class MainWindowViewModel : BindableBase
     {
-        public Property<bool> Pro { get; }
-
         public Property<bool> Working { get; }
         public Property<bool> OnlySave { get; }
         public Property<bool> SavePlusMess { get; }
@@ -39,29 +37,23 @@ namespace SaveToGameWpf.Logic.ViewModels
 
         public MainWindowViewModel()
         {
-            Pro = new Property<bool>();
-
             Working = new Property<bool>();
             OnlySave = new Property<bool>();
             SavePlusMess = new Property<bool>(true);
             OnlyMess = new Property<bool>();
 
-            PopupBoxText = new Property<string>("Modified by SaveToGame");
+            PopupBoxText = new Property<string>(AppSettings.Instance.PopupMessage ?? "Modified by SaveToGame");
             MessagesCount = new Property<int>(1);
 
             CurrentApk = new Property<string>();
             CurrentSave = new Property<string>();
 
-            Pro.PropertyChanged += (sender, args) => OnPropertyChanged(nameof(Title));
             CurrentApk.PropertyChanged += (sender, args) => OnPropertyChanged(nameof(CurrentApk));
         }
 
         private string FormatTitle()
         {
             var result = MainResources.AppName;
-
-            if (Pro.Value)
-                result += " Pro";
 
             if (!string.IsNullOrEmpty(CurrentApk.Value))
                 result += " - " + CurrentApk.Value;

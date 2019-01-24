@@ -192,15 +192,6 @@
   <data name="From" xml:space="preserve">
     <value>из</value>
   </data>
-  <data name="FullVersion" xml:space="preserve">
-    <value>Про версия</value>
-  </data>
-  <data name="FullVersionPlusses" xml:space="preserve">
-    <value>Плюсы про версии</value>
-  </data>
-  <data name="GenerateFile" xml:space="preserve">
-    <value>Создать файл лицензии</value>
-  </data>
   <data name="Icons" xml:space="preserve">
     <value>Иконки</value>
   </data>
@@ -212,15 +203,6 @@
   </data>
   <data name="Language" xml:space="preserve">
     <value>Язык</value>
-  </data>
-  <data name="LicenseFileError" xml:space="preserve">
-    <value>Неверный формат лицензии</value>
-  </data>
-  <data name="LicenseFiles" xml:space="preserve">
-    <value>Файлы лицензий</value>
-  </data>
-  <data name="LicenseNotValid" xml:space="preserve">
-    <value>Лицензия не верна</value>
   </data>
   <data name="Mb" xml:space="preserve">
     <value>МБ</value>
@@ -294,9 +276,6 @@
   <data name="PathTooLongExceptionMessage" xml:space="preserve">
     <value>Во время работы возникла ошибка, связанная с превышением допустимой длины имени файла. Дайте файлам короткие названия и переместите их поближе к корню диска</value>
   </data>
-  <data name="GenerateLicenseFileError" xml:space="preserve">
-    <value>Не удалось создать файл. Убедитесь, что вы создаёте его не в системной директории</value>
-  </data>
   <data name="UnknownErrorOccured" xml:space="preserve">
     <value>Обнаружена непредвиденная ошибка</value>
   </data>
@@ -311,9 +290,6 @@
   </data>
   <data name="Information_Title" xml:space="preserve">
     <value>Информация</value>
-  </data>
-  <data name="LicenseFormatUpdated_Text" xml:space="preserve">
-    <value>В этой версии был изменён формат ключа. Пожалуйста, напишите разработчику для получения нового ключа</value>
   </data>
   <data name="Error" xml:space="preserve">
     <value>Ошибка</value>
@@ -351,9 +327,6 @@
   </data>
   <data name="File_or_save_not_selected" xml:space="preserve">
     <value>Файл или сохранение не выбраны!</value>
-  </data>
-  <data name="Invalid_license_fullbtn" xml:space="preserve">
-    <value>Эта лицензия недействительна</value>
   </data>
   <data name="JavaNotFound" xml:space="preserve">
     <value>Java не найдена. Необходимо загрузить её с официального сайта. Ссылка скопирована в буфер обмена</value>

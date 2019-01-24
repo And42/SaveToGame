@@ -11,9 +11,6 @@
     <Setting Name="PopupMessage" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="License" Type="System.Collections.ArrayList" Scope="User">
-      <Value Profile="(Default)" />
-    </Setting>
     <Setting Name="UpgradeRequired" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>

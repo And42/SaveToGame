@@ -63,16 +63,12 @@ namespace SaveToGameWpf.Windows
 
         private async void MainWindow_Loaded(object sender, EventArgs e)
         {
-            await ApplicationUtils.CheckProVersion();
             await CheckJavaVersion();
         }
 
         private void MainWindow_OnClosed(object sender, EventArgs e)
         {
-            if (ViewModel.Pro.Value)
-            {
-                _settings.PopupMessage = ViewModel.PopupBoxText.Value;
-            }
+            _settings.PopupMessage = ViewModel.PopupBoxText.Value;
 
             if (_shutdownOnClose)
             {
@@ -212,11 +208,6 @@ namespace SaveToGameWpf.Windows
             WindowManager.ActivateWindow<MainWindow>();
         }
 
-        private void BuyItem_Click(object sender, EventArgs e)
-        {
-            new ActivateProgramWindow().ShowDialog();
-        }
-
         private void AboutProgramItem_Click(object sender, EventArgs e)
         {
             new AboutWindow().ShowDialog();
@@ -227,7 +218,6 @@ namespace SaveToGameWpf.Windows
         private void Start()
         {
             var apkFile = new FileInfo(ViewModel.CurrentApk.Value);
-            bool pro = ViewModel.Pro.Value;
             bool alternativeSigning = _settings.AlternativeSigning;
 
             bool onlySave = ViewModel.OnlySave.Value;

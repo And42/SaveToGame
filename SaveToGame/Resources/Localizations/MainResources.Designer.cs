@@ -403,42 +403,6 @@ namespace SaveToGameWpf.Resources.Localizations {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Про версия.
-        /// </summary>
-        public static string FullVersion {
-            get {
-                return ResourceManager.GetString("FullVersion", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Плюсы про версии.
-        /// </summary>
-        public static string FullVersionPlusses {
-            get {
-                return ResourceManager.GetString("FullVersionPlusses", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Создать файл лицензии.
-        /// </summary>
-        public static string GenerateFile {
-            get {
-                return ResourceManager.GetString("GenerateFile", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Не удалось создать файл. Убедитесь, что вы создаёте его не в системной директории.
-        /// </summary>
-        public static string GenerateLicenseFileError {
-            get {
-                return ResourceManager.GetString("GenerateLicenseFileError", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Иконки.
         /// </summary>
         public static string Icons {
@@ -471,15 +435,6 @@ namespace SaveToGameWpf.Resources.Localizations {
         public static string InstallApkVersion {
             get {
                 return ResourceManager.GetString("InstallApkVersion", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Эта лицензия недействительна.
-        /// </summary>
-        public static string Invalid_license_fullbtn {
-            get {
-                return ResourceManager.GetString("Invalid_license_fullbtn", resourceCulture);
             }
         }
         
@@ -536,42 +491,6 @@ namespace SaveToGameWpf.Resources.Localizations {
         public static string Language {
             get {
                 return ResourceManager.GetString("Language", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Неверный формат лицензии.
-        /// </summary>
-        public static string LicenseFileError {
-            get {
-                return ResourceManager.GetString("LicenseFileError", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Файлы лицензий.
-        /// </summary>
-        public static string LicenseFiles {
-            get {
-                return ResourceManager.GetString("LicenseFiles", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to В этой версии был изменён формат ключа. Пожалуйста, напишите разработчику для получения нового ключа.
-        /// </summary>
-        public static string LicenseFormatUpdated_Text {
-            get {
-                return ResourceManager.GetString("LicenseFormatUpdated_Text", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Лицензия не верна.
-        /// </summary>
-        public static string LicenseNotValid {
-            get {
-                return ResourceManager.GetString("LicenseNotValid", resourceCulture);
             }
         }
         

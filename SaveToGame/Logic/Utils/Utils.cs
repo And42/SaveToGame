@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using System.Windows.Threading;
 using ICSharpCode.SharpZipLib.Zip;
 using SaveToGameWpf.Logic.Interfaces;
-using SaveToGameWpf.Logic.OrganisationItems;
 using SaveToGameWpf.Resources.Localizations;
 using SaveToGameWpf.Windows;
 
@@ -38,19 +37,6 @@ namespace SaveToGameWpf.Logic.Utils
             }
 
             return 0;
-        }
-
-        public static void EnableProVersion(bool enable = false)
-        {
-            var model = WindowManager.GetActiveWindow<MainWindow>().ViewModel;
-
-            model.Pro.Value = enable;
-
-            if (!enable)
-                return;
-
-            model.PopupBoxText.Value = AppSettings.Instance.PopupMessage ?? "";
-            model.OnlySave.Value = true;
         }
 
         public static void InvokeAction(this Dispatcher dispatcher, Action action)

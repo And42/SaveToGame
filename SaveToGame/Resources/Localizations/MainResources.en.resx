@@ -192,15 +192,6 @@
   <data name="From" xml:space="preserve">
     <value>from</value>
   </data>
-  <data name="FullVersion" xml:space="preserve">
-    <value>Pro version</value>
-  </data>
-  <data name="FullVersionPlusses" xml:space="preserve">
-    <value>Advantages of the pro version</value>
-  </data>
-  <data name="GenerateFile" xml:space="preserve">
-    <value>Generate file</value>
-  </data>
   <data name="Icons" xml:space="preserve">
     <value>Icons</value>
   </data>
@@ -212,15 +203,6 @@
   </data>
   <data name="Language" xml:space="preserve">
     <value>Language</value>
-  </data>
-  <data name="LicenseFileError" xml:space="preserve">
-    <value>Error while loading license</value>
-  </data>
-  <data name="LicenseFiles" xml:space="preserve">
-    <value>License files</value>
-  </data>
-  <data name="LicenseNotValid" xml:space="preserve">
-    <value>License is not valid</value>
   </data>
   <data name="Mb" xml:space="preserve">
     <value>MB</value>
@@ -300,9 +282,6 @@
   <data name="Information_Title" xml:space="preserve">
     <value>Information</value>
   </data>
-  <data name="LicenseFormatUpdated_Text" xml:space="preserve">
-    <value>License format changed in this version. Please, contact the developer to get the new key</value>
-  </data>
   <data name="UnknownErrorOccured" xml:space="preserve">
     <value>Unknown error occured</value>
   </data>
@@ -311,9 +290,6 @@
   </data>
   <data name="WebMoneyWmrCopied" xml:space="preserve">
     <value>Wallet number (WMR) added to the buffer</value>
-  </data>
-  <data name="GenerateLicenseFileError" xml:space="preserve">
-    <value>Can't generate license file. Make sure you are not creating it in the system directory</value>
   </data>
   <data name="Error" xml:space="preserve">
     <value>Error</value>

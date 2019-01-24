@@ -137,7 +137,6 @@
     <Compile Include="Logic\Utils\CollectionUtils.cs" />
     <Compile Include="Logic\Utils\DragDropUtils.cs" />
     <Compile Include="Logic\Utils\IOUtils.cs" />
-    <Compile Include="Logic\Utils\LicensingUtils.cs" />
     <Compile Include="Logic\Utils\PickerUtils.cs" />
     <Compile Include="Logic\Utils\StringUtils.cs" />
     <Compile Include="Logic\Utils\TempUtils.cs" />
@@ -412,10 +411,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Windows\ActivateProgramWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Windows\AdbInstall.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -434,9 +429,6 @@
     </Page>
     <Compile Include="Windows\AboutWindow.xaml.cs">
       <DependentUpon>AboutWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Windows\ActivateProgramWindow.xaml.cs">
-      <DependentUpon>ActivateProgramWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>

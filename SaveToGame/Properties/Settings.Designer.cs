@@ -61,17 +61,6 @@ namespace SaveToGameWpf.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        public global::System.Collections.ArrayList License {
-            get {
-                return ((global::System.Collections.ArrayList)(this["License"]));
-            }
-            set {
-                this["License"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool UpgradeRequired {
             get {
