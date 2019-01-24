@@ -125,7 +125,6 @@
     <Compile Include="Converters\NotNullParameterConverter.cs" />
     <Compile Include="Converters\ThemeToCheckedConverter.cs" />
     <Compile Include="Logic\Classes\AppIconsStorage.cs" />
-    <Compile Include="Logic\Classes\BlockIds.cs" />
     <Compile Include="Logic\Classes\NotificationManager.cs" />
     <Compile Include="Logic\Classes\TaskBarManager.cs" />
     <Compile Include="Logic\Interfaces\ITaskBarManager.cs" />

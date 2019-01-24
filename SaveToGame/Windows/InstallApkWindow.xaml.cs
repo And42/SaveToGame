@@ -253,10 +253,6 @@ namespace SaveToGameWpf.Windows
 
             File.Copy(apkFile, copiedSourceApkPath);
 
-            var javaPath = GlobalVariables.PathToPortableJavaExe;
-            if (!File.Exists(javaPath))
-                javaPath = null;
-
             IApktool apktool = new Apktool.Builder()
                 .JavaPath(GlobalVariables.PathToPortableJavaExe)
                 .ApktoolPath(GlobalVariables.ApktoolPath)

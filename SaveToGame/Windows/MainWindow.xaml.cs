@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Security.Cryptography;
@@ -30,7 +29,6 @@ namespace SaveToGameWpf.Windows
         // how many times app should try to create log file for the apk file processing
         private const int LogCreationTries = 50;
 
-        private static readonly Encoding DefaultSmaliEncoding = new UTF8Encoding(false);
         private static readonly string Line = new string('-', 50);
 
         private readonly AppSettings _settings = AppSettings.Instance;
@@ -237,10 +235,6 @@ namespace SaveToGameWpf.Windows
             var resultApkPath = apkFile.GetFullFNWithoutExt() + "_mod.apk";
             var pathToSave = ViewModel.CurrentSave.Value;
 
-            string pathToJava = GlobalVariables.PathToPortableJavaExe;
-            if (!File.Exists(pathToJava))
-                pathToJava = null;
-
             IOUtils.DeleteDir(tempFolder);
             IOUtils.CreateDir(tempFolder);
 
@@ -376,64 +370,6 @@ namespace SaveToGameWpf.Windows
 
             _visualProgress.HideBar();
             _taskBarManager.SetNoneState();
-        }
-
-        private static void ReplaceTexts(string folderWithSmaliFiles, IList<string> itemsToReplace, string targetString)
-        {
-            var encodedText = StringUtils.ToUnicodeSequence(targetString);
-
-            var files = Directory.EnumerateFiles(folderWithSmaliFiles, "*.smali", SearchOption.AllDirectories);
-
-            foreach (string file in files)
-            {
-                string fileText = File.ReadAllText(file, DefaultSmaliEncoding);
-
-                bool changed = false;
-
-                foreach (var text in itemsToReplace)
-                {
-                    var fullText = $"\"{text}\"";
-
-                    if (!fileText.Contains(fullText))
-                        continue;
-
-                    fileText = fileText.Replace(fullText, $"\"{encodedText}\"");
-
-                    changed = true;
-                }
-
-                if (changed)
-                {
-                    File.WriteAllText(file, fileText, DefaultSmaliEncoding);
-                }
-            }
-        }
-
-        private static void RemoveCodeLines(string folderWithSmaliFiles, IList<string> linesToRemove)
-        {
-            var files = Directory.EnumerateFiles(folderWithSmaliFiles, "*.smali", SearchOption.AllDirectories);
-
-            foreach (var name in files)
-            {
-                string fileText = File.ReadAllText(name, DefaultSmaliEncoding);
-
-                bool changed = false;
-
-                foreach (var line in linesToRemove)
-                {
-                    if (!fileText.Contains(line))
-                        continue;
-
-                    fileText = fileText.Remove(fileText.IndexOf(line, StringComparison.Ordinal), line.Length + 2);
-
-                    changed = true;
-                }
-
-                if (changed)
-                {
-                    File.WriteAllText(name, fileText, DefaultSmaliEncoding);
-                }
-            }
         }
 
         private async Task CheckJavaVersion()
