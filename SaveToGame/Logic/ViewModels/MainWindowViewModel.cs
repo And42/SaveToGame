@@ -19,8 +19,6 @@ namespace SaveToGameWpf.Logic.ViewModels
         public Property<string> PopupBoxText { get; }
         public Property<int> MessagesCount { get; }
 
-        public Property<string> MainSmaliName { get; }
-
         public Property<string> CurrentApk { get; }
         public Property<string> CurrentSave { get; }
 
@@ -50,8 +48,6 @@ namespace SaveToGameWpf.Logic.ViewModels
 
             PopupBoxText = new Property<string>("Modified by SaveToGame");
             MessagesCount = new Property<int>(1);
-
-            MainSmaliName = new Property<string>(string.Empty);
 
             CurrentApk = new Property<string>();
             CurrentSave = new Property<string>();

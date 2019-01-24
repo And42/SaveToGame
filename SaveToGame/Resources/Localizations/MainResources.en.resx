@@ -222,9 +222,6 @@
   <data name="LicenseNotValid" xml:space="preserve">
     <value>License is not valid</value>
   </data>
-  <data name="MainSmaliName" xml:space="preserve">
-    <value>Name of main smali file:</value>
-  </data>
   <data name="Mb" xml:space="preserve">
     <value>MB</value>
   </data>

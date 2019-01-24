@@ -235,7 +235,6 @@ namespace SaveToGameWpf.Windows
             bool onlyMessage = ViewModel.OnlyMess.Value;
 
             string popupText = ViewModel.PopupBoxText.Value;
-            string mainSmali = ViewModel.MainSmaliName.Value;
             int messagesCount = ViewModel.MessagesCount.Value;
 
             BackupType backupType = ViewModel.BackupType;
@@ -273,8 +272,6 @@ namespace SaveToGameWpf.Windows
             }
 
 #region Подготовка
-
-            ViewModel.MainSmaliName.Value = ViewModel.MainSmaliName.Value.Replace('.', '\\').Replace('/', '\\');
 
             Dispatcher.InvokeAction(() => LogBox.Clear());
 

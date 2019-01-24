@@ -157,26 +157,18 @@
 
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="5"/>
-                        <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
 
-                    <TextBlock Text="{x:Static localization:MainResources.MainSmaliName}"/>
-
-                    <TextBox
-                        Grid.Row="0" Grid.Column="1"
-                        Text="{Binding MainSmaliName.Value}" />
-
                     <TextBlock
-                        Grid.Row="2" Grid.Column="0"
+                        Grid.Column="0"
                         Text="{x:Static localization:MainResources.TextOfMessage}"/>
 
                     <TextBox
-                        Grid.Row="2" Grid.Column="1"
+                        Grid.Column="1"
                         Text="{Binding PopupBoxText.Value}"
                         AcceptsReturn="True" MaxLines="3"/>
                 </Grid>

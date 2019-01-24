@@ -585,15 +585,6 @@ namespace SaveToGameWpf.Resources.Localizations {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Название главного smali:.
-        /// </summary>
-        public static string MainSmaliName {
-            get {
-                return ResourceManager.GetString("MainSmaliName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to МБ.
         /// </summary>
         public static string Mb {

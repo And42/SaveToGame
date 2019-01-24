@@ -222,9 +222,6 @@
   <data name="LicenseNotValid" xml:space="preserve">
     <value>Лицензия не верна</value>
   </data>
-  <data name="MainSmaliName" xml:space="preserve">
-    <value>Название главного smali:</value>
-  </data>
   <data name="Mb" xml:space="preserve">
     <value>МБ</value>
   </data>
