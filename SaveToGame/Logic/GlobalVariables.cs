@@ -10,12 +10,12 @@ namespace SaveToGameWpf.Logic
     internal static class GlobalVariables
     {
         /// <summary>
-        /// ../AppData/Local/SaveToGame
+        /// ../AppData/Roaming/SaveToGame
         /// </summary>
         public static readonly string AppDataPath;
 
         /// <summary>
-        /// ../AppData/Local/SaveToGame/temp
+        /// ../AppData/Roaming/SaveToGame/temp
         /// </summary>
         public static readonly string TempPath;
 
@@ -75,13 +75,13 @@ namespace SaveToGameWpf.Logic
         public static readonly string PathToPortableJavaExe;
 
         /// <summary>
-        /// .../user/AppData/Local/SaveToGame
+        /// .../user/AppData/Roaming/SaveToGame
         /// </summary>
         public static readonly string AppSettingsDir;
 
         public static readonly IClient ErrorClient = new Client(ConfigurationManager.AppSettings["BugsnagApiKey"]);
 
-        public static string AdditionalFilePassword;
+        public const string AdditionalFilePassword = "Ub82X8:Hng6t=C+'mx";
         
         static GlobalVariables()
         {
