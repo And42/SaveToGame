@@ -255,7 +255,7 @@ namespace SaveToGameWpf.Windows
             IOUtils.DeleteDir(tempFolder);
             IOUtils.CreateDir(tempFolder);
 
-            const int totalSteps = 7;
+            const int totalSteps = 3;
 
             _visualProgress.SetBarUsual();
             _visualProgress.ShowBar();
@@ -321,56 +321,36 @@ namespace SaveToGameWpf.Windows
 
 #endregion
 
-#region Декомпиляция
-            
-            SetStep(2, MainResources.StepDecompiling);
-
-            Log(Line);
-            Log(MainResources.StepDecompiling);
-            Log(Line);      
-
-#endregion
-
 #region Добавление данных
 
-            SetStep(5, MainResources.StepAddingData);
+            SetStep(2, MainResources.StepAddingData);
 
-            var mng = new AesManaged { KeySize = 128 };
+            {
+                var apkModifer = new ApkModifer.Logic.ApkModifer(
+                    apktool: apktool,
+                    apkPath: processedApkPath,
+                    tempFolderProvider: tempFolderProvider
+                );
 
-            mng.GenerateIV();
-            mng.GenerateKey();
+                var mng = new AesManaged {KeySize = 128};
+                mng.GenerateIV();
+                mng.GenerateKey();
+                apkModifer.Encrypt(mng.IV, mng.Key);
 
-            var apkModifer = new ApkModifer.Logic.ApkModifer(
-                apktool: apktool,
-                apkPath: processedApkPath,
-                tempFolderProvider: tempFolderProvider
-            );
+                if (onlySave || savePlusMessage)
+                    apkModifer.Backup(pathToSave, backupType);
 
-            apkModifer.Encrypt(mng.IV, mng.Key);
+                if (savePlusMessage || onlyMessage)
+                    apkModifer.Message(popupText, messagesCount);
 
-            if (onlySave || savePlusMessage)
-                apkModifer.Backup(pathToSave, backupType);
-
-            if (savePlusMessage || onlyMessage)
-                apkModifer.Message(popupText, messagesCount);
-
-            apkModifer.Process();
-
-#endregion
-
-#region Сборка проекта
-
-            SetStep(6, MainResources.StepCompiling);
-
-			Log(Line);
-			Log(MainResources.StepCompiling);
-			Log(Line);
+                apkModifer.Process();
+            }
 
 #endregion
 
 #region Подпись
 
-            SetStep(7, MainResources.StepSigning);
+            SetStep(3, MainResources.StepSigning);
 
             Log(Line);
             Log(MainResources.StepSigning);
@@ -389,7 +369,7 @@ namespace SaveToGameWpf.Windows
             IOUtils.DeleteDir(tempFolder);
 
             _visualProgress.HideIndeterminateLabel();
-            SetStep(8, MainResources.AllDone);
+            SetStep(4, MainResources.AllDone);
             Log(MainResources.AllDone);
 
             if (_settings.Notifications)
