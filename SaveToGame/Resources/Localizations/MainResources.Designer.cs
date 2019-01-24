@@ -468,20 +468,11 @@ namespace SaveToGameWpf.Resources.Localizations {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Текущая версия java может вызывать ошибки при работе программы. Установить портативную версию, исправляющую это?.
+        ///   Looks up a localized string similar to Текущая версия java может вызывать ошибки при работе программы. Будет загружена версия версия работающая корректно.
         /// </summary>
         public static string JavaInvalidVersion {
             get {
                 return ResourceManager.GetString("JavaInvalidVersion", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Java не найдена. Необходимо загрузить её с официального сайта. Ссылка скопирована в буфер обмена.
-        /// </summary>
-        public static string JavaNotFound {
-            get {
-                return ResourceManager.GetString("JavaNotFound", resourceCulture);
             }
         }
         

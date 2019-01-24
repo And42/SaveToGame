@@ -328,9 +328,6 @@
   <data name="File_or_save_not_selected" xml:space="preserve">
     <value>Файл или сохранение не выбраны!</value>
   </data>
-  <data name="JavaNotFound" xml:space="preserve">
-    <value>Java не найдена. Необходимо загрузить её с официального сайта. Ссылка скопирована в буфер обмена</value>
-  </data>
   <data name="Not_enough_files" xml:space="preserve">
     <value>Некоторые файлы не найдены!</value>
   </data>
@@ -363,7 +360,7 @@
     <value>Загрузка java</value>
   </data>
   <data name="JavaInvalidVersion" xml:space="preserve">
-    <value>Текущая версия java может вызывать ошибки при работе программы. Установить портативную версию, исправляющую это?</value>
+    <value>Текущая версия java может вызывать ошибки при работе программы. Будет загружена версия версия работающая корректно</value>
   </data>
   <data name="JavaDownloadFailed" xml:space="preserve">
     <value>Не удалось загрузить java.

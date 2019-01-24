@@ -331,9 +331,6 @@ Missing files: {0}</value>
   <data name="Invalid_license_fullbtn" xml:space="preserve">
     <value>The license is not valid</value>
   </data>
-  <data name="JavaNotFound" xml:space="preserve">
-    <value>Java was not found. You need to download it from the official cite. Link was copied to the clipboard</value>
-  </data>
   <data name="Not_enough_files" xml:space="preserve">
     <value>Some files weren't found!</value>
   </data>
@@ -362,7 +359,7 @@ Missing files: {0}</value>
     <value>Downloading java</value>
   </data>
   <data name="JavaInvalidVersion" xml:space="preserve">
-    <value>Current java version may cause some errors while processing files. Do you want to install a portable version that fixes these errors?</value>
+    <value>Current java version may cause some errors while processing files. A valid java package will be downloaded</value>
   </data>
   <data name="JavaDownloadFailed" xml:space="preserve">
     <value>Java download failed.

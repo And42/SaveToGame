@@ -64,20 +64,12 @@ namespace SaveToGameWpf.Logic
         /// </summary>
         public static readonly string DefaultKeyPkPath;
 
-        /// <summary>
-        /// exe_folder/Resources/jre
-        /// </summary>
         public static readonly string PathToPortableJre;
 
         /// <summary>
         /// exe_folder/Resources/jre/bin/java.exe
         /// </summary>
         public static readonly string PathToPortableJavaExe;
-
-        /// <summary>
-        /// .../user/AppData/Roaming/SaveToGame
-        /// </summary>
-        public static readonly string AppSettingsDir;
 
         public static readonly IClient ErrorClient = new Client(ConfigurationManager.AppSettings["BugsnagApiKey"]);
 
@@ -87,7 +79,7 @@ namespace SaveToGameWpf.Logic
         {
             AppDataPath =
                 Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
                     Assembly.GetExecutingAssembly().GetName().Name
                 );
             TempPath = Path.Combine(AppDataPath, "temp");
@@ -101,11 +93,10 @@ namespace SaveToGameWpf.Logic
             PathToExeFolder = Path.GetDirectoryName(PathToExe);
             // ReSharper disable once AssignNullToNotNullAttribute
             PathToResources = Path.Combine(PathToExeFolder, "Resources");
-            AppSettingsDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "SaveToGame");
 
             var portableNearby = Path.Combine(PathToResources, "jre");
 
-            PathToPortableJre = Directory.Exists(portableNearby) ? portableNearby : Path.Combine(AppSettingsDir, "jre");
+            PathToPortableJre = Directory.Exists(portableNearby) ? portableNearby : Path.Combine(AppDataPath, "jre");
             PathToPortableJavaExe = Path.Combine(PathToPortableJre, "bin", "java.exe");
 
             ApktoolPath = Path.Combine(PathToResources, "apktool.jar");

@@ -377,20 +377,11 @@ namespace SaveToGameWpf.Windows
             if (Directory.Exists(GlobalVariables.PathToPortableJre))
                 return;
 
-            var (primary, secondary) = Utils.GetInstalledJavaVersion();
-
-            if (primary == 1 && secondary >= 5 && secondary <= 8)
-                return;
-
-            var promtRes = MessBox.ShowDial(
+            MessBox.ShowDial(
                 MainResources.JavaInvalidVersion,
                 MainResources.Information_Title,
-                MainResources.No,
-                MainResources.Yes
+                MainResources.OK
             );
-
-            if (promtRes != MainResources.Yes)
-                return;
 
             _visualProgress.SetBarValue(0);
 

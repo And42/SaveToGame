@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
 using System.Net;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Threading;
 using ICSharpCode.SharpZipLib.Zip;
@@ -69,46 +67,6 @@ namespace SaveToGameWpf.Logic.Utils
             return fileInfo.FullName.Remove(fileInfo.FullName.Length - fileInfo.Extension.Length);
         }
 
-        /// <summary>
-        /// Returns installed java version in a format of (primary, secondary) where result equals (-1, -1) if java was not found
-        /// </summary>
-        /// <returns>Java version or (-1, -1) if java was not found</returns>
-        public static (int primary, int secondary) GetInstalledJavaVersion()
-        {
-            Process process;
-
-            try
-            {
-                process = Process.Start(new ProcessStartInfo("java", "-version")
-                {
-                    CreateNoWindow = true,
-                    UseShellExecute = false,
-                    RedirectStandardError = true
-                });
-            }
-            catch (Exception)
-            {
-                return (-1, -1);
-            }
-
-            if (process == null)
-                return (-1, -1);
-
-            process.WaitForExit();
-
-            string output = process.StandardError.ReadLine();
-
-            var versionRegex = new Regex(@"\""(?<primary>\d+)\.(?<secondary>\d+)\.[^""]+\""");
-
-            Match match = versionRegex.Match(output ?? string.Empty);
-
-            // ReSharper disable once ConvertIfStatementToReturnStatement
-            if (!match.Success)
-                return (-1, -1);
-
-            return (int.Parse(match.Groups["primary"].Value), int.Parse(match.Groups["secondary"].Value));
-        }
-
         public static async Task DownloadJava(IVisualProgress visualProgress)
         {
             visualProgress.SetLabelText(MainResources.JavaDownloading);
@@ -117,9 +75,9 @@ namespace SaveToGameWpf.Logic.Utils
             bool fileDownloaded;
 
             const string jreUrl = @"https://storage.googleapis.com/savetogame/jre_1.7.zip";
-            string fileLocation = Path.Combine(GlobalVariables.AppSettingsDir, "jre.zip");
+            string fileLocation = Path.Combine(GlobalVariables.AppDataPath, "jre.zip");
 
-            IOUtils.CreateDir(GlobalVariables.AppSettingsDir);
+            IOUtils.CreateDir(GlobalVariables.AppDataPath);
 
             using (var client = new WebClient())
             {
