@@ -4,9 +4,6 @@
 [submodule "SettingsManager"]
 	path = SettingsManager
 	url = git@github.com:And42/SettingsManager.git
-[submodule "ApkModifier"]
-	path = ApkModifier
-	url = git@github.com:And42/ApkModifier.git
 [submodule "AndroidHelper"]
 	path = AndroidHelper
 	url = git@github.com:And42/AndroidHelper.git
