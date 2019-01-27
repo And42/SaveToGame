@@ -2,7 +2,6 @@
 using System.IO;
 using System.Net;
 using System.Threading.Tasks;
-using System.Windows.Threading;
 using ICSharpCode.SharpZipLib.Zip;
 using SaveToGameWpf.Logic.Interfaces;
 using SaveToGameWpf.Resources.Localizations;

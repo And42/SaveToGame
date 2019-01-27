@@ -124,8 +124,11 @@
     <Compile Include="Converters\IconToVisibilityConverter.cs" />
     <Compile Include="Converters\NotNullParameterConverter.cs" />
     <Compile Include="Converters\ThemeToCheckedConverter.cs" />
+    <Compile Include="Logic\Classes\ApkModifer.cs" />
     <Compile Include="Logic\Classes\AppIconsStorage.cs" />
+    <Compile Include="Logic\Classes\BackupType.cs" />
     <Compile Include="Logic\Classes\NotificationManager.cs" />
+    <Compile Include="Logic\Classes\SmaliStringEncryptor.cs" />
     <Compile Include="Logic\Classes\TaskBarManager.cs" />
     <Compile Include="Logic\Interfaces\ITaskBarManager.cs" />
     <Compile Include="Logic\Interfaces\IVisualProgress.cs" />
@@ -134,7 +137,9 @@
     <Compile Include="Logic\Utils\ApplicationUtils.cs" />
     <Compile Include="Logic\Utils\BitmapUtils.cs" />
     <Compile Include="Logic\Utils\CollectionUtils.cs" />
+    <Compile Include="Logic\Utils\CommonUtils.cs" />
     <Compile Include="Logic\Utils\DragDropUtils.cs" />
+    <Compile Include="Logic\Utils\Guard.cs" />
     <Compile Include="Logic\Utils\IOUtils.cs" />
     <Compile Include="Logic\Utils\PickerUtils.cs" />
     <Compile Include="Logic\Utils\StringUtils.cs" />
@@ -150,6 +155,11 @@
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+    <Compile Include="Resources\FileResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>FileResources.resx</DependentUpon>
     </Compile>
     <Compile Include="Resources\Localizations\MainResources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -453,6 +463,10 @@
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
+    <EmbeddedResource Include="Resources\FileResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>FileResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="Resources\Localizations\MainResources.en.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
@@ -506,10 +520,6 @@
       <Project>{f3f675a7-cb78-43ee-8e6f-3cfbce790568}</Project>
       <Name>AndroidHelper</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ApkModifier\ApkModifer\ApkModifer.csproj">
-      <Project>{62b8f3e8-a92d-4f61-8a3f-cedd7703b44f}</Project>
-      <Name>ApkModifer</Name>
-    </ProjectReference>
     <ProjectReference Include="..\MVVM-Tools\MVVM Tools\MVVM_Tools.csproj">
       <Project>{5e778515-60ad-4257-8bbe-0a3cff7a91a2}</Project>
       <Name>MVVM_Tools</Name>
@@ -522,6 +532,14 @@
       <Project>{b1727f95-4cde-49b8-8529-cf45acceb72b}</Project>
       <Name>SmaliParser</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Files\DataRestoreCall.txt" />
+    <Resource Include="Resources\Files\MainSmaliCall.txt" />
+    <Resource Include="Resources\Files\MessageShow.txt" />
+    <Resource Include="Resources\Files\SavesRestoringPortable - Backup.txt" />
+    <Resource Include="Resources\Files\SavesRestoringPortable.txt" />
+    <Resource Include="Resources\Files\SavesRestoring_new.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

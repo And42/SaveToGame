@@ -126,14 +126,8 @@
   <data name="ActivationCode" xml:space="preserve">
     <value>Activation code:</value>
   </data>
-  <data name="AddingED" xml:space="preserve">
-    <value>Adding external data</value>
-  </data>
-  <data name="AddingLD" xml:space="preserve">
-    <value>Adding local data</value>
-  </data>
-  <data name="AddingObb" xml:space="preserve">
-    <value>Adding external obb</value>
+  <data name="AddingData" xml:space="preserve">
+    <value>Adding data</value>
   </data>
   <data name="AdditionalParameters" xml:space="preserve">
     <value>Additional parameters</value>

@@ -126,14 +126,8 @@
   <data name="ActivationCode" xml:space="preserve">
     <value>Код активации:</value>
   </data>
-  <data name="AddingED" xml:space="preserve">
-    <value>Добавление внешних данных</value>
-  </data>
-  <data name="AddingLD" xml:space="preserve">
-    <value>Добавление локальных данных</value>
-  </data>
-  <data name="AddingObb" xml:space="preserve">
-    <value>Добавление кэша</value>
+  <data name="AddingData" xml:space="preserve">
+    <value>Добавление данных</value>
   </data>
   <data name="AdditionalParameters" xml:space="preserve">
     <value>Дополнительные настройки</value>

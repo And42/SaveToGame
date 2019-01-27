@@ -9,7 +9,6 @@ using System.Windows;
 using System.Windows.Shell;
 using AndroidHelper.Logic;
 using AndroidHelper.Logic.Interfaces;
-using ApkModifer.Logic;
 using MVVM_Tools.Code.Disposables;
 using SaveToGameWpf.Logic;
 using SaveToGameWpf.Logic.Classes;
@@ -20,6 +19,7 @@ using SaveToGameWpf.Logic.ViewModels;
 using SaveToGameWpf.Resources.Localizations;
 
 using Application = System.Windows.Application;
+using BackupType = SaveToGameWpf.Logic.Classes.BackupType;
 using DragEventArgs = System.Windows.DragEventArgs;
 
 namespace SaveToGameWpf.Windows
@@ -307,7 +307,7 @@ namespace SaveToGameWpf.Windows
             SetStep(2, MainResources.StepAddingData);
 
             {
-                var apkModifer = new ApkModifer.Logic.ApkModifer(
+                var apkModifer = new Logic.Classes.ApkModifer(
                     apktool: apktool,
                     apkPath: processedApkPath,
                     tempFolderProvider: tempFolderProvider
@@ -342,7 +342,7 @@ namespace SaveToGameWpf.Windows
                 signedApkPath: resultApkPath,
                 tempFileProvider: tempFileProvider,
                 dataHandler: dataHandler,
-                deleteMetaInf: !_settings.AlternativeSigning
+                deleteMetaInf: !alternativeSigning
             );
 
 #endregion

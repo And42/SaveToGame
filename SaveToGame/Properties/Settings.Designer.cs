@@ -74,9 +74,9 @@ namespace SaveToGameWpf.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("Titanium")]
-        public global::ApkModifer.Logic.BackupType BackupType {
+        public global::SaveToGameWpf.Logic.Classes.BackupType BackupType {
             get {
-                return ((global::ApkModifer.Logic.BackupType)(this["BackupType"]));
+                return ((global::SaveToGameWpf.Logic.Classes.BackupType)(this["BackupType"]));
             }
             set {
                 this["BackupType"] = value;

@@ -88,29 +88,11 @@ namespace SaveToGameWpf.Resources.Localizations {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Добавление внешних данных.
+        ///   Looks up a localized string similar to Добавление данных.
         /// </summary>
-        public static string AddingED {
+        public static string AddingData {
             get {
-                return ResourceManager.GetString("AddingED", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Добавление локальных данных.
-        /// </summary>
-        public static string AddingLD {
-            get {
-                return ResourceManager.GetString("AddingLD", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Добавление кэша.
-        /// </summary>
-        public static string AddingObb {
-            get {
-                return ResourceManager.GetString("AddingObb", resourceCulture);
+                return ResourceManager.GetString("AddingData", resourceCulture);
             }
         }
         

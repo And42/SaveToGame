@@ -1,0 +1,2 @@
+	invoke-static/range {p0 .. p0}, Lcom/savegame/SavesRestoringPortable;->DoSmth(Landroid/content/Context;)V
+

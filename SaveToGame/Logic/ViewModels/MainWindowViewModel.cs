@@ -1,9 +1,9 @@
 ﻿using System.Threading;
-using ApkModifer.Logic;
 using MVVM_Tools.Code.Classes;
 using MVVM_Tools.Code.Providers;
 using SaveToGameWpf.Logic.OrganisationItems;
 using SaveToGameWpf.Resources.Localizations;
+using BackupType = SaveToGameWpf.Logic.Classes.BackupType;
 
 namespace SaveToGameWpf.Logic.ViewModels
 {

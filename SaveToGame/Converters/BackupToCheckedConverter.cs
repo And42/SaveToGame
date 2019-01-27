@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Globalization;
-using ApkModifer.Logic;
 using MVVM_Tools.Code.Classes;
+using SaveToGameWpf.Logic.Classes;
 
 namespace SaveToGameWpf.Converters
 {
