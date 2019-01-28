@@ -530,7 +530,7 @@ namespace SaveToGameWpf.Logic.Classes
             }
         }
 
-        private static void AddFileToZip(
+        public static void AddFileToZip(
             [NotNull] string zipPath,
             [NotNull] string filePath,
             [NotNull] string pathInZip,
@@ -544,7 +544,7 @@ namespace SaveToGameWpf.Logic.Classes
             AddFilesToZip(zipPath, new []{filePath}, new []{pathInZip}, newEntryCompression);
         }
 
-        private static void AddFilesToZip(
+        public static void AddFilesToZip(
             [NotNull] string zipPath,
             [ItemNotNull] string[] filePaths,
             [ItemNotNull] string[] pathsInZip,
@@ -586,7 +586,7 @@ namespace SaveToGameWpf.Logic.Classes
             }
         }
 
-        private static void ExtractTarByEntry(
+        public static void ExtractTarByEntry(
             [NotNull] string tarFileName,
             [NotNull] string targetDir
         )
@@ -648,7 +648,7 @@ namespace SaveToGameWpf.Logic.Classes
             }
         }
 
-        private static void CreateArchive(
+        public static void CreateArchive(
             [NotNull] string folderPath,
             [NotNull] string resultZipPath
         )

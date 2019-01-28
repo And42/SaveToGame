@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Security.Cryptography;
@@ -16,11 +17,13 @@ using SaveToGameWpf.Logic.Interfaces;
 using SaveToGameWpf.Logic.OrganisationItems;
 using SaveToGameWpf.Logic.Utils;
 using SaveToGameWpf.Logic.ViewModels;
+using SaveToGameWpf.Resources;
 using SaveToGameWpf.Resources.Localizations;
 
 using Application = System.Windows.Application;
 using BackupType = SaveToGameWpf.Logic.Classes.BackupType;
 using DragEventArgs = System.Windows.DragEventArgs;
+using ATempUtils = AndroidHelper.Logic.Utils.TempUtils;
 
 namespace SaveToGameWpf.Windows
 {
@@ -215,53 +218,7 @@ namespace SaveToGameWpf.Windows
 
         private void Start()
         {
-            var apkFile = new FileInfo(ViewModel.CurrentApk.Value);
-            bool alternativeSigning = _settings.AlternativeSigning;
-
-            bool onlySave = ViewModel.OnlySave.Value;
-            bool savePlusMessage = ViewModel.SavePlusMess.Value;
-            bool onlyMessage = ViewModel.OnlyMess.Value;
-
-            string popupText = ViewModel.PopupBoxText.Value;
-            int messagesCount = ViewModel.MessagesCount.Value;
-
-            BackupType backupType = ViewModel.BackupType;
-
-            ITempFileProvider tempFileProvider = TempUtils.CreateTempFileProvider();
-            ITempFolderProvider tempFolderProvider = TempUtils.CreateTempFolderProvider();
-            var tempFolder = Path.Combine(Path.GetTempPath(), "STG_temp");
-
-            var processedApkPath = Path.Combine(tempFolder, "processed.apk");
-            var resultApkPath = apkFile.GetFullFNWithoutExt() + "_mod.apk";
-            var pathToSave = ViewModel.CurrentSave.Value;
-
-            IOUtils.DeleteDir(tempFolder);
-            IOUtils.CreateDir(tempFolder);
-
-            const int totalSteps = 3;
-
-            _visualProgress.SetBarUsual();
-            _visualProgress.ShowBar();
-
-            _taskBarManager.SetProgress(0);
-            _taskBarManager.SetUsualState();
-            
-            void SetStep(int currentStep, string status)
-            {
-                int percentage = (currentStep - 1) * 100 / totalSteps;
-
-                _visualProgress.SetBarValue(percentage);
-                _visualProgress.SetLabelText(status);
-                _taskBarManager.SetProgress(percentage);
-            }
-
-#region Подготовка
-
-            Dispatcher.Invoke(() => LogBox.Clear());
-
-#endregion
-
-#region Запись начала в лог
+            Dispatcher.Invoke(LogBox.Clear);
 
             Log(
                 string.Format(
@@ -273,14 +230,52 @@ namespace SaveToGameWpf.Windows
                 )
             );
 
-#endregion
+            const int totalSteps = 3;
 
-#region Инициализация
+            _visualProgress.SetBarUsual();
+            _visualProgress.ShowBar();
+
+            _taskBarManager.SetProgress(0);
+            _taskBarManager.SetUsualState();
+
+            void SetStep(int currentStep, string status)
+            {
+                int percentage = (currentStep - 1) * 100 / totalSteps;
+
+                _visualProgress.SetBarValue(percentage);
+                _visualProgress.SetLabelText(status);
+                _taskBarManager.SetProgress(percentage);
+            }
+
+            #region Инициализация
 
             SetStep(1, MainResources.StepInitializing);
             _visualProgress.ShowIndeterminateLabel();
 
-            File.Copy(apkFile.FullName, processedApkPath, true);
+            string sourceApkPath = ViewModel.CurrentApk.Value;
+            bool alternativeSigning = _settings.AlternativeSigning;
+
+            string popupText = ViewModel.PopupBoxText.Value;
+            int messagesCount = ViewModel.MessagesCount.Value;
+
+            bool needSave;
+            bool needMessage;
+            {
+                bool onlySave = ViewModel.OnlySave.Value;
+                bool savePlusMessage = ViewModel.SavePlusMess.Value;
+                bool onlyMessage = ViewModel.OnlyMess.Value;
+
+                needSave = onlySave || savePlusMessage;
+                needMessage = (savePlusMessage || onlyMessage) && !string.IsNullOrEmpty(popupText) && messagesCount > 0;
+            }
+
+            BackupType backupType = ViewModel.BackupType;
+
+            ITempFileProvider tempFileProvider = TempUtils.CreateTempFileProvider();
+            ITempFolderProvider tempFolderProvider = TempUtils.CreateTempFolderProvider();
+
+            string resultApkPath = sourceApkPath.Remove(sourceApkPath.Length - Path.GetExtension(sourceApkPath).Length) + "_mod.apk";
+            string pathToSave = ViewModel.CurrentSave.Value;
 
             IApktool apktool = new Apktool.Builder()
                 .JavaPath(GlobalVariables.PathToPortableJavaExe)
@@ -294,60 +289,163 @@ namespace SaveToGameWpf.Windows
 
             IProcessDataHandler dataHandler = new ProcessDataCombinedHandler(Log);
 
-            string folderOfProject =
-                Path.Combine(
-                    Path.GetDirectoryName(processedApkPath),
-                    Path.GetFileNameWithoutExtension(processedApkPath)
-                );
+            #endregion
 
-#endregion
+            #region Изменение apk
 
-#region Добавление данных
-
-            SetStep(2, MainResources.StepAddingData);
-
+            using (var tempApk = ATempUtils.UseTempFile(tempFileProvider))
             {
-                var apkModifer = new Logic.Classes.ApkModifer(
-                    apktool: apktool,
-                    apkPath: processedApkPath,
-                    tempFolderProvider: tempFolderProvider
+                File.Copy(sourceApkPath, tempApk.TempFile, true);
+
+                #region Добавление данных
+
+                SetStep(2, MainResources.StepAddingData);
+
+                var aes = new AesManaged {KeySize = 128};
+                aes.GenerateIV();
+                aes.GenerateKey();
+
+                bool backupFilesAdded = false;
+                // adding local and external backup files
+                if (needSave)
+                {
+                    using (var internalDataBackup = ATempUtils.UseTempFile(tempFileProvider))
+                    using (var externalDataBackup = ATempUtils.UseTempFile(tempFileProvider))
+                    {
+                        ApkModifer.ParseBackup(
+                            pathToBackup: pathToSave,
+                            backupType: backupType,
+                            resultInternalDataPath: internalDataBackup.TempFile,
+                            resultExternalDataPath: externalDataBackup.TempFile,
+                            tempFolderProvider: tempFolderProvider
+                        );
+
+                        var internalBackup = new FileInfo(internalDataBackup.TempFile);
+                        var externalBackup = new FileInfo(externalDataBackup.TempFile);
+
+                        var fileToAssetsName = new Dictionary<FileInfo, string>
+                        {
+                            {internalBackup, "data.save"},
+                            {externalBackup, "extdata.save"}
+                        };
+
+                        foreach (var (file, assetsName) in fileToAssetsName.Enumerate())
+                        {
+                            if (!file.Exists || file.Length == 0)
+                                continue;
+
+                            using (var tempEncrypted = ATempUtils.UseTempFile(tempFileProvider))
+                            {
+                                CommonUtils.EncryptFile(
+                                    filePath: file.FullName,
+                                    outputPath: tempEncrypted.TempFile,
+                                    iv: aes.IV,
+                                    key: aes.Key
+                                );
+
+                                ApkModifer.AddFileToZip(
+                                    zipPath: tempApk.TempFile,
+                                    filePath: tempEncrypted.TempFile,
+                                    pathInZip: "assets/" + assetsName,
+                                    newEntryCompression: CompressionType.Store
+                                );
+                            }
+
+                            backupFilesAdded = true;
+                        }
+                    }
+                }
+
+                // adding smali file for restoring
+                if (backupFilesAdded || needMessage)
+                {
+                    using (var decompiledFolder = ATempUtils.UseTempFolder(tempFolderProvider))
+                    {
+                        apktool.Baksmali(
+                            apkPath: tempApk.TempFile,
+                            resultFolder: decompiledFolder.TempFolder,
+                            tempFolderProvider: tempFolderProvider,
+                            dataHandler: dataHandler
+                        );
+
+                        var manifestPath = Path.Combine(decompiledFolder.TempFolder, "AndroidManifest.xml");
+
+                        apktool.ExtractSimpleManifest(
+                            apkPath: tempApk.TempFile,
+                            resultManifestPath: manifestPath,
+                            tempFolderProvider: tempFolderProvider
+                        );
+
+                        // have to have smali folders in the same directory as manifest
+                        // to find the main smali
+                        var manifest = new AndroidManifest(manifestPath);
+
+                        if (manifest.MainSmaliFile == null)
+                            throw new Exception("main smali file not found");
+
+                        // using this instead of just pasting "folder/smali" as there can be
+                        // no smali folder sometimes (smali_1, etc)
+                        string smaliDir = manifest.MainSmaliPath.Substring(decompiledFolder.TempFolder.Length + 1);
+                        smaliDir = smaliDir.Substring(0, smaliDir.IndexOf(Path.DirectorySeparatorChar));
+
+                        string saveGameDir = Path.Combine(decompiledFolder.TempFolder, smaliDir, "com", "savegame");
+
+                        IOUtils.CreateDir(saveGameDir);
+
+                        CommonUtils.GenerateAndSaveSmali(
+                            filePath: Path.Combine(saveGameDir, "SavesRestoringPortable.smali"),
+                            iv: aes.IV,
+                            key: aes.Key,
+                            addSave: backupFilesAdded,
+                            message: needMessage ? popupText : string.Empty,
+                            messagesCount: needMessage ? messagesCount : 0
+                        );
+
+                        manifest.MainSmaliFile.AddTextToMethod(FileResources.MainSmaliCall);
+                        manifest.MainSmaliFile.Save();
+
+                        using (var folderWithDexes = ATempUtils.UseTempFolder(tempFolderProvider))
+                        {
+                            apktool.Smali(
+                                folderWithSmali: decompiledFolder.TempFolder,
+                                resultFolder: folderWithDexes.TempFolder,
+                                dataHandler: dataHandler
+                            );
+
+                            string[] dexes = Directory.GetFiles(folderWithDexes.TempFolder, "*.dex");
+
+                            ApkModifer.AddFilesToZip(
+                                zipPath: tempApk.TempFile,
+                                filePaths: dexes,
+                                pathsInZip: Array.ConvertAll(dexes, Path.GetFileName),
+                                newEntryCompression: CompressionType.Store
+                            );
+                        }
+                    }
+                }
+
+                #endregion
+
+                #region Подпись
+
+                SetStep(3, MainResources.StepSigning);
+
+                Log(Line);
+                Log(MainResources.StepSigning);
+                Log(Line);
+
+                apktool.Sign(
+                    sourceApkPath: tempApk.TempFile,
+                    signedApkPath: resultApkPath,
+                    tempFileProvider: tempFileProvider,
+                    dataHandler: dataHandler,
+                    deleteMetaInf: !alternativeSigning
                 );
 
-                var mng = new AesManaged {KeySize = 128};
-                mng.GenerateIV();
-                mng.GenerateKey();
-                apkModifer.Encrypt(mng.IV, mng.Key);
-
-                if (onlySave || savePlusMessage)
-                    apkModifer.Backup(pathToSave, backupType);
-
-                if (savePlusMessage || onlyMessage)
-                    apkModifer.Message(popupText, messagesCount);
-
-                apkModifer.Process();
+                #endregion
             }
 
-#endregion
-
-#region Подпись
-
-            SetStep(3, MainResources.StepSigning);
-
-            Log(Line);
-            Log(MainResources.StepSigning);
-            Log(Line);
-
-            apktool.Sign(
-                sourceApkPath: processedApkPath,
-                signedApkPath: resultApkPath,
-                tempFileProvider: tempFileProvider,
-                dataHandler: dataHandler,
-                deleteMetaInf: !alternativeSigning
-            );
-
-#endregion
-
-            IOUtils.DeleteDir(tempFolder);
+            #endregion
 
             _visualProgress.HideIndeterminateLabel();
             SetStep(4, MainResources.AllDone);
@@ -355,7 +453,10 @@ namespace SaveToGameWpf.Windows
 
             if (_settings.Notifications)
             {
-                NotificationManager.Instance.Show(MainResources.Information_Title, MainResources.ModificationCompletedContent);
+                NotificationManager.Instance.Show(
+                    title: MainResources.Information_Title,
+                    text: MainResources.ModificationCompletedContent
+                );
             }
 
             if (

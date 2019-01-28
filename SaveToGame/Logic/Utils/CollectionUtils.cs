@@ -31,5 +31,13 @@ namespace SaveToGameWpf.Logic.Utils
         {
             return collection.Where(it => selector(it) != null);
         }
+
+        public static IEnumerable<(TKey key, TValue value)> Enumerate<TKey, TValue>(
+            this IDictionary<TKey, TValue> dictionary
+        )
+        {
+            foreach (var item in dictionary)
+                yield return (item.Key, item.Value);
+        }
     }
 }
