@@ -656,6 +656,8 @@ namespace SaveToGameWpf.Logic.Classes
             Guard.NotNullArgument(folderPath, nameof(folderPath));
             Guard.NotNullArgument(resultZipPath, nameof(resultZipPath));
 
+            IOUtils.CreateDir(Path.GetDirectoryName(resultZipPath));
+
             // DotNetZip
             //{
             //    using (var zf = new Ionic.Zip.ZipFile(outZipName, Encoding.UTF8))
