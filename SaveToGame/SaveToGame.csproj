@@ -97,9 +97,7 @@
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Drawing" />
-    <Reference Include="System.Management" />
     <Reference Include="System.Net" />
-    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Windows.Forms">
       <Private>True</Private>
     </Reference>
@@ -133,6 +131,8 @@
     <Compile Include="Logic\Interfaces\ITaskBarManager.cs" />
     <Compile Include="Logic\Interfaces\IVisualProgress.cs" />
     <Compile Include="Logic\JsonMappings\WebConfig.cs" />
+    <Compile Include="Logic\LongPaths\LDirectory.cs" />
+    <Compile Include="Logic\LongPaths\LFile.cs" />
     <Compile Include="Logic\OrganisationItems\AppSettings.cs" />
     <Compile Include="Logic\Utils\ApplicationUtils.cs" />
     <Compile Include="Logic\Utils\BitmapUtils.cs" />
@@ -140,7 +140,6 @@
     <Compile Include="Logic\Utils\CommonUtils.cs" />
     <Compile Include="Logic\Utils\DragDropUtils.cs" />
     <Compile Include="Logic\Utils\Guard.cs" />
-    <Compile Include="Logic\Utils\IOUtils.cs" />
     <Compile Include="Logic\Utils\PickerUtils.cs" />
     <Compile Include="Logic\Utils\StringUtils.cs" />
     <Compile Include="Logic\Utils\TempUtils.cs" />

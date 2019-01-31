@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using AndroidHelper.Logic.Interfaces;
 using JetBrains.Annotations;
+using SaveToGameWpf.Logic.LongPaths;
 
 namespace SaveToGameWpf.Logic.Utils
 {
@@ -15,7 +16,10 @@ namespace SaveToGameWpf.Logic.Utils
         {
             public string CreateTempFolder()
             {
-                return CreateElement(index => $"temp_folder_{index}", folderPath => Directory.CreateDirectory(folderPath));
+                return CreateElement(
+                     nameProvider: index => $"temp_folder_{index}",
+                     elementCreator: LDirectory.CreateDirectory
+                );
             }
         }
 
@@ -23,7 +27,10 @@ namespace SaveToGameWpf.Logic.Utils
         {
             public string CreateTempFile()
             {
-                return CreateElement(index => $"temp_file_{index}", filePath => File.Create(filePath).Close());
+                return CreateElement(
+                    nameProvider: index => $"temp_file_{index}",
+                    elementCreator: filePath => LFile.Create(filePath).Close()
+                );
             }
         }
 
@@ -49,10 +56,10 @@ namespace SaveToGameWpf.Logic.Utils
 
             lock (ProviderLock)
             {
-                if (!Directory.Exists(TempFolder))
-                    Directory.CreateDirectory(TempFolder);
+                if (!LDirectory.Exists(TempFolder))
+                    LDirectory.CreateDirectory(TempFolder);
 
-                string[] existingEntries = Directory.EnumerateFileSystemEntries(TempFolder).Select(Path.GetFileName).ToArray();
+                string[] existingEntries = LDirectory.EnumerateFileSystemEntries(TempFolder).Select(Path.GetFileName).ToArray();
 
                 for (int index = 1; ; index++)
                 {

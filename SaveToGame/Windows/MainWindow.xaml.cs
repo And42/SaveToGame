@@ -14,6 +14,7 @@ using MVVM_Tools.Code.Disposables;
 using SaveToGameWpf.Logic;
 using SaveToGameWpf.Logic.Classes;
 using SaveToGameWpf.Logic.Interfaces;
+using SaveToGameWpf.Logic.LongPaths;
 using SaveToGameWpf.Logic.OrganisationItems;
 using SaveToGameWpf.Logic.Utils;
 using SaveToGameWpf.Logic.ViewModels;
@@ -117,9 +118,9 @@ namespace SaveToGameWpf.Windows
 
             #region Проверка на существование файлов
 
-            if (string.IsNullOrEmpty(apkFile) || !File.Exists(apkFile) ||
+            if (string.IsNullOrEmpty(apkFile) || !LFile.Exists(apkFile) ||
                 (ViewModel.SavePlusMess.Value || ViewModel.OnlySave.Value) &&
-                (string.IsNullOrEmpty(saveFile) || !File.Exists(saveFile) && !Directory.Exists(saveFile))
+                (string.IsNullOrEmpty(saveFile) || !LFile.Exists(saveFile) && !LDirectory.Exists(saveFile))
             )
             {
                 HaveError(MainResources.File_or_save_not_selected, MainResources.File_or_save_not_selected);
@@ -295,7 +296,7 @@ namespace SaveToGameWpf.Windows
 
             using (var tempApk = ATempUtils.UseTempFile(tempFileProvider))
             {
-                File.Copy(sourceApkPath, tempApk.TempFile, true);
+                LFile.Copy(sourceApkPath, tempApk.TempFile, true);
 
                 #region Добавление данных
 
@@ -390,7 +391,7 @@ namespace SaveToGameWpf.Windows
 
                         string saveGameDir = Path.Combine(decompiledFolder.TempFolder, smaliDir, "com", "savegame");
 
-                        IOUtils.CreateDir(saveGameDir);
+                        LDirectory.CreateDirectory(saveGameDir);
 
                         CommonUtils.GenerateAndSaveSmali(
                             filePath: Path.Combine(saveGameDir, "SavesRestoringPortable.smali"),
@@ -412,7 +413,7 @@ namespace SaveToGameWpf.Windows
                                 dataHandler: dataHandler
                             );
 
-                            string[] dexes = Directory.GetFiles(folderWithDexes.TempFolder, "*.dex");
+                            string[] dexes = LDirectory.GetFiles(folderWithDexes.TempFolder, "*.dex");
 
                             ApkModifer.AddFilesToZip(
                                 zipPath: tempApk.TempFile,
@@ -475,7 +476,7 @@ namespace SaveToGameWpf.Windows
 
         private async Task CheckJavaVersion()
         {
-            if (Directory.Exists(GlobalVariables.PathToPortableJre))
+            if (LDirectory.Exists(GlobalVariables.PathToPortableJre))
                 return;
 
             MessBox.ShowDial(

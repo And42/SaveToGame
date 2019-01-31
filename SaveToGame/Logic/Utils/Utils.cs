@@ -4,6 +4,7 @@ using System.Net;
 using System.Threading.Tasks;
 using ICSharpCode.SharpZipLib.Zip;
 using SaveToGameWpf.Logic.Interfaces;
+using SaveToGameWpf.Logic.LongPaths;
 using SaveToGameWpf.Resources.Localizations;
 using SaveToGameWpf.Windows;
 
@@ -38,17 +39,18 @@ namespace SaveToGameWpf.Logic.Utils
 
         public static void ExtractAll(this ZipFile zip, string folder)
         {
-            IOUtils.RecreateDir(folder);
+            LDirectory.Delete(folder, true);
+            LDirectory.CreateDirectory(folder);
 
             foreach (ZipEntry entry in zip)
             {
                 if (entry.IsDirectory)
                     continue;
 
-                IOUtils.CreateDir(Path.Combine(folder, Path.GetDirectoryName(entry.Name) ?? string.Empty));
+                LDirectory.CreateDirectory(Path.Combine(folder, Path.GetDirectoryName(entry.Name) ?? string.Empty));
 
                 using (var zipStream = zip.GetInputStream(entry))
-                using (var outputStream = File.Create(Path.Combine(folder, entry.Name)))
+                using (var outputStream = LFile.Create(Path.Combine(folder, entry.Name)))
                 {
                     zipStream.CopyTo(outputStream, 4096);
                 }
@@ -71,7 +73,7 @@ namespace SaveToGameWpf.Logic.Utils
             const string jreUrl = @"https://storage.googleapis.com/savetogame/jre_1.7.zip";
             string fileLocation = Path.Combine(GlobalVariables.AppDataPath, "jre.zip");
 
-            IOUtils.CreateDir(GlobalVariables.AppDataPath);
+            LDirectory.CreateDirectory(GlobalVariables.AppDataPath);
 
             using (var client = new WebClient())
             {
@@ -114,7 +116,7 @@ namespace SaveToGameWpf.Logic.Utils
                     await Task.Factory.StartNew(() => zipFile.ExtractAll(GlobalVariables.PathToPortableJre));
                 }
 
-                IOUtils.DeleteFile(fileLocation);
+                LFile.Delete(fileLocation);
             }
 
             visualProgress.HideIndeterminateLabel();

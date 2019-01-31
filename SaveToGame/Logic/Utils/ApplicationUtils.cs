@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Threading;
 using Newtonsoft.Json;
 using SaveToGameWpf.Logic.JsonMappings;
+using SaveToGameWpf.Logic.LongPaths;
 using SaveToGameWpf.Logic.OrganisationItems;
 using SaveToGameWpf.Windows;
 
@@ -77,7 +78,7 @@ namespace SaveToGameWpf.Logic.Utils
 
         public static bool GetIsPortable()
         {
-            return File.Exists(Path.Combine(Path.GetDirectoryName(GetPathToExe()), "isportable"));
+            return LFile.Exists(Path.Combine(Path.GetDirectoryName(GetPathToExe()), "isportable"));
         }
 
         public static void SetLanguageFromSettings()

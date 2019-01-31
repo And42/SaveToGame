@@ -3,7 +3,7 @@ using System.Configuration;
 using System.IO;
 using System.Reflection;
 using Bugsnag;
-using SaveToGameWpf.Logic.Utils;
+using SaveToGameWpf.Logic.LongPaths;
 
 namespace SaveToGameWpf.Logic
 {
@@ -96,7 +96,7 @@ namespace SaveToGameWpf.Logic
 
             var portableNearby = Path.Combine(PathToResources, "jre");
 
-            PathToPortableJre = Directory.Exists(portableNearby) ? portableNearby : Path.Combine(AppDataPath, "jre");
+            PathToPortableJre = LDirectory.Exists(portableNearby) ? portableNearby : Path.Combine(AppDataPath, "jre");
             PathToPortableJavaExe = Path.Combine(PathToPortableJre, "bin", "java.exe");
 
             ApktoolPath = Path.Combine(PathToResources, "apktool.jar");
@@ -106,7 +106,7 @@ namespace SaveToGameWpf.Logic
             DefaultKeyPemPath = Path.Combine(PathToResources, "testkey.x509.pem");
             DefaultKeyPkPath = Path.Combine(PathToResources, "testkey.pk8");
 
-            IOUtils.CreateDir(AppDataPath);
+            LDirectory.CreateDirectory(AppDataPath);
         }
     }
 }

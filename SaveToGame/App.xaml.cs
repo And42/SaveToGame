@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows;
 using SaveToGameWpf.Logic;
 using SaveToGameWpf.Logic.Classes;
+using SaveToGameWpf.Logic.LongPaths;
 using SaveToGameWpf.Logic.OrganisationItems;
 using SaveToGameWpf.Logic.Utils;
 using SaveToGameWpf.Properties;
@@ -64,7 +65,7 @@ namespace SaveToGameWpf
         {
             var resourcesFolder = Path.Combine(GlobalVariables.PathToExeFolder, "Resources");
 
-            if (!Directory.Exists(resourcesFolder))
+            if (!LDirectory.Exists(resourcesFolder))
             {
                 notExistingFiles = new[] { resourcesFolder };
                 return false;
@@ -72,7 +73,7 @@ namespace SaveToGameWpf
 
             notExistingFiles =
                 NeededFiles.Select(it => Path.Combine(resourcesFolder, it))
-                    .Where(it => !File.Exists(it)).ToArray();
+                    .Where(it => !LFile.Exists(it)).ToArray();
 
             return notExistingFiles.Length == 0;
         }

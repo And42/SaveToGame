@@ -6,6 +6,7 @@ using System.Security.Cryptography;
 using System.Text;
 using JetBrains.Annotations;
 using SaveToGameWpf.Logic.Classes;
+using SaveToGameWpf.Logic.LongPaths;
 using SaveToGameWpf.Resources;
 using SmaliParser;
 
@@ -48,8 +49,8 @@ namespace SaveToGameWpf.Logic.Utils
 
                 ICryptoTransform encryptor = aesAlg.CreateEncryptor(key, iv);
 
-                using (var reader = IOUtils.FileOpenRead(filePath))
-                using (var msEncrypt = IOUtils.FileCreate(outputPath))
+                using (var reader = LFile.OpenRead(filePath))
+                using (var msEncrypt = LFile.Create(outputPath))
                 using (var csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write))
                 {
                     int read;
@@ -143,7 +144,7 @@ namespace SaveToGameWpf.Logic.Utils
                     text = writer.ToString().Replace("[(message_length)]", messagesLength.ToString("X"));
                     text = text.Replace("[(data_restore_call)]", addSave ? FileResources.DataRestoreCall : "");
 
-                    IOUtils.FileWriteAllText(filePath, text, SmaliEncoding);
+                    LFile.WriteAllText(filePath, text, SmaliEncoding);
                 }
             }
         }

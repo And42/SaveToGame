@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Net;
 using MVVM_Tools.Code.Providers;
+using SaveToGameWpf.Logic.LongPaths;
 using SaveToGameWpf.Logic.Utils;
 using SaveToGameWpf.Resources.Localizations;
 
@@ -37,13 +38,13 @@ namespace SaveToGameWpf.Windows
 
                 var updateDir = Path.GetDirectoryName(UpdateFilePath);
 
-                IOUtils.CreateDir(updateDir);
+                LDirectory.CreateDirectory(updateDir);
 
                 webClient.DownloadFileAsync(UpdateExeUri, UpdateFilePath);
             }
             catch (Exception)
             {
-                IOUtils.DeleteFile(UpdateFilePath);
+                LFile.Delete(UpdateFilePath);
             }
         }
 

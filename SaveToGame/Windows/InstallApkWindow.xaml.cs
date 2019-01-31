@@ -19,6 +19,7 @@ using MVVM_Tools.Code.Providers;
 using SaveToGameWpf.Logic;
 using SaveToGameWpf.Logic.Classes;
 using SaveToGameWpf.Logic.Interfaces;
+using SaveToGameWpf.Logic.LongPaths;
 using SaveToGameWpf.Logic.OrganisationItems;
 using SaveToGameWpf.Logic.Utils;
 using SaveToGameWpf.Resources.Localizations;
@@ -53,7 +54,7 @@ namespace SaveToGameWpf.Windows
             string iconsFolder = Path.Combine(GlobalVariables.PathToResources, "icons");
 
             BitmapSource GetImage(string name) =>
-                File.ReadAllBytes(Path.Combine(iconsFolder, name)).ToBitmap().ToBitmapSource();
+                LFile.ReadAllBytes(Path.Combine(iconsFolder, name)).ToBitmap().ToBitmapSource();
 
             IconsStorage = new AppIconsStorage
             {
@@ -121,7 +122,7 @@ namespace SaveToGameWpf.Windows
         {
             string apkFile = Apk.Value;
 
-            if (string.IsNullOrEmpty(apkFile) || !File.Exists(apkFile))
+            if (string.IsNullOrEmpty(apkFile) || !LFile.Exists(apkFile))
                 return;
 
             using (CreateWorking())
@@ -309,7 +310,7 @@ namespace SaveToGameWpf.Windows
                 // adding external data
                 if (!string.IsNullOrEmpty(androidDataFile))
                 {
-                    IOUtils.FileCopy(
+                    LFile.Copy(
                         androidDataFile,
                         Path.Combine(stgContainerExtracted.TempFolder, "assets", externalDataInApkName)
                     );
@@ -327,11 +328,11 @@ namespace SaveToGameWpf.Windows
                             progressNotifier: null
                         );
 
-                        IEnumerable<string> filesToAdd = Directory.EnumerateFiles(obbParts.TempFolder);
+                        IEnumerable<string> filesToAdd = LDirectory.EnumerateFiles(obbParts.TempFolder);
 
                         foreach (var file in filesToAdd)
                         {
-                            IOUtils.FileCopy(
+                            LFile.Copy(
                                 file,
                                 Path.Combine(
                                     stgContainerExtracted.TempFolder,
@@ -354,9 +355,9 @@ namespace SaveToGameWpf.Windows
                         deleteMetaInf: !alternativeSigning
                     );
 
-                    IOUtils.FileCopy(
-                        source: sourceResigned.TempFile,
-                        target: Path.Combine(stgContainerExtracted.TempFolder, "assets", "install.bin"),
+                    LFile.Copy(
+                        sourceFileName: sourceResigned.TempFile,
+                        destFileName: Path.Combine(stgContainerExtracted.TempFolder, "assets", "install.bin"),
                         overwrite: false
                     );
                 }
@@ -377,9 +378,9 @@ namespace SaveToGameWpf.Windows
                         sourcePackageName = new AndroidManifest(sourceManifest.TempFile).Package;
                     }
 
-                    File.WriteAllText(
+                    LFile.WriteAllText(
                         pathToManifest,
-                        File.ReadAllText(pathToManifest, Encoding.UTF8)
+                        LFile.ReadAllText(pathToManifest, Encoding.UTF8)
                             .Replace("change_package", sourcePackageName)
                             .Replace("@string/app_name", appTitle)
                     );
@@ -390,7 +391,7 @@ namespace SaveToGameWpf.Windows
                     string iconsFolder = Path.Combine(stgContainerExtracted.TempFolder, "res", "mipmap-");
 
                     void DeleteIcon(string folder) =>
-                        IOUtils.DeleteFile(Path.Combine($"{iconsFolder}{folder}", "ic_launcher.png"));
+                        LFile.Delete(Path.Combine($"{iconsFolder}{folder}", "ic_launcher.png"));
 
                     DeleteIcon("xxhdpi-v4");
                     DeleteIcon("xhdpi-v4");
@@ -398,7 +399,7 @@ namespace SaveToGameWpf.Windows
                     DeleteIcon("mdpi-v4");
 
                     void WriteIcon(string folder, byte[] imageBytes) =>
-                        File.WriteAllBytes(Path.Combine($"{iconsFolder}{folder}", "ic_launcher.png"), imageBytes);
+                        LFile.WriteAllBytes(Path.Combine($"{iconsFolder}{folder}", "ic_launcher.png"), imageBytes);
 
                     WriteIcon("xxhdpi-v4", xxhdpiBytes);
                     WriteIcon("xhdpi-v4", xhdpiBytes);

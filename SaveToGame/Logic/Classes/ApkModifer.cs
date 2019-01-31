@@ -10,6 +10,7 @@ using AndroidHelper.Logic.SharpZip;
 using ICSharpCode.SharpZipLib.GZip;
 using ICSharpCode.SharpZipLib.Tar;
 using JetBrains.Annotations;
+using SaveToGameWpf.Logic.LongPaths;
 using SaveToGameWpf.Logic.Utils;
 using SaveToGameWpf.Resources;
 using TempUtils = AndroidHelper.Logic.Utils.TempUtils;
@@ -194,7 +195,7 @@ namespace SaveToGameWpf.Logic.Classes
 
                             string path = Path.Combine(extractedBackup.TempFolder, "data", "data");
 
-                            foreach (string dir in Directory.EnumerateDirectories(path))
+                            foreach (string dir in LDirectory.EnumerateDirectories(path))
                             {
                                 string dirName = Path.GetFileName(dir);
                                 if (string.IsNullOrEmpty(dirName))
@@ -241,7 +242,7 @@ namespace SaveToGameWpf.Logic.Classes
                         {
                             ExtractTarByEntry(pathToBackup, extractedBackup.TempFolder);
 
-                            IEnumerable<string> firstLevelDirs = Directory.EnumerateDirectories(extractedBackup.TempFolder);
+                            IEnumerable<string> firstLevelDirs = LDirectory.EnumerateDirectories(extractedBackup.TempFolder);
 
                             foreach (string firstLevelDir in firstLevelDirs)
                             {
@@ -249,7 +250,7 @@ namespace SaveToGameWpf.Logic.Classes
                                 {
                                     string path = Path.Combine(firstLevelDir, "data");
 
-                                    string dir = Directory.EnumerateDirectories(path).FirstOrDefault();
+                                    string dir = LDirectory.EnumerateDirectories(path).FirstOrDefault();
                                     if (dir == default)
                                         continue;
 
@@ -257,13 +258,13 @@ namespace SaveToGameWpf.Logic.Classes
                                 }
                                 else
                                 {
-                                    string dir = Directory.EnumerateDirectories(firstLevelDir, "Android", SearchOption.AllDirectories).FirstOrDefault();
+                                    string dir = LDirectory.EnumerateDirectories(firstLevelDir, "Android", SearchOption.AllDirectories).FirstOrDefault();
                                     if (dir == default)
                                         continue;
 
                                     string path = Path.Combine(dir, "data");
 
-                                    string dir2 = Directory.EnumerateDirectories(path).FirstOrDefault();
+                                    string dir2 = LDirectory.EnumerateDirectories(path).FirstOrDefault();
                                     if (dir2 == default)
                                         continue;
 
@@ -293,11 +294,11 @@ namespace SaveToGameWpf.Logic.Classes
                         string dataFile = Path.Combine(pathToBackup, "data.lpbkp");
                         string sddataFile = Path.Combine(pathToBackup, "sddata.lpbkp");
 
-                        if (IOUtils.FileExists(dataFile))
-                            File.Move(dataFile, resultInternalDataPath);
+                        if (LFile.Exists(dataFile))
+                            LFile.Move(dataFile, resultInternalDataPath);
 
-                        if (IOUtils.FileExists(sddataFile))
-                            File.Move(sddataFile, resultExternalDataPath);
+                        if (LFile.Exists(sddataFile))
+                            LFile.Move(sddataFile, resultExternalDataPath);
 
                         break;
                     }
@@ -315,8 +316,8 @@ namespace SaveToGameWpf.Logic.Classes
             Guard.NotNullArgument(obbFilePaths, nameof(obbFilePaths));
             Guard.NotNullArgument(partsFolderPath, nameof(partsFolderPath));
 
-            IOUtils.DeleteDir(partsFolderPath);
-            IOUtils.CreateDir(partsFolderPath);
+            LDirectory.Delete(partsFolderPath, true);
+            LDirectory.CreateDirectory(partsFolderPath);
 
             string obbFilesDesc = Path.Combine(partsFolderPath, "paths.txt");
 
@@ -330,7 +331,7 @@ namespace SaveToGameWpf.Logic.Classes
 
             int filesIndex = 1;
 
-            using (var infoWriter = new StreamWriter(IOUtils.FileCreate(obbFilesDesc), Encoding.ASCII))
+            using (var infoWriter = new StreamWriter(LFile.Create(obbFilesDesc), Encoding.ASCII))
             {
                 byte[] buffer = new byte[bufferSize];
 
@@ -342,9 +343,9 @@ namespace SaveToGameWpf.Logic.Classes
                     int wrote = 0;
                     int index = filesIndex;
 
-                    using (var input = IOUtils.FileOpenRead(obb.FullName))
+                    using (var input = LFile.OpenRead(obb.FullName))
                     {
-                        FileStream output = IOUtils.FileCreate(Path.Combine(partsFolderPath, index++ + ".png"));
+                        FileStream output = LFile.Create(Path.Combine(partsFolderPath, index++ + ".png"));
 
                         int read;
                         while ((read = input.Read(buffer, 0, bufferSize)) > 0)
@@ -363,7 +364,7 @@ namespace SaveToGameWpf.Logic.Classes
                             {
                                 output.Close();
 
-                                output = IOUtils.FileCreate(Path.Combine(partsFolderPath, index++ + ".png"));
+                                output = LFile.Create(Path.Combine(partsFolderPath, index++ + ".png"));
 
                                 wrote = 0;
                             }
@@ -409,7 +410,7 @@ namespace SaveToGameWpf.Logic.Classes
                         {
                             string fullPath = Path.Combine(convertedBackups.TempFolder, fileToProcess);
 
-                            if (!IOUtils.FileExists(fullPath))
+                            if (!LFile.Exists(fullPath))
                                 continue;
 
                             string fileToAdd = fullPath;
@@ -456,7 +457,7 @@ namespace SaveToGameWpf.Logic.Classes
                             progressNotifier: p != null ? new Progress<(long bytesWritten, long totalBytes)>(p.Invoke) : null 
                         );
 
-                        string[] filesToAdd = Directory.GetFiles(tempFiles.TempFolder);
+                        string[] filesToAdd = LDirectory.GetFiles(tempFiles.TempFolder);
 
                         AddFilesToZip(
                             _apkPath,
@@ -494,7 +495,7 @@ namespace SaveToGameWpf.Logic.Classes
 
                         string saveGameDir = Path.Combine(decompiledFolder.TempFolder, smaliDir, "com", "savegame");
 
-                        Directory.CreateDirectory(saveGameDir);
+                        LDirectory.CreateDirectory(saveGameDir);
 
                         (byte[] iv, byte[] key) = _encryptionInfo.Value;
                         
@@ -510,13 +511,13 @@ namespace SaveToGameWpf.Logic.Classes
                         manifest.MainSmaliFile.AddTextToMethod(FileResources.MainSmaliCall);
                         manifest.MainSmaliFile.Save();
 
-                        IOUtils.FileDelete(manifestPath);
+                        LFile.Delete(manifestPath);
 
                         using (var folderWithDexes = TempUtils.UseTempFolder(_tempFolderProvider))
                         {
                             _apktool.Smali(decompiledFolder.TempFolder, folderWithDexes.TempFolder, null);
 
-                            string[] dexFiles = Directory.GetFiles(folderWithDexes.TempFolder);
+                            string[] dexFiles = LDirectory.GetFiles(folderWithDexes.TempFolder);
 
                             AddFilesToZip(
                                 _apkPath,
@@ -594,9 +595,9 @@ namespace SaveToGameWpf.Logic.Classes
             Guard.NotNullArgument(tarFileName, nameof(tarFileName));
             Guard.NotNullArgument(targetDir, nameof(targetDir));
 
-            IOUtils.FolderDelete(targetDir);
+            LDirectory.Delete(targetDir);
 
-            using (var gzipInput = new GZipInputStream(IOUtils.FileOpenRead(tarFileName)))
+            using (var gzipInput = new GZipInputStream(LFile.OpenRead(tarFileName)))
             {
                 var tarInput = new TarInputStream(gzipInput);
 
@@ -636,14 +637,14 @@ namespace SaveToGameWpf.Logic.Classes
                     string outName = Path.Combine(targetDir, name);
 
                     string directoryName = Path.GetDirectoryName(outName) ?? string.Empty;
-                    IOUtils.FolderCreate(directoryName);
+                    LDirectory.CreateDirectory(directoryName);
 
-                    using (var outStr = IOUtils.FileCreate(outName))
+                    using (var outStr = LFile.Create(outName))
                         tarInput.CopyEntryContents(outStr);
 
                     // Set the modification date/time. This approach seems to solve timezone issues.
                     DateTime myDt = DateTime.SpecifyKind(tarEntry.ModTime, DateTimeKind.Utc);
-                    File.SetLastWriteTime(outName, myDt);
+                    LFile.SetLastWriteTime(outName, myDt);
                 }
             }
         }
@@ -656,13 +657,13 @@ namespace SaveToGameWpf.Logic.Classes
             Guard.NotNullArgument(folderPath, nameof(folderPath));
             Guard.NotNullArgument(resultZipPath, nameof(resultZipPath));
 
-            IOUtils.CreateDir(Path.GetDirectoryName(resultZipPath));
+            LDirectory.CreateDirectory(Path.GetDirectoryName(resultZipPath));
 
             // DotNetZip
             //{
             //    using (var zf = new Ionic.Zip.ZipFile(outZipName, Encoding.UTF8))
             //    {
-            //        var files = Directory.EnumerateFiles(folderName, "*", SearchOption.AllDirectories);
+            //        var files = LDirectory.EnumerateFiles(folderName, "*", SearchOption.AllDirectories);
             //        foreach (var file in files)
             //            zf.AddFile(file, Path.GetDirectoryName(file.Substring(folderName.Length + 1)));
             //        zf.Save();
@@ -673,7 +674,7 @@ namespace SaveToGameWpf.Logic.Classes
             {
                 using (var zip = ICSharpCode.SharpZipLib.Zip.ZipFile.Create(resultZipPath))
                 {
-                    var files = Directory.EnumerateFiles(folderPath, "*", SearchOption.AllDirectories);
+                    var files = LDirectory.EnumerateFiles(folderPath, "*", SearchOption.AllDirectories);
 
                     zip.BeginUpdate();
 
