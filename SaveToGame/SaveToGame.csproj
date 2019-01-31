@@ -131,8 +131,6 @@
     <Compile Include="Logic\Interfaces\ITaskBarManager.cs" />
     <Compile Include="Logic\Interfaces\IVisualProgress.cs" />
     <Compile Include="Logic\JsonMappings\WebConfig.cs" />
-    <Compile Include="Logic\LongPaths\LDirectory.cs" />
-    <Compile Include="Logic\LongPaths\LFile.cs" />
     <Compile Include="Logic\OrganisationItems\AppSettings.cs" />
     <Compile Include="Logic\Utils\ApplicationUtils.cs" />
     <Compile Include="Logic\Utils\BitmapUtils.cs" />
@@ -518,6 +516,10 @@
     <ProjectReference Include="..\AndroidHelper\AndroidHelper\AndroidHelper.csproj">
       <Project>{f3f675a7-cb78-43ee-8e6f-3cfbce790568}</Project>
       <Name>AndroidHelper</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\LongPaths\LongPaths\LongPaths.csproj">
+      <Project>{593a2d73-7513-498e-8f8a-554742c92ed7}</Project>
+      <Name>LongPaths</Name>
     </ProjectReference>
     <ProjectReference Include="..\MVVM-Tools\MVVM Tools\MVVM_Tools.csproj">
       <Project>{5e778515-60ad-4257-8bbe-0a3cff7a91a2}</Project>

@@ -3,8 +3,8 @@ using System.IO;
 using System.Net;
 using System.Threading.Tasks;
 using ICSharpCode.SharpZipLib.Zip;
+using LongPaths.Logic;
 using SaveToGameWpf.Logic.Interfaces;
-using SaveToGameWpf.Logic.LongPaths;
 using SaveToGameWpf.Resources.Localizations;
 using SaveToGameWpf.Windows;
 

@@ -3,9 +3,9 @@ using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Threading;
+using LongPaths.Logic;
 using Newtonsoft.Json;
 using SaveToGameWpf.Logic.JsonMappings;
-using SaveToGameWpf.Logic.LongPaths;
 using SaveToGameWpf.Logic.OrganisationItems;
 using SaveToGameWpf.Windows;
 

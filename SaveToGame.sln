@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SettingsManager", "Settings
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmaliParser", "SmaliParser\SmaliParser.csproj", "{B1727F95-4CDE-49B8-8529-CF45ACCEB72B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LongPaths", "LongPaths\LongPaths\LongPaths.csproj", "{593A2D73-7513-498E-8F8A-554742C92ED7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{B1727F95-4CDE-49B8-8529-CF45ACCEB72B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B1727F95-4CDE-49B8-8529-CF45ACCEB72B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B1727F95-4CDE-49B8-8529-CF45ACCEB72B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{593A2D73-7513-498E-8F8A-554742C92ED7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{593A2D73-7513-498E-8F8A-554742C92ED7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{593A2D73-7513-498E-8F8A-554742C92ED7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{593A2D73-7513-498E-8F8A-554742C92ED7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

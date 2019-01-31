@@ -13,3 +13,6 @@
 [submodule "AndroidTranslatorLib"]
 	path = AndroidTranslatorLib
 	url = git@github.com:And42/AndroidTranslatorLib.git
+[submodule "LongPaths"]
+	path = LongPaths
+	url = git@github.com:And42/LongPaths.git

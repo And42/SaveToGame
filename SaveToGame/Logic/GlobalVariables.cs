@@ -3,7 +3,7 @@ using System.Configuration;
 using System.IO;
 using System.Reflection;
 using Bugsnag;
-using SaveToGameWpf.Logic.LongPaths;
+using LongPaths.Logic;
 
 namespace SaveToGameWpf.Logic
 {

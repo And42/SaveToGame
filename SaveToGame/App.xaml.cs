@@ -2,9 +2,9 @@
 using System.IO;
 using System.Linq;
 using System.Windows;
+using LongPaths.Logic;
 using SaveToGameWpf.Logic;
 using SaveToGameWpf.Logic.Classes;
-using SaveToGameWpf.Logic.LongPaths;
 using SaveToGameWpf.Logic.OrganisationItems;
 using SaveToGameWpf.Logic.Utils;
 using SaveToGameWpf.Properties;

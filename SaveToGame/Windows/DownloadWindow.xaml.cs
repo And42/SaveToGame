@@ -3,8 +3,8 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
+using LongPaths.Logic;
 using MVVM_Tools.Code.Providers;
-using SaveToGameWpf.Logic.LongPaths;
 using SaveToGameWpf.Logic.Utils;
 using SaveToGameWpf.Resources.Localizations;
 

@@ -10,7 +10,7 @@ using AndroidHelper.Logic.SharpZip;
 using ICSharpCode.SharpZipLib.GZip;
 using ICSharpCode.SharpZipLib.Tar;
 using JetBrains.Annotations;
-using SaveToGameWpf.Logic.LongPaths;
+using LongPaths.Logic;
 using SaveToGameWpf.Logic.Utils;
 using SaveToGameWpf.Resources;
 using TempUtils = AndroidHelper.Logic.Utils.TempUtils;

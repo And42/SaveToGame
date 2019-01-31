@@ -5,8 +5,8 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using JetBrains.Annotations;
+using LongPaths.Logic;
 using SaveToGameWpf.Logic.Classes;
-using SaveToGameWpf.Logic.LongPaths;
 using SaveToGameWpf.Resources;
 using SmaliParser;
 

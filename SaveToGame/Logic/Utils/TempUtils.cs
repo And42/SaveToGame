@@ -3,7 +3,7 @@ using System.IO;
 using System.Linq;
 using AndroidHelper.Logic.Interfaces;
 using JetBrains.Annotations;
-using SaveToGameWpf.Logic.LongPaths;
+using LongPaths.Logic;
 
 namespace SaveToGameWpf.Logic.Utils
 {
