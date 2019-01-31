@@ -321,7 +321,7 @@ namespace SaveToGameWpf.Logic.Classes
 
             string obbFilesDesc = Path.Combine(partsFolderPath, "paths.txt");
 
-            FileInfo[] obbFiles = obbFilePaths.Select(f => new FileInfo(f)).ToArray();
+            string[] obbFiles = obbFilePaths.ToArray();
 
             long max = obbFiles.Sum(f => f.Length);
             long now = 0;
@@ -335,15 +335,15 @@ namespace SaveToGameWpf.Logic.Classes
             {
                 byte[] buffer = new byte[bufferSize];
 
-                foreach (FileInfo obb in obbFiles)
+                foreach (string obbFile in obbFiles)
                 {
-                    infoWriter.WriteLine(obb.Name);
-                    infoWriter.WriteLine(obb.Length);
+                    infoWriter.WriteLine(Path.GetFileName(obbFile));
+                    infoWriter.WriteLine(FileUtils.FileLength(obbFile));
 
                     int wrote = 0;
                     int index = filesIndex;
 
-                    using (var input = LFile.OpenRead(obb.FullName))
+                    using (var input = LFile.OpenRead(obbFile))
                     {
                         FileStream output = LFile.Create(Path.Combine(partsFolderPath, index++ + ".png"));
 

@@ -57,12 +57,6 @@ namespace SaveToGameWpf.Logic.Utils
             }
         }
 
-        // ReSharper disable once InconsistentNaming
-        public static string GetFullFNWithoutExt(this FileInfo fileInfo)
-        {
-            return fileInfo.FullName.Remove(fileInfo.FullName.Length - fileInfo.Extension.Length);
-        }
-
         public static async Task DownloadJava(IVisualProgress visualProgress)
         {
             visualProgress.SetLabelText(MainResources.JavaDownloading);

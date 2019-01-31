@@ -137,6 +137,7 @@
     <Compile Include="Logic\Utils\CollectionUtils.cs" />
     <Compile Include="Logic\Utils\CommonUtils.cs" />
     <Compile Include="Logic\Utils\DragDropUtils.cs" />
+    <Compile Include="Logic\Utils\FileUtils.cs" />
     <Compile Include="Logic\Utils\Guard.cs" />
     <Compile Include="Logic\Utils\PickerUtils.cs" />
     <Compile Include="Logic\Utils\StringUtils.cs" />

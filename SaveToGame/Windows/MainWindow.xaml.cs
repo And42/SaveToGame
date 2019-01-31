@@ -321,10 +321,10 @@ namespace SaveToGameWpf.Windows
                             tempFolderProvider: tempFolderProvider
                         );
 
-                        var internalBackup = new FileInfo(internalDataBackup.TempFile);
-                        var externalBackup = new FileInfo(externalDataBackup.TempFile);
+                        string internalBackup = internalDataBackup.TempFile;
+                        string externalBackup = externalDataBackup.TempFile;
 
-                        var fileToAssetsName = new Dictionary<FileInfo, string>
+                        var fileToAssetsName = new Dictionary<string, string>
                         {
                             {internalBackup, "data.save"},
                             {externalBackup, "extdata.save"}
@@ -332,13 +332,13 @@ namespace SaveToGameWpf.Windows
 
                         foreach (var (file, assetsName) in fileToAssetsName.Enumerate())
                         {
-                            if (!file.Exists || file.Length == 0)
+                            if (!LFile.Exists(file) || FileUtils.FileLength(file) == 0)
                                 continue;
 
                             using (var tempEncrypted = ATempUtils.UseTempFile(tempFileProvider))
                             {
                                 CommonUtils.EncryptFile(
-                                    filePath: file.FullName,
+                                    filePath: file,
                                     outputPath: tempEncrypted.TempFile,
                                     iv: aes.IV,
                                     key: aes.Key
