@@ -128,13 +128,10 @@
     <Compile Include="Converters\NotNullParameterConverter.cs" />
     <Compile Include="Converters\ThemeToCheckedConverter.cs" />
     <Compile Include="Logic\Classes\ApkModifer.cs" />
-    <Compile Include="Logic\Classes\AppIconsStorage.cs" />
-    <Compile Include="Logic\Classes\BackupType.cs" />
+    <Compile Include="Logic\OrganisationItems\AppIconsStorage.cs" />
     <Compile Include="Logic\Classes\NotificationManager.cs" />
     <Compile Include="Logic\Classes\SmaliStringEncryptor.cs" />
-    <Compile Include="Logic\Classes\TaskBarManager.cs" />
-    <Compile Include="Logic\Interfaces\ITaskBarManager.cs" />
-    <Compile Include="Logic\Interfaces\IVisualProgress.cs" />
+    <Compile Include="Logic\OrganisationItems\TaskBarManager.cs" />
     <Compile Include="Logic\JsonMappings\WebConfig.cs" />
     <Compile Include="Logic\OrganisationItems\AppSettings.cs" />
     <Compile Include="Logic\Utils\ApplicationUtils.cs" />
@@ -147,12 +144,12 @@
     <Compile Include="Logic\Utils\FileUtils.cs" />
     <Compile Include="Logic\Utils\Guard.cs" />
     <Compile Include="Logic\Utils\PickerUtils.cs" />
-    <Compile Include="Logic\Utils\StringUtils.cs" />
     <Compile Include="Logic\Utils\TempUtils.cs" />
     <Compile Include="Logic\Utils\ThemeUtils.cs" />
     <Compile Include="Logic\Utils\Utils.cs" />
     <Compile Include="Logic\GlobalVariables.cs" />
     <Compile Include="Logic\Utils\WebUtils.cs" />
+    <Compile Include="Logic\ViewModels\InstallApkViewModel.cs" />
     <Compile Include="Logic\ViewModels\MainWindowViewModel.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
@@ -523,6 +520,10 @@
     <ProjectReference Include="..\AndroidHelper\AndroidHelper\AndroidHelper.csproj">
       <Project>{f3f675a7-cb78-43ee-8e6f-3cfbce790568}</Project>
       <Name>AndroidHelper</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Interfaces\Interfaces.csproj">
+      <Project>{39ab2515-5c47-4731-8120-d0a574033224}</Project>
+      <Name>Interfaces</Name>
     </ProjectReference>
     <ProjectReference Include="..\LongPaths\LongPaths\LongPaths.csproj">
       <Project>{593a2d73-7513-498e-8f8a-554742c92ed7}</Project>

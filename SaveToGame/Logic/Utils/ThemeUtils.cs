@@ -2,18 +2,18 @@
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
+using Interfaces.OrganisationItems;
 using JetBrains.Annotations;
-using SaveToGameWpf.Logic.OrganisationItems;
 
 namespace SaveToGameWpf.Logic.Utils
 {
     public class ThemeUtils
     {
         [NotNull]
-        private readonly AppSettings _appSettings;
+        private readonly IAppSettings _appSettings;
         
         public ThemeUtils(
-            [NotNull] AppSettings appSettings
+            [NotNull] IAppSettings appSettings
         )
         {
             _appSettings = appSettings;

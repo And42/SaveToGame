@@ -1,11 +1,10 @@
-﻿using System.IO;
-using SaveToGameWpf.Logic.Classes;
+﻿using Interfaces.Enums;
+using Interfaces.OrganisationItems;
 using SettingsManager;
-using SettingsManager.ModelProcessors;
 
 namespace SaveToGameWpf.Logic.OrganisationItems
 {
-    public class AppSettings : SettingsModel
+    public class AppSettings : SettingsModel, IAppSettings
     {
         public virtual string Language { get; set; } = "RU";
 

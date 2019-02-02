@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Windows.Shell;
-using SaveToGameWpf.Logic.Interfaces;
+using Interfaces.OrganisationItems;
 
-namespace SaveToGameWpf.Logic.Classes
+namespace SaveToGameWpf.Logic.OrganisationItems
 {
     internal class TaskBarManager : ITaskBarManager
     {

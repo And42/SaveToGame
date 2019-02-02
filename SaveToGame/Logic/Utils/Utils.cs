@@ -3,9 +3,9 @@ using System.IO;
 using System.Net;
 using System.Threading.Tasks;
 using ICSharpCode.SharpZipLib.Zip;
+using Interfaces.OrganisationItems;
 using JetBrains.Annotations;
 using LongPaths.Logic;
-using SaveToGameWpf.Logic.Interfaces;
 using SaveToGameWpf.Resources.Localizations;
 using SaveToGameWpf.Windows;
 

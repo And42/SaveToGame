@@ -3,23 +3,23 @@ using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Threading;
+using Interfaces.OrganisationItems;
 using JetBrains.Annotations;
 using LongPaths.Logic;
 using Newtonsoft.Json;
 using SaveToGameWpf.Logic.JsonMappings;
-using SaveToGameWpf.Logic.OrganisationItems;
 using SaveToGameWpf.Windows;
 
 namespace SaveToGameWpf.Logic.Utils
 {
     public class ApplicationUtils
     {
-        [NotNull] private readonly AppSettings _appSettings;
+        [NotNull] private readonly IAppSettings _appSettings;
         [NotNull] private readonly Provider<DownloadWindow> _downloadWindowProvider;
         [NotNull] private readonly GlobalVariables _globalVariables;
 
         public ApplicationUtils(
-            [NotNull] AppSettings appSettings,
+            [NotNull] IAppSettings appSettings,
             [NotNull] Provider<DownloadWindow> downloadWindowProvider,
             [NotNull] GlobalVariables globalVariables
         )

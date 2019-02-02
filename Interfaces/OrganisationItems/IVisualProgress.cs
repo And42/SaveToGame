@@ -1,4 +1,4 @@
-﻿namespace SaveToGameWpf.Logic.Interfaces
+﻿namespace Interfaces.OrganisationItems
 {
     public interface IVisualProgress
     {

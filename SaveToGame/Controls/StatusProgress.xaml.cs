@@ -1,6 +1,6 @@
 ﻿using System.Threading;
+using Interfaces.OrganisationItems;
 using MVVM_Tools.Code.Providers;
-using SaveToGameWpf.Logic.Interfaces;
 
 namespace SaveToGameWpf.Controls
 {

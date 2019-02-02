@@ -1,16 +1,16 @@
 ﻿using System.Threading;
+using Interfaces.OrganisationItems;
 using JetBrains.Annotations;
 using MVVM_Tools.Code.Classes;
 using MVVM_Tools.Code.Providers;
-using SaveToGameWpf.Logic.OrganisationItems;
 using SaveToGameWpf.Resources.Localizations;
-using BackupType = SaveToGameWpf.Logic.Classes.BackupType;
+using BackupType = Interfaces.Enums.BackupType;
 
 namespace SaveToGameWpf.Logic.ViewModels
 {
     public class MainWindowViewModel : BindableBase
     {
-        [NotNull] public AppSettings AppSettings { get; }
+        [NotNull] public IAppSettings AppSettings { get; }
         
         public Property<bool> Working { get; }
         public Property<bool> OnlySave { get; }
@@ -39,7 +39,7 @@ namespace SaveToGameWpf.Logic.ViewModels
         }
 
         public MainWindowViewModel(
-            [NotNull] AppSettings appSettings
+            [NotNull] IAppSettings appSettings
         )
         {
             AppSettings = appSettings;

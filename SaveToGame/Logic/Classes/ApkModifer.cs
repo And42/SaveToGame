@@ -9,6 +9,7 @@ using AndroidHelper.Logic.Interfaces;
 using AndroidHelper.Logic.SharpZip;
 using ICSharpCode.SharpZipLib.GZip;
 using ICSharpCode.SharpZipLib.Tar;
+using Interfaces.Enums;
 using JetBrains.Annotations;
 using LongPaths.Logic;
 using SaveToGameWpf.Logic.Utils;

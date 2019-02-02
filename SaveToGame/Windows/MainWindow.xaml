@@ -6,7 +6,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:viewModels="clr-namespace:SaveToGameWpf.Logic.ViewModels"
         xmlns:controls="clr-namespace:SaveToGameWpf.Controls"
-        xmlns:logic="clr-namespace:SaveToGameWpf.Logic.Classes"
+        xmlns:enums="clr-namespace:Interfaces.Enums;assembly=Interfaces"
         mc:Ignorable="d"
 
         Title="{Binding Title, Mode=OneWay}"
@@ -51,15 +51,15 @@
                     <MenuItem Header="{x:Static localization:MainResources.BackupType}">
                         <MenuItem 
                             Header="Titanium" IsCheckable="True"
-                            IsChecked="{Binding BackupType, Converter={StaticResource BackupToCheckedConverter}, ConverterParameter={x:Static logic:BackupType.Titanium}}"/>
+                            IsChecked="{Binding BackupType, Converter={StaticResource BackupToCheckedConverter}, ConverterParameter={x:Static enums:BackupType.Titanium}}"/>
 
                         <MenuItem
                             Header="ROM Toolbox" IsCheckable="True"
-                            IsChecked="{Binding BackupType, Converter={StaticResource BackupToCheckedConverter}, ConverterParameter={x:Static logic:BackupType.RomToolbox}}"/>
+                            IsChecked="{Binding BackupType, Converter={StaticResource BackupToCheckedConverter}, ConverterParameter={x:Static enums:BackupType.RomToolbox}}"/>
 
                         <MenuItem
                             Header="Lucky Patcher" IsCheckable="True"
-                            IsChecked="{Binding BackupType, Converter={StaticResource BackupToCheckedConverter}, ConverterParameter={x:Static logic:BackupType.LuckyPatcher}}"/>
+                            IsChecked="{Binding BackupType, Converter={StaticResource BackupToCheckedConverter}, ConverterParameter={x:Static enums:BackupType.LuckyPatcher}}"/>
                     </MenuItem>
                     
                     <MenuItem

@@ -1,12 +1,13 @@
 ﻿using System.Windows.Media.Imaging;
+using Interfaces.OrganisationItems;
 using MVVM_Tools.Code.Providers;
 using SaveToGameWpf.Logic.Utils;
 
 // ReSharper disable InconsistentNaming
 
-namespace SaveToGameWpf.Logic.Classes
+namespace SaveToGameWpf.Logic.OrganisationItems
 {
-    public class AppIconsStorage
+    public class AppIconsStorage : IAppIconsStorage
     {
         public Property<BitmapSource> Icon_xxhdpi { get; } = new Property<BitmapSource>();
         public Property<BitmapSource> Icon_xhdpi { get; } = new Property<BitmapSource>();

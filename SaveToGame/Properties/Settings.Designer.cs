@@ -74,9 +74,9 @@ namespace SaveToGameWpf.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("Titanium")]
-        public global::SaveToGameWpf.Logic.Classes.BackupType BackupType {
+        public global::Interfaces.Enums.BackupType BackupType {
             get {
-                return ((global::SaveToGameWpf.Logic.Classes.BackupType)(this["BackupType"]));
+                return ((global::Interfaces.Enums.BackupType)(this["BackupType"]));
             }
             set {
                 this["BackupType"] = value;

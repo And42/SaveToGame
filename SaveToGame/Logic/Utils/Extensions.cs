@@ -1,7 +1,10 @@
 ﻿using System;
+using System.ComponentModel;
 using System.IO;
 using ICSharpCode.SharpZipLib.Zip;
+using JetBrains.Annotations;
 using LongPaths.Logic;
+using MVVM_Tools.Code.Commands;
 
 namespace SaveToGameWpf.Logic.Utils
 {
@@ -27,6 +30,12 @@ namespace SaveToGameWpf.Logic.Utils
                     zipStream.CopyTo(outputStream, 4096);
                 }
             }
+        }
+
+        public static IActionCommand BindCanExecute([NotNull] this IActionCommand actionCommand, [NotNull] INotifyPropertyChanged observable)
+        {
+            observable.PropertyChanged += (sender, args) => actionCommand.RaiseCanExecuteChanged();
+            return actionCommand;
         }
     }
 }

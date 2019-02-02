@@ -10,12 +10,12 @@ using System.Windows;
 using System.Windows.Shell;
 using AndroidHelper.Logic;
 using AndroidHelper.Logic.Interfaces;
+using Interfaces.OrganisationItems;
 using JetBrains.Annotations;
 using LongPaths.Logic;
 using MVVM_Tools.Code.Disposables;
 using SaveToGameWpf.Logic;
 using SaveToGameWpf.Logic.Classes;
-using SaveToGameWpf.Logic.Interfaces;
 using SaveToGameWpf.Logic.OrganisationItems;
 using SaveToGameWpf.Logic.Utils;
 using SaveToGameWpf.Logic.ViewModels;
@@ -23,7 +23,7 @@ using SaveToGameWpf.Resources;
 using SaveToGameWpf.Resources.Localizations;
 
 using Application = System.Windows.Application;
-using BackupType = SaveToGameWpf.Logic.Classes.BackupType;
+using BackupType = Interfaces.Enums.BackupType;
 using DragEventArgs = System.Windows.DragEventArgs;
 using ATempUtils = AndroidHelper.Logic.Utils.TempUtils;
 
@@ -36,7 +36,7 @@ namespace SaveToGameWpf.Windows
 
         private static readonly string Line = new string('-', 50);
 
-        [NotNull] private readonly AppSettings _settings;
+        [NotNull] private readonly IAppSettings _settings;
         [NotNull] private readonly ApplicationUtils _applicationUtils;
         [NotNull] private readonly Provider<MainWindow> _mainWindowProvider;
         [NotNull] private readonly Provider<InstallApkWindow> _installApkWindowProvider;
@@ -57,7 +57,7 @@ namespace SaveToGameWpf.Windows
         private bool _shutdownOnClose = true;
 
         public MainWindow(
-            [NotNull] AppSettings appSettings,
+            [NotNull] IAppSettings appSettings,
             [NotNull] ApplicationUtils applicationUtils,
             [NotNull] MainWindowViewModel viewModel,
             [NotNull] Provider<MainWindow> mainWindowProvider,

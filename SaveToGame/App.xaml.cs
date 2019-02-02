@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Windows;
 using AndroidHelper.Logic;
 using AndroidHelper.Logic.Interfaces;
 using Autofac;
+using Interfaces.OrganisationItems;
 using JetBrains.Annotations;
 using LongPaths.Logic;
 using SaveToGameWpf.Logic;
@@ -113,14 +115,18 @@ namespace SaveToGameWpf
 
         // ReSharper disable once InconsistentNaming
         [NotNull]
+        [SuppressMessage("ReSharper", "RedundantTypeArgumentsOfMethod")]
         private IContainer SetupDI()
         {
             var builder = new ContainerBuilder();
 
             builder.RegisterGeneric(typeof(Provider<>)).SingleInstance();
             
-            builder.Register(c => 
-                new SettingsBuilder<AppSettings>()
+            // custom construction
+            builder.Register<AppSettings>(c =>
+            {
+                // ReSharper disable once ConvertToLambdaExpression
+                return new SettingsBuilder<AppSettings>()
                     .WithFile(
                         Path.Combine(
                             c.Resolve<GlobalVariables>().AppDataPath,
@@ -128,10 +134,9 @@ namespace SaveToGameWpf
                         )
                     )
                     .WithProcessor(new JsonModelProcessor())
-                    .Build()
-            ).SingleInstance();
-
-            builder.Register(c =>
+                    .Build();
+            }).As<IAppSettings>().SingleInstance();
+            builder.Register<Apktool>(c =>
             {
                 var globalVariables = c.Resolve<GlobalVariables>();
 
@@ -146,6 +151,7 @@ namespace SaveToGameWpf
                     .Build();
             }).As<IApktool>().SingleInstance();
 
+            // basic construction
             builder.RegisterType<ApplicationUtils>().SingleInstance();
             builder.RegisterType<ThemeUtils>().SingleInstance();
             builder.RegisterType<TempUtils>().SingleInstance();
@@ -162,6 +168,7 @@ namespace SaveToGameWpf
             
             // window models
             builder.RegisterType<MainWindowViewModel>();
+            builder.RegisterType<InstallApkViewModel>();
             
             return builder.Build();
         }

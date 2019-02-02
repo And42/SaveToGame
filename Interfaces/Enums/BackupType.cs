@@ -1,4 +1,4 @@
-﻿namespace SaveToGameWpf.Logic.Classes
+﻿namespace Interfaces.Enums
 {
     /// <summary>
     /// Тип сохранения
