@@ -3,6 +3,7 @@ using System.IO;
 using System.Net;
 using System.Threading.Tasks;
 using ICSharpCode.SharpZipLib.Zip;
+using JetBrains.Annotations;
 using LongPaths.Logic;
 using SaveToGameWpf.Logic.Interfaces;
 using SaveToGameWpf.Resources.Localizations;
@@ -10,8 +11,17 @@ using SaveToGameWpf.Windows;
 
 namespace SaveToGameWpf.Logic.Utils
 {
-    internal static class Utils
+    public class Utils
     {
+        [NotNull] private readonly GlobalVariables _globalVariables;
+
+        public Utils(
+            [NotNull] GlobalVariables globalVariables
+        )
+        {
+            _globalVariables = globalVariables;
+        }
+
         public static int CompareVersions(string first, string second)
         {
             return 
@@ -37,27 +47,7 @@ namespace SaveToGameWpf.Logic.Utils
             return 0;
         }
 
-        public static void ExtractAll(this ZipFile zip, string folder)
-        {
-            LDirectory.Delete(folder, true);
-            LDirectory.CreateDirectory(folder);
-
-            foreach (ZipEntry entry in zip)
-            {
-                if (entry.IsDirectory)
-                    continue;
-
-                LDirectory.CreateDirectory(Path.Combine(folder, Path.GetDirectoryName(entry.Name) ?? string.Empty));
-
-                using (var zipStream = zip.GetInputStream(entry))
-                using (var outputStream = LFile.Create(Path.Combine(folder, entry.Name)))
-                {
-                    zipStream.CopyTo(outputStream, 4096);
-                }
-            }
-        }
-
-        public static async Task DownloadJava(IVisualProgress visualProgress)
+        public async Task DownloadJava(IVisualProgress visualProgress)
         {
             visualProgress.SetLabelText(MainResources.JavaDownloading);
             visualProgress.ShowIndeterminateLabel();
@@ -65,9 +55,9 @@ namespace SaveToGameWpf.Logic.Utils
             bool fileDownloaded;
 
             const string jreUrl = @"https://storage.googleapis.com/savetogame/jre_1.7.zip";
-            string fileLocation = Path.Combine(GlobalVariables.AppDataPath, "jre.zip");
+            string fileLocation = Path.Combine(_globalVariables.AppDataPath, "jre.zip");
 
-            LDirectory.CreateDirectory(GlobalVariables.AppDataPath);
+            LDirectory.CreateDirectory(_globalVariables.AppDataPath);
 
             using (var client = new WebClient())
             {
@@ -107,7 +97,7 @@ namespace SaveToGameWpf.Logic.Utils
 
                 using (var zipFile = new ZipFile(fileLocation))
                 {
-                    await Task.Factory.StartNew(() => zipFile.ExtractAll(GlobalVariables.PathToPortableJre));
+                    await Task.Factory.StartNew(() => zipFile.ExtractAll(_globalVariables.PathToPortableJre));
                 }
 
                 LFile.Delete(fileLocation);
@@ -116,7 +106,5 @@ namespace SaveToGameWpf.Logic.Utils
             visualProgress.HideIndeterminateLabel();
             visualProgress.SetLabelText(MainResources.AllDone);
         }
-
-        public static T As<T>(this object obj) => (T) obj;
     }
 }

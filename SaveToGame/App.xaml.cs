@@ -2,14 +2,21 @@
 using System.IO;
 using System.Linq;
 using System.Windows;
+using AndroidHelper.Logic;
+using AndroidHelper.Logic.Interfaces;
+using Autofac;
+using JetBrains.Annotations;
 using LongPaths.Logic;
 using SaveToGameWpf.Logic;
 using SaveToGameWpf.Logic.Classes;
 using SaveToGameWpf.Logic.OrganisationItems;
 using SaveToGameWpf.Logic.Utils;
+using SaveToGameWpf.Logic.ViewModels;
 using SaveToGameWpf.Properties;
 using SaveToGameWpf.Resources.Localizations;
 using SaveToGameWpf.Windows;
+using SettingsManager;
+using SettingsManager.ModelProcessors;
 
 namespace SaveToGameWpf
 {
@@ -25,10 +32,14 @@ namespace SaveToGameWpf
             "testkey.x509.pem"
         };
 
+        [NotNull]
+        private IContainer _rootDiContainer;
+
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
-
+            _rootDiContainer = SetupDI();
+            
             if (!CheckForFiles(out string[] files))
                 AppClose(files);
 
@@ -50,20 +61,22 @@ namespace SaveToGameWpf
             };
 #endif
 
-            ApplicationUtils.SetLanguageFromSettings();
-            ThemeUtils.SetThemeFromSettings();
+            var applicationUtils = _rootDiContainer.Resolve<ApplicationUtils>();
 
-            WindowManager.ActivateWindow<MainWindow>();
+            applicationUtils.SetLanguageFromSettings();
+            _rootDiContainer.Resolve<ThemeUtils>().SetThemeFromSettings();
+
+            _rootDiContainer.Resolve<MainWindow>().Show();
 
 #if !DEBUG
             if (!ApplicationUtils.GetIsPortable())
 #endif
-                ApplicationUtils.CheckForUpdate();
+                applicationUtils.CheckForUpdate();
         }
 
-        private static bool CheckForFiles(out string[] notExistingFiles)
+        private bool CheckForFiles(out string[] notExistingFiles)
         {
-            var resourcesFolder = Path.Combine(GlobalVariables.PathToExeFolder, "Resources");
+            var resourcesFolder = Path.Combine(_rootDiContainer.Resolve<GlobalVariables>().PathToExeFolder, "Resources");
 
             if (!LDirectory.Exists(resourcesFolder))
             {
@@ -95,7 +108,62 @@ namespace SaveToGameWpf
         {
             base.OnExit(e);
 
-            NotificationManager.Instance.Dispose();
+            _rootDiContainer.Resolve<NotificationManager>().Dispose();
+        }
+
+        // ReSharper disable once InconsistentNaming
+        [NotNull]
+        private IContainer SetupDI()
+        {
+            var builder = new ContainerBuilder();
+
+            builder.RegisterGeneric(typeof(Provider<>)).SingleInstance();
+            
+            builder.Register(c => 
+                new SettingsBuilder<AppSettings>()
+                    .WithFile(
+                        Path.Combine(
+                            c.Resolve<GlobalVariables>().AppDataPath,
+                            "appSettings.json"
+                        )
+                    )
+                    .WithProcessor(new JsonModelProcessor())
+                    .Build()
+            ).SingleInstance();
+
+            builder.Register(c =>
+            {
+                var globalVariables = c.Resolve<GlobalVariables>();
+
+                return new Apktool.Builder()
+                    .JavaPath(globalVariables.PathToPortableJavaExe)
+                    .ApktoolPath(globalVariables.ApktoolPath)
+                    .SignApkPath(globalVariables.SignApkPath)
+                    .BaksmaliPath(globalVariables.BaksmaliPath)
+                    .SmaliPath(globalVariables.SmaliPath)
+                    .DefaultKeyPemPath(globalVariables.DefaultKeyPemPath)
+                    .DefaultKeyPkPath(globalVariables.DefaultKeyPkPath)
+                    .Build();
+            }).As<IApktool>().SingleInstance();
+
+            builder.RegisterType<ApplicationUtils>().SingleInstance();
+            builder.RegisterType<ThemeUtils>().SingleInstance();
+            builder.RegisterType<TempUtils>().SingleInstance();
+            builder.RegisterType<NotificationManager>().SingleInstance();
+            builder.RegisterType<GlobalVariables>().SingleInstance();
+            builder.RegisterType<Utils>().SingleInstance();
+            
+            // windows
+            builder.RegisterType<MainWindow>();
+            builder.RegisterType<InstallApkWindow>();
+            builder.RegisterType<AboutWindow>();
+            builder.RegisterType<UpdateWindow>();
+            builder.RegisterType<DownloadWindow>();
+            
+            // window models
+            builder.RegisterType<MainWindowViewModel>();
+            
+            return builder.Build();
         }
     }
 }

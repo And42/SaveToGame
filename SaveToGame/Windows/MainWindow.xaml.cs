@@ -10,6 +10,7 @@ using System.Windows;
 using System.Windows.Shell;
 using AndroidHelper.Logic;
 using AndroidHelper.Logic.Interfaces;
+using JetBrains.Annotations;
 using LongPaths.Logic;
 using MVVM_Tools.Code.Disposables;
 using SaveToGameWpf.Logic;
@@ -35,7 +36,16 @@ namespace SaveToGameWpf.Windows
 
         private static readonly string Line = new string('-', 50);
 
-        private readonly AppSettings _settings = AppSettings.Instance;
+        [NotNull] private readonly AppSettings _settings;
+        [NotNull] private readonly ApplicationUtils _applicationUtils;
+        [NotNull] private readonly Provider<MainWindow> _mainWindowProvider;
+        [NotNull] private readonly Provider<InstallApkWindow> _installApkWindowProvider;
+        [NotNull] private readonly Provider<AboutWindow> _aboutWindowProvider;
+        [NotNull] private readonly NotificationManager _notificationManager;
+        [NotNull] private readonly TempUtils _tempUtils;
+        [NotNull] private readonly GlobalVariables _globalVariables;
+        [NotNull] private readonly Utils _utils;
+        [NotNull] private readonly Provider<IApktool> _apktoolProvider;
 
         private readonly IVisualProgress _visualProgress;
         private readonly ITaskBarManager _taskBarManager;
@@ -46,10 +56,32 @@ namespace SaveToGameWpf.Windows
 
         private bool _shutdownOnClose = true;
 
-        public MainWindow()
-		{
-		    ViewModel = new MainWindowViewModel();
+        public MainWindow(
+            [NotNull] AppSettings appSettings,
+            [NotNull] ApplicationUtils applicationUtils,
+            [NotNull] MainWindowViewModel viewModel,
+            [NotNull] Provider<MainWindow> mainWindowProvider,
+            [NotNull] Provider<InstallApkWindow> installApkWindowProvider,
+            [NotNull] Provider<AboutWindow> aboutWindowProvider,
+            [NotNull] NotificationManager notificationManager,
+            [NotNull] TempUtils tempUtils,
+            [NotNull] GlobalVariables globalVariables,
+            [NotNull] Utils utils,
+            [NotNull] Provider<IApktool> apktoolProvider
+        )
+        {
+            _settings = appSettings;
+            _applicationUtils = applicationUtils;
+            _mainWindowProvider = mainWindowProvider;
+            _installApkWindowProvider = installApkWindowProvider;
+            _aboutWindowProvider = aboutWindowProvider;
+            _notificationManager = notificationManager;
+            _tempUtils = tempUtils;
+            _globalVariables = globalVariables;
+            _utils = utils;
+            _apktoolProvider = apktoolProvider;
 
+            ViewModel = viewModel;
 		    DataContext = ViewModel;
 
             InitializeComponent();
@@ -196,23 +228,23 @@ namespace SaveToGameWpf.Windows
 
         private void InstallApkClick(object sender, RoutedEventArgs e)
         {
-            WindowManager.ActivateWindow<InstallApkWindow>(this);
+            _installApkWindowProvider.Get().ShowDialog();
         }
 
         private void ChangeLanguageClick(object sender, RoutedEventArgs e)
         {
             _settings.Language = sender.As<FrameworkElement>().Tag.As<string>();
-            ApplicationUtils.SetLanguageFromSettings();
+            _applicationUtils.SetLanguageFromSettings();
 
             _shutdownOnClose = false;
 
-            WindowManager.CloseWindow<MainWindow>();
-            WindowManager.ActivateWindow<MainWindow>();
+            Close();
+            _mainWindowProvider.Get().Show();
         }
 
         private void AboutProgramItem_Click(object sender, EventArgs e)
         {
-            new AboutWindow().ShowDialog();
+            _aboutWindowProvider.Get().ShowDialog();
         }
 
 #endregion
@@ -226,8 +258,8 @@ namespace SaveToGameWpf.Windows
                     "{0}{1}Start{1}{0}ExePath = {2}{0}Resources = {3}",
                     Environment.NewLine,
                     Line,
-                    GlobalVariables.PathToExe,
-                    GlobalVariables.PathToResources
+                    _globalVariables.PathToExe,
+                    _globalVariables.PathToResources
                 )
             );
 
@@ -272,22 +304,13 @@ namespace SaveToGameWpf.Windows
 
             BackupType backupType = ViewModel.BackupType;
 
-            ITempFileProvider tempFileProvider = TempUtils.CreateTempFileProvider();
-            ITempFolderProvider tempFolderProvider = TempUtils.CreateTempFolderProvider();
+            ITempFileProvider tempFileProvider = _tempUtils.CreateTempFileProvider();
+            ITempFolderProvider tempFolderProvider = _tempUtils.CreateTempFolderProvider();
 
             string resultApkPath = sourceApkPath.Remove(sourceApkPath.Length - Path.GetExtension(sourceApkPath).Length) + "_mod.apk";
             string pathToSave = ViewModel.CurrentSave.Value;
 
-            IApktool apktool = new Apktool.Builder()
-                .JavaPath(GlobalVariables.PathToPortableJavaExe)
-                .ApktoolPath(GlobalVariables.ApktoolPath)
-                .SignApkPath(GlobalVariables.SignApkPath)
-                .BaksmaliPath(GlobalVariables.BaksmaliPath)
-                .SmaliPath(GlobalVariables.SmaliPath)
-                .DefaultKeyPemPath(GlobalVariables.DefaultKeyPemPath)
-                .DefaultKeyPkPath(GlobalVariables.DefaultKeyPkPath)
-                .Build();
-
+            IApktool apktool = _apktoolProvider.Get();
             IProcessDataHandler dataHandler = new ProcessDataCombinedHandler(Log);
 
             #endregion
@@ -454,7 +477,7 @@ namespace SaveToGameWpf.Windows
 
             if (_settings.Notifications)
             {
-                NotificationManager.Instance.Show(
+                _notificationManager.Show(
                     title: MainResources.Information_Title,
                     text: MainResources.ModificationCompletedContent
                 );
@@ -476,7 +499,7 @@ namespace SaveToGameWpf.Windows
 
         private async Task CheckJavaVersion()
         {
-            if (LDirectory.Exists(GlobalVariables.PathToPortableJre))
+            if (LDirectory.Exists(_globalVariables.PathToPortableJre))
                 return;
 
             MessBox.ShowDial(
@@ -492,7 +515,7 @@ namespace SaveToGameWpf.Windows
                 _visualProgress.SetBarUsual();
                 _visualProgress.ShowBar();
 
-                await Utils.DownloadJava(_visualProgress);
+                await _utils.DownloadJava(_visualProgress);
 
                 _visualProgress.HideBar();
             }
@@ -527,7 +550,7 @@ namespace SaveToGameWpf.Windows
             var theme = sender.As<FrameworkElement>().Tag.As<string>();
 
             ThemeUtils.SetTheme(theme);
-            AppSettings.Instance.Theme = theme;
+            _settings.Theme = theme;
         }
 
         private static StreamWriter CreateLogFileForApp(string pathToApkFile)

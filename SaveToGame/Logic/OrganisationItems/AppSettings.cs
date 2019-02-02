@@ -7,21 +7,6 @@ namespace SaveToGameWpf.Logic.OrganisationItems
 {
     public class AppSettings : SettingsModel
     {
-        public static AppSettings Instance { get; }
-
-        static AppSettings()
-        {
-            Instance = new SettingsBuilder<AppSettings>()
-                .WithFile(
-                    Path.Combine(
-                        GlobalVariables.AppDataPath,
-                        "appSettings.json"
-                    )
-                )
-                .WithProcessor(new JsonModelProcessor())
-                .Build();
-        }
-
         public virtual string Language { get; set; } = "RU";
 
         public virtual BackupType BackupType { get; set; } = BackupType.Titanium;

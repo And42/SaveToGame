@@ -3,6 +3,7 @@ using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Threading;
+using JetBrains.Annotations;
 using LongPaths.Logic;
 using Newtonsoft.Json;
 using SaveToGameWpf.Logic.JsonMappings;
@@ -11,19 +12,34 @@ using SaveToGameWpf.Windows;
 
 namespace SaveToGameWpf.Logic.Utils
 {
-    public static class ApplicationUtils
+    public class ApplicationUtils
     {
-        public static string GetVersion()
+        [NotNull] private readonly AppSettings _appSettings;
+        [NotNull] private readonly Provider<DownloadWindow> _downloadWindowProvider;
+        [NotNull] private readonly GlobalVariables _globalVariables;
+
+        public ApplicationUtils(
+            [NotNull] AppSettings appSettings,
+            [NotNull] Provider<DownloadWindow> downloadWindowProvider,
+            [NotNull] GlobalVariables globalVariables
+        )
+        {
+            _appSettings = appSettings;
+            _downloadWindowProvider = downloadWindowProvider;
+            _globalVariables = globalVariables;
+        }
+        
+        public string GetVersion()
         {
             return Assembly.GetExecutingAssembly().GetName().Version.ToString();
         }
 
-        public static string GetPathToExe()
+        public string GetPathToExe()
         {
             return Assembly.GetExecutingAssembly().Location;
         }
 
-        public static void CheckForUpdate()
+        public void CheckForUpdate()
         {
             WebUtils.DownloadStringAsync(new Uri("https://storage.googleapis.com/savetogame/config.json"), args =>
             {
@@ -41,7 +57,7 @@ namespace SaveToGameWpf.Logic.Utils
                     throw;
 #endif
 
-                    GlobalVariables.ErrorClient.Notify(ex);
+                    _globalVariables.ErrorClient.Notify(ex);
                     return;
                 }
 
@@ -62,7 +78,7 @@ namespace SaveToGameWpf.Logic.Utils
 #if DEBUG
                     throw;
 #endif
-                    GlobalVariables.ErrorClient.Notify(ex);
+                    _globalVariables.ErrorClient.Notify(ex);
                     return;
                 }
 
@@ -71,19 +87,23 @@ namespace SaveToGameWpf.Logic.Utils
                     if (ar.Error != null)
                         return;
 
-                    new UpdateWindow(GetVersion(), ar.Result).ShowDialog();
+                    new UpdateWindow(
+                        downloadWindowProvider: _downloadWindowProvider,
+                        nowVersion: GetVersion(),
+                        changes: ar.Result
+                    ).ShowDialog();
                 });
             });
         }
 
-        public static bool GetIsPortable()
+        public bool GetIsPortable()
         {
             return LFile.Exists(Path.Combine(Path.GetDirectoryName(GetPathToExe()), "isportable"));
         }
 
-        public static void SetLanguageFromSettings()
+        public void SetLanguageFromSettings()
         {
-            string lang = AppSettings.Instance.Language;
+            string lang = _appSettings.Language;
 
             if (string.IsNullOrEmpty(lang))
                 return;

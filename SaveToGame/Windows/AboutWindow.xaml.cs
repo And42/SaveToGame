@@ -1,17 +1,20 @@
 ﻿using System;
+using JetBrains.Annotations;
 using SaveToGameWpf.Logic.Utils;
 
 namespace SaveToGameWpf.Windows
 {
-    /// <summary>
-    /// Логика взаимодействия для AboutFormCS.xaml
-    /// </summary>
     public partial class AboutWindow
-    {   
-        public string Version => ApplicationUtils.GetVersion();
+    {
+        [NotNull] private readonly ApplicationUtils _applicationUtils;
 
-        public AboutWindow()
+        public string Version => _applicationUtils.GetVersion();
+
+        public AboutWindow(
+            [NotNull] ApplicationUtils applicationUtils
+        )
         {
+            _applicationUtils = applicationUtils;
             InitializeComponent();
         }
         

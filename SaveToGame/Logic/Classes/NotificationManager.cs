@@ -9,11 +9,9 @@ namespace SaveToGameWpf.Logic.Classes
     {
         private const int DefaultTimeoutMs = 3000;
 
-        public static NotificationManager Instance { get; } = new NotificationManager();
-
         private readonly NotifyIcon _trayIcon;
 
-        private NotificationManager()
+        public NotificationManager()
         {
             _trayIcon = new NotifyIcon
             {

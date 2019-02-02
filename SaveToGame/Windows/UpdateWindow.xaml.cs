@@ -3,6 +3,7 @@ using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Xml;
+using JetBrains.Annotations;
 using SaveToGameWpf.Logic.Utils;
 
 // ReSharper disable PossibleNullReferenceException
@@ -11,8 +12,16 @@ namespace SaveToGameWpf.Windows
 {
     public partial class UpdateWindow
     {
-        public UpdateWindow(string nowVersion, string changes)
+        [NotNull] private readonly Provider<DownloadWindow> _downloadWindowProvider;
+
+        public UpdateWindow(
+            [NotNull] Provider<DownloadWindow> downloadWindowProvider,
+            string nowVersion,
+            string changes
+        )
         {
+            _downloadWindowProvider = downloadWindowProvider;
+
             InitializeComponent();
 
             var xdoc = new XmlDocument();
@@ -38,7 +47,7 @@ namespace SaveToGameWpf.Windows
 
         private void YesClick(object sender, RoutedEventArgs e)
         {
-            new DownloadWindow().ShowDialog();
+             _downloadWindowProvider.Get().ShowDialog();
         }
 
         private void NoClick(object sender, RoutedEventArgs e)

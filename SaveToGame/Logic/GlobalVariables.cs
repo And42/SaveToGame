@@ -7,75 +7,75 @@ using LongPaths.Logic;
 
 namespace SaveToGameWpf.Logic
 {
-    internal static class GlobalVariables
+    public class GlobalVariables
     {
         /// <summary>
         /// ../AppData/Roaming/SaveToGame
         /// </summary>
-        public static readonly string AppDataPath;
+        public readonly string AppDataPath;
 
         /// <summary>
         /// ../AppData/Roaming/SaveToGame/temp
         /// </summary>
-        public static readonly string TempPath;
+        public readonly string TempPath;
 
         /// <summary>
         /// exe_folder/exe
         /// </summary>
-        public static readonly string PathToExe;
+        public readonly string PathToExe;
 
         /// <summary>
         /// exe_folder
         /// </summary>
-        public static readonly string PathToExeFolder;
+        public readonly string PathToExeFolder;
 
         /// <summary>
         /// exe_folder/Resources
         /// </summary>
-        public static readonly string PathToResources;
+        public readonly string PathToResources;
 
         /// <summary>
         /// exe_folder/Resources/apktool.jar
         /// </summary>
-        public static readonly string ApktoolPath;
+        public readonly string ApktoolPath;
 
         /// <summary>
         /// exe_folder/Resources/baksmali.jar
         /// </summary>
-        public static readonly string BaksmaliPath;
+        public readonly string BaksmaliPath;
 
         /// <summary>
         /// exe_folder/Resources/smali.jar
         /// </summary>
-        public static readonly string SmaliPath;
+        public readonly string SmaliPath;
 
         /// <summary>
         /// exe_folder/Resources/signapk.jar
         /// </summary>
-        public static readonly string SignApkPath;
+        public readonly string SignApkPath;
 
         /// <summary>
         /// exe_folder/Resources/testkey.x509.pem
         /// </summary>
-        public static readonly string DefaultKeyPemPath;
+        public readonly string DefaultKeyPemPath;
 
         /// <summary>
         /// exe_folder/Resources/testkey.pk8
         /// </summary>
-        public static readonly string DefaultKeyPkPath;
+        public readonly string DefaultKeyPkPath;
 
-        public static readonly string PathToPortableJre;
+        public readonly string PathToPortableJre;
 
         /// <summary>
         /// exe_folder/Resources/jre/bin/java.exe
         /// </summary>
-        public static readonly string PathToPortableJavaExe;
+        public readonly string PathToPortableJavaExe;
 
-        public static readonly IClient ErrorClient = new Client(ConfigurationManager.AppSettings["BugsnagApiKey"]);
+        public readonly IClient ErrorClient = new Client(ConfigurationManager.AppSettings["BugsnagApiKey"]);
 
         public const string AdditionalFilePassword = "Ub82X8:Hng6t=C+'mx";
         
-        static GlobalVariables()
+        public GlobalVariables()
         {
             AppDataPath =
                 Path.Combine(

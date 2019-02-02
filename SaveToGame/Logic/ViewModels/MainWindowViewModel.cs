@@ -1,4 +1,5 @@
 ﻿using System.Threading;
+using JetBrains.Annotations;
 using MVVM_Tools.Code.Classes;
 using MVVM_Tools.Code.Providers;
 using SaveToGameWpf.Logic.OrganisationItems;
@@ -9,6 +10,8 @@ namespace SaveToGameWpf.Logic.ViewModels
 {
     public class MainWindowViewModel : BindableBase
     {
+        [NotNull] public AppSettings AppSettings { get; }
+        
         public Property<bool> Working { get; }
         public Property<bool> OnlySave { get; }
         public Property<bool> SavePlusMess { get; }
@@ -27,22 +30,26 @@ namespace SaveToGameWpf.Logic.ViewModels
 
         public BackupType BackupType
         {
-            get => AppSettings.Instance.BackupType;
+            get => AppSettings.BackupType;
             set
             {
-                AppSettings.Instance.BackupType = value;
+                AppSettings.BackupType = value;
                 base.OnPropertyChanged(nameof(BackupType));
             }
         }
 
-        public MainWindowViewModel()
+        public MainWindowViewModel(
+            [NotNull] AppSettings appSettings
+        )
         {
+            AppSettings = appSettings;
+            
             Working = new Property<bool>();
             OnlySave = new Property<bool>();
             SavePlusMess = new Property<bool>(true);
             OnlyMess = new Property<bool>();
 
-            PopupBoxText = new Property<string>(AppSettings.Instance.PopupMessage ?? "Modified by SaveToGame");
+            PopupBoxText = new Property<string>(appSettings.PopupMessage ?? "Modified by SaveToGame");
             MessagesCount = new Property<int>(1);
 
             CurrentApk = new Property<string>();

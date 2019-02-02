@@ -7,16 +7,23 @@ using LongPaths.Logic;
 
 namespace SaveToGameWpf.Logic.Utils
 {
-    internal static class TempUtils
+    public class TempUtils
     {
-        private static readonly object ProviderLock = new object();
-        private static readonly string TempFolder = GlobalVariables.TempPath;
+        private readonly object _providerLock = new object();
+        private readonly string _tempFolder;
 
         private class TempFolderProvider : ITempFolderProvider
         {
+            [NotNull] private readonly TempUtils _tempUtils;
+
+            public TempFolderProvider([NotNull] TempUtils tempUtils)
+            {
+                _tempUtils = tempUtils;
+            }
+
             public string CreateTempFolder()
             {
-                return CreateElement(
+                return _tempUtils.CreateElement(
                      nameProvider: index => $"temp_folder_{index}",
                      elementCreator: LDirectory.CreateDirectory
                 );
@@ -25,41 +32,55 @@ namespace SaveToGameWpf.Logic.Utils
 
         private class TempFileProvider : ITempFileProvider
         {
+            [NotNull] private readonly TempUtils _tempUtils;
+
+            public TempFileProvider([NotNull] TempUtils tempUtils)
+            {
+                _tempUtils = tempUtils;
+            }
+
             public string CreateTempFile()
             {
-                return CreateElement(
+                return _tempUtils.CreateElement(
                     nameProvider: index => $"temp_file_{index}",
                     elementCreator: filePath => LFile.Create(filePath).Close()
                 );
             }
         }
 
-        [NotNull]
-        public static ITempFolderProvider CreateTempFolderProvider()
+        public TempUtils(
+            [NotNull] GlobalVariables globalVariables
+        )
         {
-            return new TempFolderProvider();
+            _tempFolder = globalVariables.TempPath;
         }
 
         [NotNull]
-        public static ITempFileProvider CreateTempFileProvider()
+        public ITempFolderProvider CreateTempFolderProvider()
         {
-            return new TempFileProvider();
+            return new TempFolderProvider(this);
         }
 
         [NotNull]
-        private static string CreateElement([NotNull] Func<int, string> nameProvider, [NotNull] Action<string> elementCreator)
+        public ITempFileProvider CreateTempFileProvider()
+        {
+            return new TempFileProvider(this);
+        }
+
+        [NotNull]
+        private string CreateElement([NotNull] Func<int, string> nameProvider, [NotNull] Action<string> elementCreator)
         {
             if (nameProvider == null)
                 throw new ArgumentNullException(nameof(nameProvider));
             if (elementCreator == null)
                 throw new ArgumentNullException(nameof(elementCreator));
 
-            lock (ProviderLock)
+            lock (_providerLock)
             {
-                if (!LDirectory.Exists(TempFolder))
-                    LDirectory.CreateDirectory(TempFolder);
+                if (!LDirectory.Exists(_tempFolder))
+                    LDirectory.CreateDirectory(_tempFolder);
 
-                string[] existingEntries = LDirectory.EnumerateFileSystemEntries(TempFolder).Select(Path.GetFileName).ToArray();
+                string[] existingEntries = LDirectory.EnumerateFileSystemEntries(_tempFolder).Select(Path.GetFileName).ToArray();
 
                 for (int index = 1; ; index++)
                 {
@@ -68,7 +89,7 @@ namespace SaveToGameWpf.Logic.Utils
                     if (existingEntries.Contains(fileName))
                         continue;
 
-                    string filePath = Path.Combine(TempFolder, fileName);
+                    string filePath = Path.Combine(_tempFolder, fileName);
                     elementCreator(filePath);
                     return filePath;
                 }

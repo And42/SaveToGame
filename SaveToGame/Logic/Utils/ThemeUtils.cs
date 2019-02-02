@@ -2,20 +2,30 @@
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
+using JetBrains.Annotations;
 using SaveToGameWpf.Logic.OrganisationItems;
 
 namespace SaveToGameWpf.Logic.Utils
 {
-    public static class ThemeUtils
+    public class ThemeUtils
     {
-        public static void SetThemeFromSettings()
+        [NotNull]
+        private readonly AppSettings _appSettings;
+        
+        public ThemeUtils(
+            [NotNull] AppSettings appSettings
+        )
         {
-            var settings = AppSettings.Instance;
+            _appSettings = appSettings;
+        }
+        
+        public void SetThemeFromSettings()
+        {
+            string settingsTheme = _appSettings.Theme;
+            if (string.IsNullOrEmpty(settingsTheme))
+                _appSettings.Theme = settingsTheme = "Light";
 
-            if (string.IsNullOrEmpty(settings.Theme))
-                settings.Theme = "Light";
-
-            SetTheme(settings.Theme);
+            SetTheme(settingsTheme);
         }
 
         public static void SetTheme(string theme)

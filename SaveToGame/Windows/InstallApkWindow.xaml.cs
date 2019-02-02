@@ -13,6 +13,7 @@ using System.Windows.Shell;
 using AndroidHelper.Logic;
 using AndroidHelper.Logic.Interfaces;
 using ICSharpCode.SharpZipLib.Zip;
+using JetBrains.Annotations;
 using LongPaths.Logic;
 using Microsoft.Win32;
 using MVVM_Tools.Code.Disposables;
@@ -43,15 +44,31 @@ namespace SaveToGameWpf.Windows
 
         public Property<string> AppTitle { get; } = new Property<string>();
 
-        private readonly AppSettings _settings = AppSettings.Instance;
+        [NotNull] private readonly AppSettings _settings;
+        [NotNull] private readonly NotificationManager _notificationManager;
+        [NotNull] private readonly TempUtils _tempUtils;
+        [NotNull] private readonly GlobalVariables _globalVariables;
+        [NotNull] private readonly Provider<IApktool> _apktoolProvider;
 
         private readonly StringBuilder _log = new StringBuilder();
         private readonly IVisualProgress _visualProgress;
         private readonly ITaskBarManager _taskBarManager;
 
-        public InstallApkWindow()
+        public InstallApkWindow(
+            [NotNull] AppSettings appSettings,
+            [NotNull] NotificationManager notificationManager,
+            [NotNull] TempUtils tempUtils,
+            [NotNull] GlobalVariables globalVariables,
+            [NotNull] Provider<IApktool> apktoolProvider
+        )
         {
-            string iconsFolder = Path.Combine(GlobalVariables.PathToResources, "icons");
+            _settings = appSettings;
+            _notificationManager = notificationManager;
+            _tempUtils = tempUtils;
+            _globalVariables = globalVariables;
+            _apktoolProvider = apktoolProvider;
+
+            string iconsFolder = Path.Combine(_globalVariables.PathToResources, "icons");
 
             BitmapSource GetImage(string name) =>
                 LFile.ReadAllBytes(Path.Combine(iconsFolder, name)).ToBitmap().ToBitmapSource();
@@ -261,27 +278,18 @@ namespace SaveToGameWpf.Windows
                 Path.GetFileNameWithoutExtension(apkFile) + "_mod.apk"
             );
 
-            IApktool apktool = new Apktool.Builder()
-                .JavaPath(GlobalVariables.PathToPortableJavaExe)
-                .ApktoolPath(GlobalVariables.ApktoolPath)
-                .SignApkPath(GlobalVariables.SignApkPath)
-                .BaksmaliPath(GlobalVariables.BaksmaliPath)
-                .SmaliPath(GlobalVariables.SmaliPath)
-                .DefaultKeyPemPath(GlobalVariables.DefaultKeyPemPath)
-                .DefaultKeyPkPath(GlobalVariables.DefaultKeyPkPath)
-                .Build();
-
+            IApktool apktool = _apktoolProvider.Get();
             IProcessDataHandler dataHandler = new ProcessDataCombinedHandler(Log);
 
-            ITempFileProvider tempFileProvider = TempUtils.CreateTempFileProvider();
-            ITempFolderProvider tempFolderProvider = TempUtils.CreateTempFolderProvider();
+            ITempFileProvider tempFileProvider = _tempUtils.CreateTempFileProvider();
+            ITempFolderProvider tempFolderProvider = _tempUtils.CreateTempFolderProvider();
 
             using (var stgContainerExtracted = ATempUtils.UseTempFolder(tempFolderProvider))
             {
                 // extracting SaveToGame container app
                 SetStep(MainResources.CopyingStgApk, 2);
 
-                string containerZipPath = Path.Combine(GlobalVariables.PathToResources, "apk.zip");
+                string containerZipPath = Path.Combine(_globalVariables.PathToResources, "apk.zip");
                 using (var zip = new ZipFile(containerZipPath)
                 {
                     Password = GlobalVariables.AdditionalFilePassword
@@ -447,7 +455,7 @@ namespace SaveToGameWpf.Windows
 
             if (_settings.Notifications)
             {
-                NotificationManager.Instance.Show(
+                _notificationManager.Show(
                     title: MainResources.Information_Title,
                     text: MainResources.ModificationCompletedContent
                 );
