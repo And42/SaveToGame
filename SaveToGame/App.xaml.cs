@@ -42,15 +42,10 @@ namespace SaveToGameWpf
             base.OnStartup(e);
             _rootDiContainer = SetupDI();
             
+            MigrateSettings();
+
             if (!CheckForFiles(out string[] files))
                 AppClose(files);
-
-            if (Settings.Default.UpgradeRequired)
-            {
-                Settings.Default.Upgrade();
-                Settings.Default.UpgradeRequired = false;
-                Settings.Default.Save();
-            }
 
 #if !DEBUG
             DispatcherUnhandledException += (sender, args) =>
@@ -171,6 +166,32 @@ namespace SaveToGameWpf
             builder.RegisterType<InstallApkViewModel>();
             
             return builder.Build();
+        }
+
+        private void MigrateSettings()
+        {
+            IAppSettings newSettings = _rootDiContainer.Resolve<IAppSettings>();
+
+            if (newSettings.SettingsMigrated)
+                return;
+
+            Settings oldSettings = Settings.Default;
+
+            if (oldSettings.UpgradeRequired)
+            {
+                oldSettings.Upgrade();
+                oldSettings.UpgradeRequired = false;
+                oldSettings.Save();
+            }
+
+            newSettings.AlternativeSigning = oldSettings.AlternativeSigning;
+            newSettings.BackupType = oldSettings.BackupType;
+            newSettings.Language = oldSettings.Language;
+            newSettings.Notifications = oldSettings.Notifications;
+            newSettings.PopupMessage = oldSettings.PopupMessage;
+            newSettings.Theme = oldSettings.Theme;
+
+            newSettings.SettingsMigrated = true;
         }
     }
 }

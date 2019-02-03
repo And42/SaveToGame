@@ -16,5 +16,7 @@ namespace Interfaces.OrganisationItems
         bool AlternativeSigning { get; set; }
 
         bool Notifications { get; set; }
+
+        bool SettingsMigrated { get; set; }
     }
 }

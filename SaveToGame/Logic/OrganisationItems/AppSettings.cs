@@ -17,5 +17,7 @@ namespace SaveToGameWpf.Logic.OrganisationItems
         public virtual bool AlternativeSigning { get; set; }
 
         public virtual bool Notifications { get; set; } = true;
+
+        public virtual bool SettingsMigrated { get; set; } = false;
     }
 }
