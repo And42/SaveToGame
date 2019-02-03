@@ -151,6 +151,15 @@ namespace SaveToGameWpf.Resources.Localizations {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Папка с данными.
+        /// </summary>
+        public static string AppDataFolder {
+            get {
+                return ResourceManager.GetString("AppDataFolder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to SaveToGame.
         /// </summary>
         public static string AppName {

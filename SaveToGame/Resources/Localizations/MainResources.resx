@@ -409,4 +409,7 @@
   <data name="NotificationsTooltip" xml:space="preserve">
     <value>Показывает уведомление об окончании процесса модификации</value>
   </data>
+  <data name="AppDataFolder" xml:space="preserve">
+    <value>Папка с данными</value>
+  </data>
 </root>

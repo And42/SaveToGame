@@ -19,6 +19,8 @@
         <Style x:Key="LinkBlock" TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
             <Setter Property="FontWeight" Value="Medium"/>
             <Setter Property="Margin" Value="10,5"/>
+            <EventSetter Event="MouseEnter" Handler="Link_MouseEnter"/>
+            <EventSetter Event="MouseLeave" Handler="Link_MouseLeave"/>
         </Style>
     </Window.Resources>
     <Window.Background>
@@ -42,6 +44,7 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
@@ -50,10 +53,14 @@
             
             <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource UsualBlock}" Text="{x:Static localization:MainResources.Version}"/>
             <TextBlock Grid.Row="0" Grid.Column="1" Style="{StaticResource UsualBlock}" Text="{Binding Version}"/>
+
             <TextBlock Grid.Row="1" Grid.Column="0" Style="{StaticResource UsualBlock}" Text="{x:Static localization:MainResources.Developer}"/>
             <TextBlock Grid.Row="1" Grid.Column="1" Style="{StaticResource LinkBlock}"  Text="And42" MouseLeftButtonDown="DeveloperBtn_Clicked" />
+
             <TextBlock Grid.Row="2" Grid.Column="0" Style="{StaticResource UsualBlock}" Text="{x:Static localization:MainResources.Support}"/>
-            <TextBlock Grid.Row="2" Grid.Column="1" Style="{StaticResource LinkBlock}"  Text="4PDA" MouseLeftButtonDown="FourPdaBtn_Clicked"/>
+            <TextBlock Grid.Row="2" Grid.Column="1" Style="{StaticResource LinkBlock}"  Text="4PDA" MouseLeftButtonDown="FourPdaBtn_Clicked" />
+
+            <TextBlock Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Center" Style="{StaticResource LinkBlock}" Text="{x:Static localization:MainResources.AppDataFolder}" MouseLeftButtonDown="DataFolder_Clicked" />
         </Grid>
     </Grid>
 </Window>

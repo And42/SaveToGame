@@ -408,4 +408,7 @@ Try again?</value>
   <data name="NotificationsTooltip" xml:space="preserve">
     <value>Shows the notification about completing the modification process</value>
   </data>
+  <data name="AppDataFolder" xml:space="preserve">
+    <value>App data folder</value>
+  </data>
 </root>
