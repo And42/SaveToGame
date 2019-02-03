@@ -450,7 +450,7 @@ namespace SaveToGameWpf.Resources.Localizations {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Текущая версия java может вызывать ошибки при работе программы. Будет загружена версия версия работающая корректно.
+        ///   Looks up a localized string similar to Текущая версия java может вызывать ошибки при работе программы. Будет загружена версия, работающая корректно.
         /// </summary>
         public static string JavaInvalidVersion {
             get {

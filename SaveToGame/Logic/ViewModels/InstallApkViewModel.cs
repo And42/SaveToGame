@@ -259,7 +259,7 @@ namespace SaveToGameWpf.Logic.ViewModels
                 string containerZipPath = Path.Combine(_globalVariables.PathToResources, "apk.zip");
                 using (var zip = new ZipFile(containerZipPath)
                 {
-                    Password = GlobalVariables.AdditionalFilePassword
+                    Password = _globalVariables.AdditionalFilePassword
                 })
                 {
                     zip.ExtractAll(stgContainerExtracted.TempFolder);

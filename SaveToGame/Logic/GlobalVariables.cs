@@ -73,7 +73,7 @@ namespace SaveToGameWpf.Logic
 
         public readonly IClient ErrorClient = new Client(ConfigurationManager.AppSettings["BugsnagApiKey"]);
 
-        public const string AdditionalFilePassword = "Ub82X8:Hng6t=C+'mx";
+        public readonly string AdditionalFilePassword = "Ub82X8:Hng6t=C+'mx";
         
         public GlobalVariables()
         {
@@ -86,7 +86,11 @@ namespace SaveToGameWpf.Logic
 
 #if DEBUG
             // ReSharper disable once PossibleNullReferenceException
-            PathToExe = new FileInfo(Assembly.GetExecutingAssembly().Location).Directory.Parent.FullName + @"\Release\SaveToGame.exe";
+            PathToExe = Path.Combine(
+                Path.GetDirectoryName(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)),
+                "Release",
+                "SaveToGame.exe"
+            );
 #else
             PathToExe = Assembly.GetExecutingAssembly().Location;
 #endif

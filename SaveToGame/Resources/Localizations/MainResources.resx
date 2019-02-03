@@ -354,7 +354,7 @@
     <value>Загрузка java</value>
   </data>
   <data name="JavaInvalidVersion" xml:space="preserve">
-    <value>Текущая версия java может вызывать ошибки при работе программы. Будет загружена версия версия работающая корректно</value>
+    <value>Текущая версия java может вызывать ошибки при работе программы. Будет загружена версия, работающая корректно</value>
   </data>
   <data name="JavaDownloadFailed" xml:space="preserve">
     <value>Не удалось загрузить java.

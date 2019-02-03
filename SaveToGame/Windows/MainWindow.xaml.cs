@@ -97,7 +97,7 @@ namespace SaveToGameWpf.Windows
 
         private async void MainWindow_Loaded(object sender, EventArgs e)
         {
-            await CheckJavaVersion();
+            await CheckJavaExistence();
         }
 
         private void MainWindow_OnClosed(object sender, EventArgs e)
@@ -497,7 +497,7 @@ namespace SaveToGameWpf.Windows
             _taskBarManager.SetNoneState();
         }
 
-        private async Task CheckJavaVersion()
+        private async Task CheckJavaExistence()
         {
             if (LDirectory.Exists(_globalVariables.PathToPortableJre))
                 return;

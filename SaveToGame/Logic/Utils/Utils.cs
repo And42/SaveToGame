@@ -22,7 +22,7 @@ namespace SaveToGameWpf.Logic.Utils
             _globalVariables = globalVariables;
         }
 
-        public static int CompareVersions(string first, string second)
+        public static int CompareVersions([NotNull] string first, [NotNull] string second)
         {
             return 
                 CompareVersions(
@@ -31,7 +31,7 @@ namespace SaveToGameWpf.Logic.Utils
                 );
         }
 
-        public static int CompareVersions(int[] first, int[] second)
+        public static int CompareVersions([NotNull] int[] first, [NotNull] int[] second)
         {
             int minLen = Math.Min(first.Length, second.Length);
 
@@ -47,7 +47,7 @@ namespace SaveToGameWpf.Logic.Utils
             return 0;
         }
 
-        public async Task DownloadJava(IVisualProgress visualProgress)
+        public async Task DownloadJava([NotNull] IVisualProgress visualProgress)
         {
             visualProgress.SetLabelText(MainResources.JavaDownloading);
             visualProgress.ShowIndeterminateLabel();
