@@ -34,7 +34,7 @@ namespace SaveToGameWpf.Logic.Utils
 
             var mergedDicts = Application.Current.Resources.MergedDictionaries;
 
-            var current = mergedDicts.WithIndex().WhereNotNull(it => it.value.Source).First(it => sourceRegex.IsMatch(it.value.Source.OriginalString));
+            var current = mergedDicts.Enumerate().WhereNotNull(it => it.value.Source).First(it => sourceRegex.IsMatch(it.value.Source.OriginalString));
 
             string currentTheme = sourceRegex.Match(current.value.Source.OriginalString).Groups["theme"].Value;
 

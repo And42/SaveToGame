@@ -17,7 +17,7 @@ namespace SaveToGameWpf.Logic.Utils
             return string.Join(separator, elements);
         }
 
-        public static IEnumerable<(int index, T value)> WithIndex<T>(this IEnumerable<T> collection)
+        public static IEnumerable<(int index, T value)> Enumerate<T>(this IEnumerable<T> collection)
         {
             return collection.Select((value, index) => (index, value));
         }
