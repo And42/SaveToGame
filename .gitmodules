@@ -1,18 +1,18 @@
 [submodule "SmaliParser"]
-	path = SmaliParser
+	path = submodules/SmaliParser
 	url = git@github.com:And42/SmaliParser.git
 [submodule "SettingsManager"]
-	path = SettingsManager
+	path = submodules/SettingsManager
 	url = git@github.com:And42/SettingsManager.git
 [submodule "AndroidHelper"]
-	path = AndroidHelper
+	path = submodules/AndroidHelper
 	url = git@github.com:And42/AndroidHelper.git
 [submodule "MVVM-Tools"]
-	path = MVVM-Tools
+	path = submodules/MVVM-Tools
 	url = git@github.com:And42/MVVM-Tools.git
 [submodule "AndroidTranslatorLib"]
-	path = AndroidTranslatorLib
+	path = submodules/AndroidTranslatorLib
 	url = git@github.com:And42/AndroidTranslatorLib.git
 [submodule "LongPaths"]
-	path = LongPaths
+	path = submodules/LongPaths
 	url = git@github.com:And42/LongPaths.git
