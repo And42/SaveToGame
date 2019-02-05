@@ -8,7 +8,7 @@ using JetBrains.Annotations;
 using LongPaths.Logic;
 using SaveToGameWpf.Logic.Classes;
 using SaveToGameWpf.Resources;
-using SmaliParser;
+using SmaliParser.Logic;
 
 namespace SaveToGameWpf.Logic.Utils
 {

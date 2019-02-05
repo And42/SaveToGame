@@ -1,0 +1,268 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>SmaliParser</name>
+    </assembly>
+    <members>
+        <member name="T:SmaliParser.Logic.SmaliAnnotation">
+            <summary>
+            Класс аннотации smali файла
+            </summary>
+        </member>
+        <member name="P:SmaliParser.Logic.SmaliAnnotation.Body">
+            <summary>
+            Текст аннотации
+            </summary>
+        </member>
+        <member name="M:SmaliParser.Logic.SmaliAnnotation.ParseStream(System.IO.TextReader,System.String)">
+            <summary>
+            Создаёт новый экземпляр класса <see cref="T:SmaliParser.Logic.SmaliAnnotation"/> и заполняет его поля из потока
+            </summary>
+            <param name="reader">Поток</param>
+            <param name="firstLine">Первая строка текста</param>
+        </member>
+        <member name="M:SmaliParser.Logic.SmaliAnnotation.Equals(SmaliParser.Logic.SmaliAnnotation)">
+            <summary>
+            Указывает, равен ли текущий объект другому объекту того же типа.
+            </summary>
+            <returns>
+            true, если текущий объект равен параметру <paramref name="other"/>, в противном случае — false.
+            </returns>
+            <param name="other">Объект, который требуется сравнить с данным объектом.</param>
+        </member>
+        <member name="M:SmaliParser.Logic.SmaliAnnotation.ToString">
+            <summary>
+            Возвращает объект <see cref="T:System.String"/>, который представляет текущий объект <see cref="T:System.Object"/>.
+            </summary>
+            <returns>
+            Объект <see cref="T:System.String"/>, представляющий текущий объект <see cref="T:System.Object"/>.
+            </returns>
+            <filterpriority>2</filterpriority>
+        </member>
+        <member name="T:SmaliParser.Logic.SmaliClass">
+            <summary>
+            Класс одного smali класса
+            </summary>
+        </member>
+        <member name="P:SmaliParser.Logic.SmaliClass.Name">
+            <summary>
+            Название класса
+            </summary>
+        </member>
+        <member name="P:SmaliParser.Logic.SmaliClass.Modifers">
+            <summary>
+            Модификаторы класса
+            </summary>
+        </member>
+        <member name="P:SmaliParser.Logic.SmaliClass.SuperClass">
+            <summary>
+            Класс - родитель
+            </summary>
+        </member>
+        <member name="P:SmaliParser.Logic.SmaliClass.SourceFile">
+            <summary>
+            Файл исходного java кода
+            </summary>
+        </member>
+        <member name="P:SmaliParser.Logic.SmaliClass.Interfaces">
+            <summary>
+            Наследуемые интерфейсы
+            </summary>
+        </member>
+        <member name="P:SmaliParser.Logic.SmaliClass.Fields">
+            <summary>
+            Поля
+            </summary>
+        </member>
+        <member name="P:SmaliParser.Logic.SmaliClass.Methods">
+            <summary>
+            Методы
+            </summary>
+        </member>
+        <member name="P:SmaliParser.Logic.SmaliClass.Annotations">
+            <summary>
+            Аннотации
+            </summary>
+        </member>
+        <member name="M:SmaliParser.Logic.SmaliClass.ParseFile(System.String)">
+            <summary>
+            Создаёт новый экземпляр класса <see cref="T:SmaliParser.Logic.SmaliClass"/> и заполняет его поля из файла
+            </summary>
+            <param name="fileName">Файл</param>
+            <exception cref="T:System.IO.FileNotFoundException">Файл не найден</exception>
+        </member>
+        <member name="M:SmaliParser.Logic.SmaliClass.ParseStream(System.IO.TextReader)">
+            <summary>
+            Создаёт новый экземпляр класса <see cref="T:SmaliParser.Logic.SmaliClass"/> и заполняет его поля из потока
+            </summary>
+            <param name="reader">Поток</param>
+        </member>
+        <member name="M:SmaliParser.Logic.SmaliClass.Equals(SmaliParser.Logic.SmaliClass)">
+            <summary>
+            Указывает, равен ли текущий объект другому объекту того же типа.
+            </summary>
+            <returns>
+            true, если текущий объект равен параметру <paramref name="other"/>, в противном случае — false.
+            </returns>
+            <param name="other">Объект, который требуется сравнить с данным объектом.</param>
+        </member>
+        <member name="M:SmaliParser.Logic.SmaliClass.ToString">
+            <summary>
+            Возвращает объект <see cref="T:System.String"/>, который представляет текущий объект <see cref="T:System.Object"/>.
+            </summary>
+            <returns>
+            Объект <see cref="T:System.String"/>, представляющий текущий объект <see cref="T:System.Object"/>.
+            </returns>
+            <filterpriority>2</filterpriority>
+        </member>
+        <member name="M:SmaliParser.Logic.SmaliClass.Save(System.String)">
+            <summary>
+            Сохраняет текущий экземпляр класса <see cref="T:SmaliParser.Logic.SmaliClass"/> в файл
+            </summary>
+            <param name="pathToFile">Файл</param>
+        </member>
+        <member name="M:SmaliParser.Logic.SmaliClass.Save(System.IO.Stream)">
+            <summary>
+            Сохраняет текущий экземпляр класса <see cref="T:SmaliParser.Logic.SmaliClass"/> в поток
+            </summary>
+            <param name="stream">Поток</param>
+            <exception cref="T:System.ArgumentException">Поток недоступен для записи</exception>
+        </member>
+        <member name="M:SmaliParser.Logic.SmaliClass.Save(System.IO.TextWriter)">
+            <summary>
+            Сохраняет текущий экземпляр класса <see cref="T:SmaliParser.Logic.SmaliClass"/> в текстовый поток
+            </summary>
+            <param name="writer">Текстовый поток</param>
+        </member>
+        <member name="T:SmaliParser.Logic.SmaliField">
+            <summary>
+            Класс одного поля smali файла
+            </summary>
+        </member>
+        <member name="P:SmaliParser.Logic.SmaliField.Modifers">
+            <summary>
+            Модификаторы
+            </summary>
+        </member>
+        <member name="P:SmaliParser.Logic.SmaliField.Name">
+            <summary>
+            Название
+            </summary>
+        </member>
+        <member name="P:SmaliParser.Logic.SmaliField.Type">
+            <summary>
+            Тип
+            </summary>
+        </member>
+        <member name="P:SmaliParser.Logic.SmaliField.Value">
+            <summary>
+            Значение по умолчанию
+            </summary>
+        </member>
+        <member name="M:SmaliParser.Logic.SmaliField.ParseString(System.String)">
+            <summary>
+            Создаёт новый экземпляр класса <see cref="T:SmaliParser.Logic.SmaliField"/> и заполняет его поля из строки
+            </summary>
+            <param name="line">Строка</param>
+        </member>
+        <member name="M:SmaliParser.Logic.SmaliField.Equals(SmaliParser.Logic.SmaliField)">
+            <summary>
+            Возвращает, равен ли текущий объект другому объекту того же типа.
+            </summary>
+            <returns>
+            true, если текущий объект равен параметру <paramref name="other"/>, в противном случае — false.
+            </returns>
+            <param name="other">Объект, который требуется сравнить с данным объектом.</param>
+        </member>
+        <member name="M:SmaliParser.Logic.SmaliField.ToString">
+            <summary>
+            Возвращает объект <see cref="T:System.String"/>, который представляет текущий объект <see cref="T:System.Object"/>.
+            </summary>
+            <returns>
+            Объект <see cref="T:System.String"/>, представляющий текущий объект <see cref="T:System.Object"/>.
+            </returns>
+            <filterpriority>2</filterpriority>
+        </member>
+        <member name="T:SmaliParser.Logic.SmaliMethod">
+            <summary>
+            Класс одного smali метода
+            </summary>
+        </member>
+        <member name="T:SmaliParser.Logic.SmaliMethod.RegistersTypes">
+            <summary>
+            Вид записи регистров
+            </summary>
+        </member>
+        <member name="F:SmaliParser.Logic.SmaliMethod.RegistersTypes.Locals">
+            <summary>
+            .locals
+            </summary>
+        </member>
+        <member name="F:SmaliParser.Logic.SmaliMethod.RegistersTypes.Registers">
+            <summary>
+            .registers
+            </summary>
+        </member>
+        <member name="P:SmaliParser.Logic.SmaliMethod.Name">
+            <summary>
+            Название метода
+            </summary>
+        </member>
+        <member name="P:SmaliParser.Logic.SmaliMethod.Modifers">
+            <summary>
+            Модификаторы метода
+            </summary>
+        </member>
+        <member name="P:SmaliParser.Logic.SmaliMethod.Parameters">
+            <summary>
+            Параметры
+            </summary>
+        </member>
+        <member name="P:SmaliParser.Logic.SmaliMethod.ReturnType">
+            <summary>
+            Возвращаемый тип
+            </summary>
+        </member>
+        <member name="P:SmaliParser.Logic.SmaliMethod.Body">
+            <summary>
+            Тело метода
+            </summary>
+        </member>
+        <member name="P:SmaliParser.Logic.SmaliMethod.RegistersType">
+            <summary>
+            Тип записи регистров
+            </summary>
+        </member>
+        <member name="P:SmaliParser.Logic.SmaliMethod.Registers">
+            <summary>
+            Количество регистров
+            </summary>
+        </member>
+        <member name="M:SmaliParser.Logic.SmaliMethod.ParseStream(System.IO.TextReader,System.String)">
+            <summary>
+            Создаёт новый экземпляр класса <see cref="T:SmaliParser.Logic.SmaliMethod"/> и заполняет его поля из потока
+            </summary>
+            <param name="reader">Поток</param>
+            <param name="firstLine">Первая строка</param>
+            <returns></returns>
+        </member>
+        <member name="M:SmaliParser.Logic.SmaliMethod.Equals(SmaliParser.Logic.SmaliMethod)">
+            <summary>
+            Указывает, равен ли текущий объект другому объекту того же типа.
+            </summary>
+            <returns>
+            true, если текущий объект равен параметру <paramref name="other"/>, в противном случае — false.
+            </returns>
+            <param name="other">Объект, который требуется сравнить с данным объектом.</param>
+        </member>
+        <member name="M:SmaliParser.Logic.SmaliMethod.ToString">
+            <summary>
+            Возвращает объект <see cref="T:System.String"/>, который представляет текущий объект <see cref="T:System.Object"/>.
+            </summary>
+            <returns>
+            Объект <see cref="T:System.String"/>, представляющий текущий объект <see cref="T:System.Object"/>.
+            </returns>
+            <filterpriority>2</filterpriority>
+        </member>
+    </members>
+</doc>

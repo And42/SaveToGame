@@ -5,7 +5,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using JetBrains.Annotations;
 using SaveToGameWpf.Logic.Utils;
-using SmaliParser;
+using SmaliParser.Logic;
 
 namespace SaveToGameWpf.Logic.Classes
 {

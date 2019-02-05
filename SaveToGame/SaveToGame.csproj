@@ -72,6 +72,10 @@
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AndroidHelper, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Libraries\AndroidHelper.dll</HintPath>
+    </Reference>
     <Reference Include="Autofac, Version=4.8.1.0, Culture=neutral, PublicKeyToken=17863af14b0044da">
       <HintPath>..\packages\Autofac.4.8.1\lib\net45\Autofac.dll</HintPath>
       <Private>True</Private>
@@ -85,6 +89,10 @@
     <Reference Include="JetBrains.Annotations, Version=2018.3.0.0, Culture=neutral, PublicKeyToken=1010a0d8d6380325, processorArchitecture=MSIL">
       <HintPath>..\packages\JetBrains.Annotations.2018.3.0\lib\net20\JetBrains.Annotations.dll</HintPath>
     </Reference>
+    <Reference Include="LongPaths, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Libraries\LongPaths.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Windows.Shell, Version=3.0.50506.1, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\WPF.Shell.Integration.Library.2.0\lib\net30\Microsoft.Windows.Shell.dll</HintPath>
@@ -95,10 +103,22 @@
     <Reference Include="Microsoft.WindowsAPICodePack.Shell, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\WindowsAPICodePack-Shell.1.1.1\lib\Microsoft.WindowsAPICodePack.Shell.dll</HintPath>
     </Reference>
+    <Reference Include="MVVM_Tools, Version=1.5.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Libraries\MVVM_Tools.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.12.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="PresentationFramework" />
+    <Reference Include="SettingsManager, Version=1.1.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Libraries\SettingsManager.dll</HintPath>
+    </Reference>
+    <Reference Include="SmaliParser, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Libraries\SmaliParser.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Drawing" />
@@ -521,29 +541,9 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AndroidHelper\AndroidHelper\AndroidHelper.csproj">
-      <Project>{f3f675a7-cb78-43ee-8e6f-3cfbce790568}</Project>
-      <Name>AndroidHelper</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Interfaces\Interfaces.csproj">
       <Project>{39ab2515-5c47-4731-8120-d0a574033224}</Project>
       <Name>Interfaces</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\LongPaths\LongPaths\LongPaths.csproj">
-      <Project>{593a2d73-7513-498e-8f8a-554742c92ed7}</Project>
-      <Name>LongPaths</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\MVVM-Tools\MVVM Tools\MVVM_Tools.csproj">
-      <Project>{5e778515-60ad-4257-8bbe-0a3cff7a91a2}</Project>
-      <Name>MVVM_Tools</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SettingsManager\SettingsManager\SettingsManager.csproj">
-      <Project>{96ef6536-0c3f-4aac-9b3b-9cccf449a8a5}</Project>
-      <Name>SettingsManager</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SmaliParser\SmaliParser.csproj">
-      <Project>{b1727f95-4cde-49b8-8529-cf45acceb72b}</Project>
-      <Name>SmaliParser</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
