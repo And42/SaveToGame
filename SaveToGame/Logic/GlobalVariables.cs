@@ -74,16 +74,18 @@ namespace SaveToGameWpf.Logic
         public readonly IClient ErrorClient = new Client(ConfigurationManager.AppSettings["BugsnagApiKey"]);
 
         public readonly string AdditionalFilePassword = "Ub82X8:Hng6t=C+'mx";
+
+        public readonly bool IsPortable;
+
+        /// <summary>
+        /// Is set only if <see cref="IsPortable"/> is true
+        /// </summary>
+        public readonly bool? CanWriteToAppData;
+
+        public readonly string PortableSwitchFile;
         
         public GlobalVariables()
         {
-            AppDataPath =
-                Path.Combine(
-                    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                    Assembly.GetExecutingAssembly().GetName().Name
-                );
-            TempPath = Path.Combine(AppDataPath, "temp");
-
 #if DEBUG
             // ReSharper disable once PossibleNullReferenceException
             PathToExe = Path.Combine(
@@ -95,12 +97,21 @@ namespace SaveToGameWpf.Logic
             PathToExe = Assembly.GetExecutingAssembly().Location;
 #endif
             PathToExeFolder = Path.GetDirectoryName(PathToExe);
-            // ReSharper disable once AssignNullToNotNullAttribute
+            PortableSwitchFile = Path.Combine(PathToExeFolder, "portable");
+            IsPortable = LFile.Exists(PortableSwitchFile);
+
+            AppDataPath =
+                IsPortable
+                    ? Path.Combine(PathToExeFolder, "data")
+                    : Path.Combine(
+                        Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                        Assembly.GetExecutingAssembly().GetName().Name
+                    );
+            TempPath = Path.Combine(AppDataPath, "temp");
+
             PathToResources = Path.Combine(PathToExeFolder, "Resources");
 
-            var portableNearby = Path.Combine(PathToResources, "jre");
-
-            PathToPortableJre = LDirectory.Exists(portableNearby) ? portableNearby : Path.Combine(AppDataPath, "jre");
+            PathToPortableJre = Path.Combine(AppDataPath, "jre");
             PathToPortableJavaExe = Path.Combine(PathToPortableJre, "bin", "java.exe");
 
             ApktoolPath = Path.Combine(PathToResources, "apktool.jar");
@@ -110,7 +121,26 @@ namespace SaveToGameWpf.Logic
             DefaultKeyPemPath = Path.Combine(PathToResources, "testkey.x509.pem");
             DefaultKeyPkPath = Path.Combine(PathToResources, "testkey.pk8");
 
-            LDirectory.CreateDirectory(AppDataPath);
+            if (IsPortable)
+            {
+                try
+                {
+                    LDirectory.CreateDirectory(AppDataPath);
+                    string tempFile = Path.Combine(AppDataPath, "write_test");
+                    using (LFile.Create(tempFile))
+                    { }
+                    LFile.Delete(tempFile);
+                    CanWriteToAppData = true;
+                }
+                catch (UnauthorizedAccessException)
+                {
+                    CanWriteToAppData = false;
+                }
+            }
+            else
+            {
+                LDirectory.CreateDirectory(AppDataPath);
+            }
         }
     }
 }

@@ -43,6 +43,7 @@
     <Compile Include="OrganisationItems\ITaskBarManager.cs" />
     <Compile Include="OrganisationItems\IVisualProgress.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ViewModels\IAboutWindowViewModel.cs" />
     <Compile Include="ViewModels\IInstallApkViewModel.cs" />
   </ItemGroup>
   <ItemGroup>

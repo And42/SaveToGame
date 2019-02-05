@@ -412,4 +412,8 @@
   <data name="AppDataFolder" xml:space="preserve">
     <value>Папка с данными</value>
   </data>
+  <data name="DataWriteDenied" xml:space="preserve">
+    <value>Нет возможности записать в папку с данными: "{0}"
+Переместите программу в папку с доступом на запись или отключите портативный режим, удалив файл "{1}"</value>
+  </data>
 </root>

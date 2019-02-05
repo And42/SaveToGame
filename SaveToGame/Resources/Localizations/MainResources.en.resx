@@ -411,4 +411,8 @@ Try again?</value>
   <data name="AppDataFolder" xml:space="preserve">
     <value>App data folder</value>
   </data>
+  <data name="DataWriteDenied" xml:space="preserve">
+    <value>Can't write to app data folder: "{0}"
+Move the program to the folder with the write access or disable the portable operation mode by deleting "{1}" file</value>
+  </data>
 </root>

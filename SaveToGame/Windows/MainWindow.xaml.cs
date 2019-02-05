@@ -185,7 +185,7 @@ namespace SaveToGameWpf.Windows
                         Debug.WriteLine(ex.ToString());
                         throw;
 #else
-                        GlobalVariables.ErrorClient.Notify(ex);
+                        _globalVariables.ErrorClient.Notify(ex);
                         HaveError(Environment.NewLine + ex, MainResources.Some_Error_Found);
 #endif
                     }
@@ -553,7 +553,7 @@ namespace SaveToGameWpf.Windows
             _settings.Theme = theme;
         }
 
-        private static StreamWriter CreateLogFileForApp(string pathToApkFile)
+        private StreamWriter CreateLogFileForApp(string pathToApkFile)
         {
             string apkDir = Path.GetDirectoryName(pathToApkFile) ?? string.Empty;
 
@@ -581,7 +581,7 @@ namespace SaveToGameWpf.Windows
                         continue;
 
 #if !DEBUG
-                    GlobalVariables.ErrorClient.Notify(ex);
+                    _globalVariables.ErrorClient.Notify(ex);
 #else
                     throw;
 #endif

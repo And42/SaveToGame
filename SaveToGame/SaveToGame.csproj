@@ -106,6 +106,9 @@
     <Reference Include="System.Windows.Forms">
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Expression.Blend.Sdk.1.0.2\lib\net45\System.Windows.Interactivity.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xaml">
@@ -149,6 +152,7 @@
     <Compile Include="Logic\Utils\Utils.cs" />
     <Compile Include="Logic\GlobalVariables.cs" />
     <Compile Include="Logic\Utils\WebUtils.cs" />
+    <Compile Include="Logic\ViewModels\AboutWindowViewModel.cs" />
     <Compile Include="Logic\ViewModels\InstallApkViewModel.cs" />
     <Compile Include="Logic\ViewModels\MainWindowViewModel.cs" />
     <Compile Include="Properties\Annotations.cs" />

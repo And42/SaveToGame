@@ -313,6 +313,16 @@ namespace SaveToGameWpf.Resources.Localizations {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Нет возможности записать в папку с данными: &quot;{0}&quot;
+        ///Переместите программу в папку с доступом на запись или отключите портативный режим, удалив файл &quot;{1}&quot;.
+        /// </summary>
+        public static string DataWriteDenied {
+            get {
+                return ResourceManager.GetString("DataWriteDenied", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Удалять окно apkmania.
         /// </summary>
         public static string DeleteApkmaniaWindow {

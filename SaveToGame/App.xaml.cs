@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -7,6 +6,7 @@ using AndroidHelper.Logic;
 using AndroidHelper.Logic.Interfaces;
 using Autofac;
 using Interfaces.OrganisationItems;
+using Interfaces.ViewModels;
 using JetBrains.Annotations;
 using LongPaths.Logic;
 using SaveToGameWpf.Logic;
@@ -43,9 +43,9 @@ namespace SaveToGameWpf
             _rootDiContainer = SetupDI();
             
             MigrateSettings();
-
-            if (!CheckForFiles(out string[] files))
-                AppClose(files);
+            var globalVariables = _rootDiContainer.Resolve<GlobalVariables>();
+            CheckForFiles(globalVariables);
+            CheckPortability(globalVariables);
 
 #if !DEBUG
             DispatcherUnhandledException += (sender, args) =>
@@ -54,7 +54,7 @@ namespace SaveToGameWpf
                 Clipboard.SetText("Message: " + args.Exception.Message + "\nStackTrace: " + args.Exception.StackTrace);
                 args.Handled = true;
 
-                GlobalVariables.ErrorClient.Notify(args.Exception);
+                globalVariables.ErrorClient.Notify(args.Exception);
             };
 #endif
 
@@ -66,34 +66,51 @@ namespace SaveToGameWpf
             _rootDiContainer.Resolve<MainWindow>().Show();
 
 #if !DEBUG
-            if (!ApplicationUtils.GetIsPortable())
+            if (!globalVariables.IsPortable)
 #endif
                 applicationUtils.CheckForUpdate();
         }
 
-        private bool CheckForFiles(out string[] notExistingFiles)
+        private void CheckPortability([NotNull] GlobalVariables globalVariables)
         {
-            var resourcesFolder = Path.Combine(_rootDiContainer.Resolve<GlobalVariables>().PathToExeFolder, "Resources");
+            if (!globalVariables.IsPortable || globalVariables.CanWriteToAppData.Value)
+                return;
 
+            MessBox.ShowDial(
+                string.Format(
+                    MainResources.DataWriteDenied,
+                    globalVariables.AppDataPath,
+                    globalVariables.PortableSwitchFile
+                ),
+                MainResources.Error
+            );
+
+            Shutdown();
+        }
+
+        private void CheckForFiles([NotNull] GlobalVariables globalVariables)
+        {
+            var resourcesFolder = Path.Combine(globalVariables.PathToExeFolder, "Resources");
+
+            string[] notExistingFiles;
             if (!LDirectory.Exists(resourcesFolder))
             {
                 notExistingFiles = new[] { resourcesFolder };
-                return false;
+            }
+            else
+            {
+                notExistingFiles =
+                    NeededFiles.Select(it => Path.Combine(resourcesFolder, it))
+                        .Where(it => !LFile.Exists(it)).ToArray();
             }
 
-            notExistingFiles =
-                NeededFiles.Select(it => Path.Combine(resourcesFolder, it))
-                    .Where(it => !LFile.Exists(it)).ToArray();
+            if (notExistingFiles.Length == 0)
+                return;
 
-            return notExistingFiles.Length == 0;
-        }
-
-        private void AppClose(IEnumerable<string> files)
-        {
             MessBox.ShowDial(
                 string.Format(
-                    MainResources.NoNeededFilesError, 
-                    files.Select(Path.GetFileName).Select(file => $"\"{file}\"").JoinStr(", ")
+                    MainResources.NoNeededFilesError,
+                    notExistingFiles.Select(Path.GetFileName).Select(file => $"\"{file}\"").JoinStr(", ")
                 ),
                 MainResources.Error
             );
@@ -163,7 +180,8 @@ namespace SaveToGameWpf
             
             // window models
             builder.RegisterType<MainWindowViewModel>();
-            builder.RegisterType<InstallApkViewModel>();
+            builder.RegisterType<InstallApkViewModel>().As<IInstallApkViewModel>();
+            builder.RegisterType<AboutWindowViewModel>().As<IAboutWindowViewModel>();
             
             return builder.Build();
         }

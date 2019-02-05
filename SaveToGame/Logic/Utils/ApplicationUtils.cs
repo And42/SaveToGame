@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Globalization;
-using System.IO;
 using System.Reflection;
 using System.Threading;
 using Interfaces.OrganisationItems;
 using JetBrains.Annotations;
-using LongPaths.Logic;
 using Newtonsoft.Json;
 using SaveToGameWpf.Logic.JsonMappings;
 using SaveToGameWpf.Windows;
@@ -94,11 +92,6 @@ namespace SaveToGameWpf.Logic.Utils
                     ).ShowDialog();
                 });
             });
-        }
-
-        public bool GetIsPortable()
-        {
-            return LFile.Exists(Path.Combine(Path.GetDirectoryName(GetPathToExe()), "isportable"));
         }
 
         public void SetLanguageFromSettings()

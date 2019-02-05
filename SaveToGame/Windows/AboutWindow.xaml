@@ -3,13 +3,18 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:localization="clr-namespace:SaveToGameWpf.Resources.Localizations"
         xmlns:elements="clr-namespace:SaveToGameWpf.Styles.Elements"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:viewModels="clr-namespace:Interfaces.ViewModels;assembly=Interfaces"
+        mc:Ignorable="d"
 
         Title="{x:Static localization:MainResources.AboutProgram}" 
         Width="350" 
         WindowStartupLocation="CenterScreen"
         SizeToContent="Height"
         Style="{StaticResource CommonWindowStyle}" 
-        DataContext="{Binding RelativeSource={RelativeSource Self}}"
+        d:DataContext="{d:DesignInstance viewModels:IAboutWindowViewModel}"
         elements:WindowThemeParameters.IsResizable="False"
         elements:WindowThemeParameters.CanMinimize="False">
     <Window.Resources>
@@ -52,15 +57,33 @@
             </Grid.ColumnDefinitions>
             
             <TextBlock Grid.Row="0" Grid.Column="0" Style="{StaticResource UsualBlock}" Text="{x:Static localization:MainResources.Version}"/>
-            <TextBlock Grid.Row="0" Grid.Column="1" Style="{StaticResource UsualBlock}" Text="{Binding Version}"/>
+            <TextBlock Grid.Row="0" Grid.Column="1" Style="{StaticResource UsualBlock}" Text="{Binding Version.Value}"/>
 
             <TextBlock Grid.Row="1" Grid.Column="0" Style="{StaticResource UsualBlock}" Text="{x:Static localization:MainResources.Developer}"/>
-            <TextBlock Grid.Row="1" Grid.Column="1" Style="{StaticResource LinkBlock}"  Text="And42" MouseLeftButtonDown="DeveloperBtn_Clicked" />
+            <TextBlock Grid.Row="1" Grid.Column="1" Style="{StaticResource LinkBlock}"  Text="And42">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="MouseLeftButtonDown">
+                        <i:InvokeCommandAction Command="{Binding ShowDeveloperCommand}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </TextBlock>
 
             <TextBlock Grid.Row="2" Grid.Column="0" Style="{StaticResource UsualBlock}" Text="{x:Static localization:MainResources.Support}"/>
-            <TextBlock Grid.Row="2" Grid.Column="1" Style="{StaticResource LinkBlock}"  Text="4PDA" MouseLeftButtonDown="FourPdaBtn_Clicked" />
+            <TextBlock Grid.Row="2" Grid.Column="1" Style="{StaticResource LinkBlock}"  Text="4PDA">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="MouseLeftButtonDown">
+                        <i:InvokeCommandAction Command="{Binding ThankDeveloperCommand}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </TextBlock>
 
-            <TextBlock Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Center" Style="{StaticResource LinkBlock}" Text="{x:Static localization:MainResources.AppDataFolder}" MouseLeftButtonDown="DataFolder_Clicked" />
+            <TextBlock Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" HorizontalAlignment="Center" Style="{StaticResource LinkBlock}" Text="{x:Static localization:MainResources.AppDataFolder}">
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="MouseLeftButtonDown">
+                        <i:InvokeCommandAction Command="{Binding OpenAppDataFolderCommand}"/>
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
+            </TextBlock>
         </Grid>
     </Grid>
 </Window>

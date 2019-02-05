@@ -3,11 +3,11 @@ using System.Windows.Input;
 using System.Windows.Shell;
 using Interfaces.Enums;
 using Interfaces.OrganisationItems;
+using Interfaces.ViewModels;
 using JetBrains.Annotations;
 using Microsoft.Win32;
 using SaveToGameWpf.Logic.OrganisationItems;
 using SaveToGameWpf.Logic.Utils;
-using SaveToGameWpf.Logic.ViewModels;
 using SaveToGameWpf.Resources.Localizations;
 using DragEventArgs = System.Windows.DragEventArgs;
 
@@ -15,10 +15,10 @@ namespace SaveToGameWpf.Windows
 {
     public partial class InstallApkWindow
     {
-        [NotNull] private readonly InstallApkViewModel _viewModel;
+        [NotNull] private readonly IInstallApkViewModel _viewModel;
 
         public InstallApkWindow(
-            [NotNull] InstallApkViewModel viewModel
+            [NotNull] IInstallApkViewModel viewModel
         )
         {
             _viewModel = viewModel;
