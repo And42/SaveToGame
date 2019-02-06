@@ -21,9 +21,8 @@ using SaveToGameWpf.Logic.Utils;
 using SaveToGameWpf.Logic.ViewModels;
 using SaveToGameWpf.Resources;
 using SaveToGameWpf.Resources.Localizations;
-
+using SharedData.Enums;
 using Application = System.Windows.Application;
-using BackupType = Interfaces.Enums.BackupType;
 using DragEventArgs = System.Windows.DragEventArgs;
 using ATempUtils = AndroidHelper.Logic.Utils.TempUtils;
 
@@ -41,6 +40,7 @@ namespace SaveToGameWpf.Windows
         [NotNull] private readonly Provider<MainWindow> _mainWindowProvider;
         [NotNull] private readonly Provider<InstallApkWindow> _installApkWindowProvider;
         [NotNull] private readonly Provider<AboutWindow> _aboutWindowProvider;
+        [NotNull] private readonly Provider<AdbInstallWindow> _adbInstallWindowProvider;
         [NotNull] private readonly NotificationManager _notificationManager;
         [NotNull] private readonly TempUtils _tempUtils;
         [NotNull] private readonly GlobalVariables _globalVariables;
@@ -63,6 +63,7 @@ namespace SaveToGameWpf.Windows
             [NotNull] Provider<MainWindow> mainWindowProvider,
             [NotNull] Provider<InstallApkWindow> installApkWindowProvider,
             [NotNull] Provider<AboutWindow> aboutWindowProvider,
+            [NotNull] Provider<AdbInstallWindow> adbInstallWindowProvider,
             [NotNull] NotificationManager notificationManager,
             [NotNull] TempUtils tempUtils,
             [NotNull] GlobalVariables globalVariables,
@@ -75,6 +76,7 @@ namespace SaveToGameWpf.Windows
             _mainWindowProvider = mainWindowProvider;
             _installApkWindowProvider = installApkWindowProvider;
             _aboutWindowProvider = aboutWindowProvider;
+            _adbInstallWindowProvider = adbInstallWindowProvider;
             _notificationManager = notificationManager;
             _tempUtils = tempUtils;
             _globalVariables = globalVariables;
@@ -143,7 +145,7 @@ namespace SaveToGameWpf.Windows
             }
         }
 
-        private void StartBtn_Click(object sender, EventArgs e)
+        private async void StartBtn_Click(object sender, EventArgs e)
         {
             string apkFile = ViewModel.CurrentApk.Value;
             string saveFile = ViewModel.CurrentSave.Value;
@@ -163,39 +165,39 @@ namespace SaveToGameWpf.Windows
 
             _currentLog = CreateLogFileForApp(apkFile);
 
-            var currentCulture = Thread.CurrentThread.CurrentUICulture;
-            Task.Factory.StartNew(() =>
+            using (CreateWorking())
             {
-                Thread.CurrentThread.CurrentCulture = currentCulture;
-                Thread.CurrentThread.CurrentUICulture = currentCulture;
-
-                using (CreateWorking())
+                try
                 {
-                    try
+                    var currentCulture = Thread.CurrentThread.CurrentUICulture;
+                    await Task.Factory.StartNew(() =>
                     {
-                        Start();
-                    }
-                    catch (PathTooLongException ex)
-                    {
-                        HaveError(Environment.NewLine + ex, MainResources.PathTooLongExceptionMessage);
-                    }
-                    catch (Exception ex)
-                    {
-#if DEBUG
-                        Debug.WriteLine(ex.ToString());
-                        throw;
-#else
-                        _globalVariables.ErrorClient.Notify(ex);
-                        HaveError(Environment.NewLine + ex, MainResources.Some_Error_Found);
-#endif
-                    }
-                    finally
-                    {
-                        _currentLog?.Close();
-                        _currentLog = null;
-                    }
+                        Thread.CurrentThread.CurrentCulture = currentCulture;
+                        Thread.CurrentThread.CurrentUICulture = currentCulture;
+
+                        ProcessAll();
+                    });
                 }
-            });
+                catch (PathTooLongException ex)
+                {
+                    HaveError(Environment.NewLine + ex, MainResources.PathTooLongExceptionMessage);
+                }
+                catch (Exception ex)
+                {
+#if DEBUG
+                    Debug.WriteLine(ex.ToString());
+                    throw;
+#else
+                    _globalVariables.ErrorClient.Notify(ex);
+                    HaveError(Environment.NewLine + ex, MainResources.Some_Error_Found);
+#endif
+                }
+                finally
+                {
+                    _currentLog?.Close();
+                    _currentLog = null;
+                }
+            }
         }
 
         #endregion
@@ -249,7 +251,7 @@ namespace SaveToGameWpf.Windows
 
 #endregion
 
-        private void Start()
+        private void ProcessAll()
         {
             Dispatcher.Invoke(LogBox.Clear);
 
@@ -483,18 +485,24 @@ namespace SaveToGameWpf.Windows
                 );
             }
 
-            if (
-                MessBox.ShowDial(
-                    MainResources.Path_to_file + resultApkPath, 
-                    MainResources.Successful,
-                    MainResources.OK, MainResources.Open
-                ) == MainResources.Open)
-            {
-                Process.Start("explorer.exe", $"/select,{resultApkPath}");
-            }
+            string dialogResult = MessBox.ShowDial(
+                MainResources.Path_to_file + resultApkPath,
+                MainResources.Successful,
+                MainResources.OK, MainResources.Open, MainResources.Install
+            );
 
             _visualProgress.HideBar();
             _taskBarManager.SetNoneState();
+
+            if (dialogResult == MainResources.Open)
+            {
+                Process.Start("explorer.exe", $"/select,{resultApkPath}");
+            }
+            else if (dialogResult == MainResources.Install)
+            {
+                _globalVariables.LatestModdedApkPath = resultApkPath;
+                Dispatcher.Invoke(() => _adbInstallWindowProvider.Get().ShowDialog());
+            }
         }
 
         private async Task CheckJavaExistence()
@@ -589,7 +597,7 @@ namespace SaveToGameWpf.Windows
             }
         }
 
-#region Disposables
+        #region Disposables
 
         private CustomBoolDisposable CreateWorking()
         {
@@ -599,6 +607,6 @@ namespace SaveToGameWpf.Windows
             });
         }
 
-#endregion
+        #endregion
     }
 }

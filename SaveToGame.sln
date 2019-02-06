@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SaveToGame", "SaveToGame\Sa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Interfaces", "Interfaces\Interfaces.csproj", "{39AB2515-5C47-4731-8120-D0A574033224}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharedData", "SharedData\SharedData.csproj", "{D70BF512-998E-4001-B394-42D30B3FD2FB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{39AB2515-5C47-4731-8120-D0A574033224}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{39AB2515-5C47-4731-8120-D0A574033224}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{39AB2515-5C47-4731-8120-D0A574033224}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D70BF512-998E-4001-B394-42D30B3FD2FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D70BF512-998E-4001-B394-42D30B3FD2FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D70BF512-998E-4001-B394-42D30B3FD2FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D70BF512-998E-4001-B394-42D30B3FD2FB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

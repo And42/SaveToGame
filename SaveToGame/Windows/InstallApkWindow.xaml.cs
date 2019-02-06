@@ -1,7 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Input;
 using System.Windows.Shell;
-using Interfaces.Enums;
 using Interfaces.OrganisationItems;
 using Interfaces.ViewModels;
 using JetBrains.Annotations;
@@ -9,6 +8,7 @@ using Microsoft.Win32;
 using SaveToGameWpf.Logic.OrganisationItems;
 using SaveToGameWpf.Logic.Utils;
 using SaveToGameWpf.Resources.Localizations;
+using SharedData.Enums;
 using DragEventArgs = System.Windows.DragEventArgs;
 
 namespace SaveToGameWpf.Windows

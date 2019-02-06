@@ -7,10 +7,10 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 using AndroidHelper.Logic;
 using AndroidHelper.Logic.Interfaces;
 using ICSharpCode.SharpZipLib.Zip;
-using Interfaces.Enums;
 using Interfaces.OrganisationItems;
 using Interfaces.ViewModels;
 using JetBrains.Annotations;
@@ -23,6 +23,7 @@ using SaveToGameWpf.Logic.OrganisationItems;
 using SaveToGameWpf.Logic.Utils;
 using SaveToGameWpf.Resources.Localizations;
 using SaveToGameWpf.Windows;
+using SharedData.Enums;
 
 namespace SaveToGameWpf.Logic.ViewModels
 {
@@ -33,6 +34,7 @@ namespace SaveToGameWpf.Logic.ViewModels
         [NotNull] private readonly TempUtils _tempUtils;
         [NotNull] private readonly GlobalVariables _globalVariables;
         [NotNull] private readonly Provider<IApktool> _apktoolProvider;
+        [NotNull] private readonly Provider<AdbInstallWindow> _adbInstallWindowProvider;
 
         public IAppIconsStorage IconsStorage { get; }
 
@@ -61,7 +63,8 @@ namespace SaveToGameWpf.Logic.ViewModels
             [NotNull] NotificationManager notificationManager,
             [NotNull] TempUtils tempUtils,
             [NotNull] GlobalVariables globalVariables,
-            [NotNull] Provider<IApktool> apktoolProvider
+            [NotNull] Provider<IApktool> apktoolProvider,
+            [NotNull] Provider<AdbInstallWindow> adbInstallWindowProvider
         )
         {
             _settings = appSettings;
@@ -69,6 +72,7 @@ namespace SaveToGameWpf.Logic.ViewModels
             _tempUtils = tempUtils;
             _globalVariables = globalVariables;
             _apktoolProvider = apktoolProvider;
+            _adbInstallWindowProvider = adbInstallWindowProvider;
 
             string iconsFolder = Path.Combine(_globalVariables.PathToResources, "icons");
 
@@ -175,13 +179,14 @@ namespace SaveToGameWpf.Logic.ViewModels
                     byte[] hdpi = IconsStorage.GetHdpiBytes();
                     byte[] mdpi = IconsStorage.GetMdpiBytes();
 
+                    var uiDispatcher = Dispatcher.CurrentDispatcher;
                     var currentCulture = Thread.CurrentThread.CurrentUICulture;
                     await Task.Factory.StartNew(() =>
                     {
                         Thread.CurrentThread.CurrentCulture = currentCulture;
                         Thread.CurrentThread.CurrentUICulture = currentCulture;
 
-                        ProcessAll(xxhdpi, xhdpi, hdpi, mdpi);
+                        ProcessAll(xxhdpi, xhdpi, hdpi, mdpi, uiDispatcher);
                     });
                 }
                 catch (Exception ex)
@@ -203,7 +208,7 @@ namespace SaveToGameWpf.Logic.ViewModels
             }
         }
 
-        private void ProcessAll(byte[] xxhdpiBytes, byte[] xhdpiBytes, byte[] hdpiBytes, byte[] mdpiBytes)
+        private void ProcessAll(byte[] xxhdpiBytes, byte[] xhdpiBytes, byte[] hdpiBytes, byte[] mdpiBytes, Dispatcher uiThreadDispatcher)
         {
             const string internalDataInApkName = "data.save";
             const string externalDataInApkName = "extdata.save";
@@ -428,13 +433,20 @@ namespace SaveToGameWpf.Logic.ViewModels
                 );
             }
 
-            if (MessBox.ShowDial(
-                    MainResources.Path_to_file + resultFilePath,
-                    MainResources.Successful,
-                    MainResources.OK, MainResources.Open
-                ) == MainResources.Open)
+            string dialogResult = MessBox.ShowDial(
+                MainResources.Path_to_file + resultFilePath,
+                MainResources.Successful,
+                MainResources.OK, MainResources.Open, MainResources.Install
+            );
+
+            if (dialogResult == MainResources.Open)
             {
                 Process.Start("explorer.exe", $"/select,{resultFilePath}");
+            }
+            else if (dialogResult == MainResources.Install)
+            {
+                _globalVariables.LatestModdedApkPath = resultFilePath;
+                uiThreadDispatcher.Invoke(() => _adbInstallWindowProvider.Get().ShowDialog());
             }
 
             taskBarManager?.SetNoneState();

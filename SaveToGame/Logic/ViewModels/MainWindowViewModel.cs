@@ -4,7 +4,7 @@ using JetBrains.Annotations;
 using MVVM_Tools.Code.Classes;
 using MVVM_Tools.Code.Providers;
 using SaveToGameWpf.Resources.Localizations;
-using BackupType = Interfaces.Enums.BackupType;
+using SharedData.Enums;
 
 namespace SaveToGameWpf.Logic.ViewModels
 {

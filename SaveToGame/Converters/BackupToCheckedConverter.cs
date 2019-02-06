@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Globalization;
-using Interfaces.Enums;
 using MVVM_Tools.Code.Classes;
+using SharedData.Enums;
 
 namespace SaveToGameWpf.Converters
 {

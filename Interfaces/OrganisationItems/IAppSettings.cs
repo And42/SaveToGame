@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel;
-using Interfaces.Enums;
+using SharedData.Enums;
 
 namespace Interfaces.OrganisationItems
 {

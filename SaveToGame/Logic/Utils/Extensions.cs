@@ -37,5 +37,11 @@ namespace SaveToGameWpf.Logic.Utils
             observable.PropertyChanged += (sender, args) => actionCommand.RaiseCanExecuteChanged();
             return actionCommand;
         }
+
+        public static IActionCommand<T> BindCanExecute<T>([NotNull] this IActionCommand<T> actionCommand, [NotNull] INotifyPropertyChanged observable)
+        {
+            observable.PropertyChanged += (sender, args) => actionCommand.RaiseCanExecuteChanged();
+            return actionCommand;
+        }
     }
 }

@@ -1,7 +1,7 @@
-﻿using Interfaces.Enums;
-using Interfaces.OrganisationItems;
+﻿using Interfaces.OrganisationItems;
 using MVVM_Tools.Code.Commands;
 using MVVM_Tools.Code.Providers;
+using SharedData.Enums;
 
 namespace Interfaces.ViewModels
 {

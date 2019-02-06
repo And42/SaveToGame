@@ -1,4 +1,4 @@
-﻿namespace Interfaces.Enums
+﻿namespace SharedData.Enums
 {
     public enum AndroidAppIcon
     {

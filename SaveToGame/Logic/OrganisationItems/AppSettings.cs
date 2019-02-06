@@ -1,6 +1,6 @@
-﻿using Interfaces.Enums;
-using Interfaces.OrganisationItems;
+﻿using Interfaces.OrganisationItems;
 using SettingsManager;
+using SharedData.Enums;
 
 namespace SaveToGameWpf.Logic.OrganisationItems
 {

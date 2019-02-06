@@ -5,7 +5,7 @@
         xmlns:controls="clr-namespace:SaveToGameWpf.Controls"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:enums="clr-namespace:Interfaces.Enums;assembly=Interfaces"
+        xmlns:enums="clr-namespace:SharedData.Enums;assembly=SharedData"
         xmlns:viewModels="clr-namespace:Interfaces.ViewModels;assembly=Interfaces"
         mc:Ignorable="d"
 

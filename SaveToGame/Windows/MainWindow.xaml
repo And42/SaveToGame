@@ -6,7 +6,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:viewModels="clr-namespace:SaveToGameWpf.Logic.ViewModels"
         xmlns:controls="clr-namespace:SaveToGameWpf.Controls"
-        xmlns:enums="clr-namespace:Interfaces.Enums;assembly=Interfaces"
+        xmlns:enums="clr-namespace:SharedData.Enums;assembly=SharedData"
         mc:Ignorable="d"
 
         Title="{Binding Title, Mode=OneWay}"

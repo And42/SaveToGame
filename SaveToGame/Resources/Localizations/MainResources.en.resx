@@ -415,4 +415,7 @@ Try again?</value>
     <value>Can't write to app data folder: "{0}"
 Move the program to the folder with the write access or disable the portable operation mode by deleting "{1}" file</value>
   </data>
+  <data name="Install" xml:space="preserve">
+    <value>Install</value>
+  </data>
 </root>

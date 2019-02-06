@@ -3,6 +3,7 @@ using System.Configuration;
 using System.IO;
 using System.Reflection;
 using Bugsnag;
+using JetBrains.Annotations;
 using LongPaths.Logic;
 
 namespace SaveToGameWpf.Logic
@@ -71,6 +72,8 @@ namespace SaveToGameWpf.Logic
         /// </summary>
         public readonly string PathToPortableJavaExe;
 
+        public readonly string AdbPath;
+
         public readonly IClient ErrorClient = new Client(ConfigurationManager.AppSettings["BugsnagApiKey"]);
 
         public readonly string AdditionalFilePassword = "Ub82X8:Hng6t=C+'mx";
@@ -83,6 +86,9 @@ namespace SaveToGameWpf.Logic
         public readonly bool? CanWriteToAppData;
 
         public readonly string PortableSwitchFile;
+
+        [CanBeNull]
+        public string LatestModdedApkPath { get; set; }
         
         public GlobalVariables()
         {
@@ -120,6 +126,7 @@ namespace SaveToGameWpf.Logic
             SignApkPath = Path.Combine(PathToResources, "signapk.jar");
             DefaultKeyPemPath = Path.Combine(PathToResources, "testkey.x509.pem");
             DefaultKeyPkPath = Path.Combine(PathToResources, "testkey.pk8");
+            AdbPath = Path.Combine(PathToResources, "platform-tools", "adb.exe");
 
             if (IsPortable)
             {

@@ -87,6 +87,9 @@
     <Reference Include="Costura, Version=3.3.2.0, Culture=neutral, PublicKeyToken=9919ef960d84173d, processorArchitecture=MSIL">
       <HintPath>..\packages\Costura.Fody.3.3.2\lib\net40\Costura.dll</HintPath>
     </Reference>
+    <Reference Include="FontAwesome.WPF, Version=4.7.0.37774, Culture=neutral, PublicKeyToken=0758b07a11a4f466, processorArchitecture=MSIL">
+      <HintPath>..\packages\FontAwesome.WPF.4.7.0.9\lib\net40\FontAwesome.WPF.dll</HintPath>
+    </Reference>
     <Reference Include="ICSharpCode.SharpZipLib, Version=1.1.0.145, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
       <HintPath>..\packages\SharpZipLib.1.1.0\lib\net45\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
@@ -177,6 +180,8 @@
     <Compile Include="Logic\GlobalVariables.cs" />
     <Compile Include="Logic\Utils\WebUtils.cs" />
     <Compile Include="Logic\ViewModels\AboutWindowViewModel.cs" />
+    <Compile Include="Logic\ViewModels\AdbDeviceViewModel.cs" />
+    <Compile Include="Logic\ViewModels\AdbInstallWindowViewModel.cs" />
     <Compile Include="Logic\ViewModels\InstallApkViewModel.cs" />
     <Compile Include="Logic\ViewModels\MainWindowViewModel.cs" />
     <Compile Include="Properties\Annotations.cs" />
@@ -196,8 +201,8 @@
       <DependentUpon>MainResources.resx</DependentUpon>
     </Compile>
     <Compile Include="Styles\Elements\WindowStyle.cs" />
-    <Compile Include="Windows\AdbInstall.xaml.cs">
-      <DependentUpon>AdbInstall.xaml</DependentUpon>
+    <Compile Include="Windows\AdbInstallWindow.xaml.cs">
+      <DependentUpon>AdbInstallWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\InstallApkWindow.xaml.cs">
       <DependentUpon>InstallApkWindow.xaml</DependentUpon>
@@ -449,7 +454,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Windows\AdbInstall.xaml">
+    <Page Include="Windows\AdbInstallWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -548,6 +553,10 @@
     <ProjectReference Include="..\Interfaces\Interfaces.csproj">
       <Project>{39ab2515-5c47-4731-8120-d0a574033224}</Project>
       <Name>Interfaces</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SharedData\SharedData.csproj">
+      <Project>{D70BF512-998E-4001-B394-42D30B3FD2FB}</Project>
+      <Name>SharedData</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
