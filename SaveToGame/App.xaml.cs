@@ -1,4 +1,5 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -204,12 +205,26 @@ namespace SaveToGameWpf
                 oldSettings.Save();
             }
 
+            // copy setting values
             newSettings.AlternativeSigning = oldSettings.AlternativeSigning;
             newSettings.BackupType = oldSettings.BackupType;
             newSettings.Language = oldSettings.Language;
             newSettings.Notifications = oldSettings.Notifications;
             newSettings.PopupMessage = oldSettings.PopupMessage;
             newSettings.Theme = oldSettings.Theme;
+
+            // delete old setting files
+            string appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+            string settingsParentDir = Path.Combine(appDataPath, "ProgrammingMachines");
+            if (LDirectory.Exists(settingsParentDir))
+            {
+                string[] appSettingDirs = LDirectory.GetDirectories(settingsParentDir, "SaveToGame.exe_*");
+                foreach (string appSettingDir in appSettingDirs)
+                    LDirectory.Delete(appSettingDir, true);
+
+                if (!LDirectory.EnumerateFileSystemEntries(settingsParentDir).Any())
+                    LDirectory.Delete(settingsParentDir, true);
+            }
 
             newSettings.SettingsMigrated = true;
         }
