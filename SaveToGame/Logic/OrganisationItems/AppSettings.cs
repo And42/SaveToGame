@@ -19,5 +19,7 @@ namespace SaveToGameWpf.Logic.OrganisationItems
         public virtual bool Notifications { get; set; } = true;
 
         public virtual bool SettingsMigrated { get; set; } = false;
+
+        public virtual int Version { get; set; } = 0;
     }
 }
