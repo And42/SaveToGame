@@ -425,6 +425,8 @@ namespace SaveToGameWpf.Logic.ViewModels
             visualProgress?.HideBar();
             SetStep(MainResources.AllDone, 6);
 
+            _globalVariables.LatestModdedApkPath = resultFilePath;
+
             if (_settings.Notifications)
             {
                 _notificationManager.Show(
@@ -445,7 +447,6 @@ namespace SaveToGameWpf.Logic.ViewModels
             }
             else if (dialogResult == MainResources.Install)
             {
-                _globalVariables.LatestModdedApkPath = resultFilePath;
                 uiThreadDispatcher.Invoke(() => _adbInstallWindowProvider.Get().ShowDialog());
             }
 

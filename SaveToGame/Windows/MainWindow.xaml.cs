@@ -477,6 +477,8 @@ namespace SaveToGameWpf.Windows
             SetStep(4, MainResources.AllDone);
             Log(MainResources.AllDone);
 
+            _globalVariables.LatestModdedApkPath = resultApkPath;
+
             if (_settings.Notifications)
             {
                 _notificationManager.Show(
@@ -500,7 +502,6 @@ namespace SaveToGameWpf.Windows
             }
             else if (dialogResult == MainResources.Install)
             {
-                _globalVariables.LatestModdedApkPath = resultApkPath;
                 Dispatcher.Invoke(() => _adbInstallWindowProvider.Get().ShowDialog());
             }
         }
