@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Configuration;
 using System.IO;
 using System.Reflection;
 using Bugsnag;
@@ -74,7 +73,7 @@ namespace SaveToGameWpf.Logic
 
         public readonly string AdbPath;
 
-        public readonly IClient ErrorClient = new Client(ConfigurationManager.AppSettings["BugsnagApiKey"]);
+        public readonly IClient ErrorClient = new Client(apiKey: "1065fd5bfd52ab837da209f8354b79cb");
 
         public readonly string AdditionalFilePassword = "Ub82X8:Hng6t=C+'mx";
 
