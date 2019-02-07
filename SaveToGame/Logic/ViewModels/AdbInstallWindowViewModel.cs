@@ -14,8 +14,6 @@ namespace SaveToGameWpf.Logic.ViewModels
     {
         [NotNull] private readonly GlobalVariables _globalVariables;
 
-        private bool _dataLoaded;
-
         public ObservableCollection<AdbDeviceViewModel> Devices { get; } = new ObservableCollection<AdbDeviceViewModel>();
 
         public Property<bool> Processing { get; } = new Property<bool>();
@@ -54,7 +52,7 @@ namespace SaveToGameWpf.Logic.ViewModels
                 RedirectStandardError = true
             };
 
-            var adbProcess = Process.Start(processInfo);
+            Process adbProcess = CheckAdbProcess(Process.Start(processInfo));
 
             object dataReceivedLock = new object();
             void OnDataReceived(object sender, DataReceivedEventArgs args)
@@ -92,7 +90,7 @@ namespace SaveToGameWpf.Logic.ViewModels
                 RedirectStandardOutput = true
             };
 
-            var adbProcess = Process.Start(processInfo);
+            Process adbProcess = CheckAdbProcess(Process.Start(processInfo));
             await Task.Run(() => adbProcess.WaitForExit());
 
             string output = adbProcess.StandardOutput.ReadToEnd();
@@ -112,6 +110,15 @@ namespace SaveToGameWpf.Logic.ViewModels
             deviceModels.ForEach(Devices.Add);
 
             Processing.Value = false;
+        }
+
+        [NotNull]
+        private static Process CheckAdbProcess([CanBeNull] Process adbProcess)
+        {
+            if (adbProcess == null)
+                throw new Exception("Can't start adb process. Probably, file not found");
+
+            return adbProcess;
         }
     }
 }
