@@ -10,7 +10,7 @@ namespace SaveToGameWpf.Logic.OrganisationItems
 
         public virtual BackupType BackupType { get; set; } = BackupType.Titanium;
 
-        public virtual string PopupMessage { get; set; }
+        public virtual string PopupMessage { get; set; } = "Modified by SaveToGame";
 
         public virtual string Theme { get; set; } = "Light";
 
