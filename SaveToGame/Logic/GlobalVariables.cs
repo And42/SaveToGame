@@ -92,16 +92,7 @@ namespace SaveToGameWpf.Logic
         
         public GlobalVariables()
         {
-#if DEBUG
-            // ReSharper disable once PossibleNullReferenceException
-            PathToExe = Path.Combine(
-                Path.GetDirectoryName(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)),
-                "Release",
-                "SaveToGame.exe"
-            );
-#else
             PathToExe = Assembly.GetExecutingAssembly().Location;
-#endif
             PathToExeFolder = Path.GetDirectoryName(PathToExe);
             PortableSwitchFile = Path.Combine(PathToExeFolder, "portable");
             IsPortable = LFile.Exists(PortableSwitchFile);
