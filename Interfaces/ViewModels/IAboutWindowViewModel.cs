@@ -10,5 +10,6 @@ namespace Interfaces.ViewModels
         IActionCommand ShowDeveloperCommand { get; }
         IActionCommand ThankDeveloperCommand { get; }
         IActionCommand OpenAppDataFolderCommand { get; }
+        IActionCommand OpenSourcesPage { get; }
     }
 }

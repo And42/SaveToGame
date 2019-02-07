@@ -707,6 +707,15 @@ namespace SaveToGameWpf.Resources.Localizations {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Исходный код.
+        /// </summary>
+        public static string ShowSources {
+            get {
+                return ResourceManager.GetString("ShowSources", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Странно, обнаружены неизвестные ошибки....
         /// </summary>
         public static string Some_Error_Found {

@@ -418,4 +418,7 @@ Move the program to the folder with the write access or disable the portable ope
   <data name="Install" xml:space="preserve">
     <value>Install</value>
   </data>
+  <data name="ShowSources" xml:space="preserve">
+    <value>Source code</value>
+  </data>
 </root>

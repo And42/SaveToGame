@@ -419,4 +419,7 @@
   <data name="Install" xml:space="preserve">
     <value>Установить</value>
   </data>
+  <data name="ShowSources" xml:space="preserve">
+    <value>Исходный код</value>
+  </data>
 </root>

@@ -14,6 +14,7 @@ namespace SaveToGameWpf.Logic.ViewModels
         public IActionCommand ShowDeveloperCommand { get; }
         public IActionCommand ThankDeveloperCommand { get; }
         public IActionCommand OpenAppDataFolderCommand { get; }
+        public IActionCommand OpenSourcesPage { get; }
 
         public AboutWindowViewModel(
             [NotNull] ApplicationUtils applicationUtils,
@@ -35,6 +36,10 @@ namespace SaveToGameWpf.Logic.ViewModels
             OpenAppDataFolderCommand = new ActionCommand(() =>
             {
                 Process.Start(globalVariables.AppDataPath);
+            });
+            OpenSourcesPage = new ActionCommand(() =>
+            {
+                WebUtils.OpenLinkInBrowser("https://github.com/And42/SaveToGame");
             });
         }
     }
