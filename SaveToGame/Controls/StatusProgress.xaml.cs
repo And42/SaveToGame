@@ -62,16 +62,16 @@ namespace SaveToGameWpf.Controls
 
         private readonly IVisualProgress _visualProgress;
 
-        public Property<string> StatusLabel { get; } = new Property<string>();
+        public IProperty<string> StatusLabel { get; } = new FieldProperty<string>();
 
-        public Property<int> StatusProgressNow { get; } = new Property<int>();
-        public Property<bool> StatusProgressIndeterminate { get; } = new Property<bool>();
-        public Property<bool> StatusProgressVisible { get; } = new Property<bool>();
+        public IProperty<int> StatusProgressNow { get; } = new FieldProperty<int>();
+        public IProperty<bool> StatusProgressIndeterminate { get; } = new FieldProperty<bool>();
+        public IProperty<bool> StatusProgressVisible { get; } = new FieldProperty<bool>();
 
-        public Property<bool> StatusProgressLabelVisible { get; } = new Property<bool>();
+        public IProperty<bool> StatusProgressLabelVisible { get; } = new FieldProperty<bool>();
 
-        public Property<bool> StatusIndeterminateLabelVisible { get; } = new Property<bool>();
-        public Property<string> StatusIndeterminateLabelText { get; } = new Property<string>();
+        public IProperty<bool> StatusIndeterminateLabelVisible { get; } = new FieldProperty<bool>();
+        public IProperty<string> StatusIndeterminateLabelText { get; } = new FieldProperty<string>();
 
         private Timer _indeterminateTimer;
 

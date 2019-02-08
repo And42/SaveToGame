@@ -4,7 +4,7 @@ namespace SaveToGameWpf.Logic.ViewModels
 {
     public class AdbDeviceViewModel
     {
-        public Property<string> Id { get; } = new Property<string>();
-        public Property<string> Title { get; } = new Property<string>();
+        public IProperty<string> Id { get; } = new FieldProperty<string>();
+        public IProperty<string> Title { get; } = new FieldProperty<string>();
     }
 }

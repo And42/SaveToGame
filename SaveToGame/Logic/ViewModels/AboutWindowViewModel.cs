@@ -9,7 +9,7 @@ namespace SaveToGameWpf.Logic.ViewModels
 {
     public class AboutWindowViewModel : IAboutWindowViewModel
     {
-        public Property<string> Version { get; }
+        public IReadonlyProperty<string> Version { get; }
 
         public IActionCommand ShowDeveloperCommand { get; }
         public IActionCommand ThankDeveloperCommand { get; }
@@ -22,7 +22,7 @@ namespace SaveToGameWpf.Logic.ViewModels
         )
         {
             // properties
-            Version = new Property<string>(applicationUtils.GetVersion());
+            Version = new DelegatedProperty<string>(applicationUtils.GetVersion, null).AsReadonly();
 
             // commands
             ShowDeveloperCommand = new ActionCommand(() =>

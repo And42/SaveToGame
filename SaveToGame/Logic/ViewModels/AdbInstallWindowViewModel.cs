@@ -16,8 +16,8 @@ namespace SaveToGameWpf.Logic.ViewModels
 
         public ObservableCollection<AdbDeviceViewModel> Devices { get; } = new ObservableCollection<AdbDeviceViewModel>();
 
-        public Property<bool> Processing { get; } = new Property<bool>();
-        public Property<string> AdbLog { get; } = new Property<string>();
+        public IProperty<bool> Processing { get; } = new FieldProperty<bool>();
+        public IProperty<string> AdbLog { get; } = new FieldProperty<string>();
 
         public IActionCommand LoadDataCommand { get; }
         public IActionCommand<AdbDeviceViewModel> InstallCommand { get; }

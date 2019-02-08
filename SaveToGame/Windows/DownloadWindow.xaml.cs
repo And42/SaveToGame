@@ -18,7 +18,7 @@ namespace SaveToGameWpf.Windows
         private static readonly string UpdateFilePath = 
             Path.Combine(Path.GetTempPath(), "STG Temp", "NewVersion.exe");
 
-        public Property<int> ProgressNow { get; } = new Property<int>();
+        public FieldProperty<int> ProgressNow { get; } = new FieldProperty<int>();
 
         public DownloadWindow()
         {

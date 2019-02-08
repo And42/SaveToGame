@@ -5,7 +5,7 @@ namespace Interfaces.ViewModels
 {
     public interface IAboutWindowViewModel
     {
-        Property<string> Version { get; }
+        IReadonlyProperty<string> Version { get; }
 
         IActionCommand ShowDeveloperCommand { get; }
         IActionCommand ThankDeveloperCommand { get; }

@@ -181,7 +181,7 @@ namespace SaveToGameWpf
             builder.RegisterType<AdbInstallWindow>();
             
             // window models
-            builder.RegisterType<MainWindowViewModel>();
+            builder.RegisterType<MainWindowViewModel>().As<IMainWindowViewModel>();
             builder.RegisterType<InstallApkViewModel>().As<IInstallApkViewModel>();
             builder.RegisterType<AboutWindowViewModel>().As<IAboutWindowViewModel>();
             builder.RegisterType<AdbInstallWindowViewModel>();

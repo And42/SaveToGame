@@ -11,6 +11,7 @@ using System.Windows.Shell;
 using AndroidHelper.Logic;
 using AndroidHelper.Logic.Interfaces;
 using Interfaces.OrganisationItems;
+using Interfaces.ViewModels;
 using JetBrains.Annotations;
 using LongPaths.Logic;
 using MVVM_Tools.Code.Disposables;
@@ -18,7 +19,6 @@ using SaveToGameWpf.Logic;
 using SaveToGameWpf.Logic.Classes;
 using SaveToGameWpf.Logic.OrganisationItems;
 using SaveToGameWpf.Logic.Utils;
-using SaveToGameWpf.Logic.ViewModels;
 using SaveToGameWpf.Resources;
 using SaveToGameWpf.Resources.Localizations;
 using SharedData.Enums;
@@ -50,7 +50,7 @@ namespace SaveToGameWpf.Windows
         private readonly IVisualProgress _visualProgress;
         private readonly ITaskBarManager _taskBarManager;
 
-        public MainWindowViewModel ViewModel { get; }
+        public IMainWindowViewModel ViewModel { get; }
 
         private StreamWriter _currentLog;
 
@@ -59,7 +59,7 @@ namespace SaveToGameWpf.Windows
         public MainWindow(
             [NotNull] IAppSettings appSettings,
             [NotNull] ApplicationUtils applicationUtils,
-            [NotNull] MainWindowViewModel viewModel,
+            [NotNull] IMainWindowViewModel viewModel,
             [NotNull] Provider<MainWindow> mainWindowProvider,
             [NotNull] Provider<InstallApkWindow> installApkWindowProvider,
             [NotNull] Provider<AboutWindow> aboutWindowProvider,
@@ -129,7 +129,7 @@ namespace SaveToGameWpf.Windows
 
         private void ChooseSaveBtn_Click(object sender, EventArgs e)
         {
-            if (ViewModel.BackupType != BackupType.LuckyPatcher)
+            if (ViewModel.BackupType.Value != BackupType.LuckyPatcher)
             {
                 var (success, filePath) = PickerUtils.PickFile(filter: MainResources.Archives + @" (*.tar.gz)|*.tar.gz");
 
@@ -304,7 +304,7 @@ namespace SaveToGameWpf.Windows
                 needMessage = (savePlusMessage || onlyMessage) && !string.IsNullOrEmpty(popupText) && messagesCount > 0;
             }
 
-            BackupType backupType = ViewModel.BackupType;
+            BackupType backupType = ViewModel.BackupType.Value;
 
             ITempFileProvider tempFileProvider = _tempUtils.CreateTempFileProvider();
             ITempFolderProvider tempFolderProvider = _tempUtils.CreateTempFolderProvider();

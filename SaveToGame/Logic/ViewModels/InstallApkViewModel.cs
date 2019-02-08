@@ -15,6 +15,7 @@ using Interfaces.OrganisationItems;
 using Interfaces.ViewModels;
 using JetBrains.Annotations;
 using LongPaths.Logic;
+using MVVM_Tools.Code.Classes;
 using MVVM_Tools.Code.Commands;
 using MVVM_Tools.Code.Disposables;
 using MVVM_Tools.Code.Providers;
@@ -27,7 +28,7 @@ using SharedData.Enums;
 
 namespace SaveToGameWpf.Logic.ViewModels
 {
-    public class InstallApkViewModel : IInstallApkViewModel
+    public class InstallApkViewModel : BindableBase, IInstallApkViewModel
     {
         [NotNull] private readonly IAppSettings _settings;
         [NotNull] private readonly NotificationManager _notificationManager;
@@ -38,19 +39,19 @@ namespace SaveToGameWpf.Logic.ViewModels
 
         public IAppIconsStorage IconsStorage { get; }
 
-        public Property<IVisualProgress> VisualProgress { get; } = new Property<IVisualProgress>();
-        public Property<ITaskBarManager> TaskBarManager { get; } = new Property<ITaskBarManager>();
+        public IProperty<IVisualProgress> VisualProgress { get; } = new FieldProperty<IVisualProgress>();
+        public IProperty<ITaskBarManager> TaskBarManager { get; } = new FieldProperty<ITaskBarManager>();
 
-        public Property<string> WindowTitle { get; } = new Property<string>();
-        public Property<bool> Working { get; } = new Property<bool>();
+        public IProperty<string> WindowTitle { get; } = new FieldProperty<string>();
+        public IProperty<bool> Working { get; } = new FieldProperty<bool>();
 
-        public Property<string> Apk { get; } = new Property<string>();
-        public Property<string> Save { get; } = new Property<string>();
-        public Property<string> Data { get; } = new Property<string>();
-        public Property<string[]> Obb { get; } = new Property<string[]>();
+        public IProperty<string> Apk { get; } = new FieldProperty<string>();
+        public IProperty<string> Save { get; } = new FieldProperty<string>();
+        public IProperty<string> Data { get; } = new FieldProperty<string>();
+        public IProperty<string[]> Obb { get; } = new FieldProperty<string[]>();
 
-        public Property<string> AppTitle { get; } = new Property<string>();
-        public Property<string> LogText { get; } = new Property<string>();
+        public IReadonlyProperty<string> AppTitle { get; }
+        public IProperty<string> LogText { get; } = new FieldProperty<string>();
 
         public IActionCommand ChooseApkCommand { get; }
         public IActionCommand ChooseSaveCommand { get; }
@@ -73,6 +74,11 @@ namespace SaveToGameWpf.Logic.ViewModels
             _globalVariables = globalVariables;
             _apktoolProvider = apktoolProvider;
             _adbInstallWindowProvider = adbInstallWindowProvider;
+
+            AppTitle = new DelegatedProperty<string>(
+                valueResolver: () => Path.GetFileNameWithoutExtension(Apk.Value) + " mod",
+                valueApplier: null
+            ).DependsOn(Apk).AsReadonly();
 
             string iconsFolder = Path.Combine(_globalVariables.PathToResources, "icons");
 
@@ -127,9 +133,6 @@ namespace SaveToGameWpf.Logic.ViewModels
                     Obb.Value = filePaths;
             }, () => !Working.Value).BindCanExecute(Working);
             StartCommand = new ActionCommand(StartCommand_Execute, () => !Working.Value).BindCanExecute(Working);
-
-            // property changes notification
-            Apk.PropertyChanged += (sender, args) => AppTitle.Value = Path.GetFileNameWithoutExtension(Apk.Value) + " mod";
         }
 
         public void SetIcon(string imagePath, AndroidAppIcon iconType)

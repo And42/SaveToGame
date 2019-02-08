@@ -9,19 +9,19 @@ namespace Interfaces.ViewModels
     {
         IAppIconsStorage IconsStorage { get; }
 
-        Property<IVisualProgress> VisualProgress { get; }
-        Property<ITaskBarManager> TaskBarManager { get; }
+        IProperty<IVisualProgress> VisualProgress { get; }
+        IProperty<ITaskBarManager> TaskBarManager { get; }
 
-        Property<string> WindowTitle { get; }
-        Property<bool> Working { get; }
+        IProperty<string> WindowTitle { get; }
+        IProperty<bool> Working { get; }
 
-        Property<string> Apk { get; }
-        Property<string> Save { get; }
-        Property<string> Data { get; }
-        Property<string[]> Obb { get; }
+        IProperty<string> Apk { get; }
+        IProperty<string> Save { get; }
+        IProperty<string> Data { get; }
+        IProperty<string[]> Obb { get; }
 
-        Property<string> AppTitle { get; }
-        Property<string> LogText { get; }
+        IReadonlyProperty<string> AppTitle { get; }
+        IProperty<string> LogText { get; }
 
         IActionCommand ChooseApkCommand { get; }
         IActionCommand ChooseSaveCommand { get; }

@@ -4,19 +4,19 @@
         xmlns:localization="clr-namespace:SaveToGameWpf.Resources.Localizations"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:viewModels="clr-namespace:SaveToGameWpf.Logic.ViewModels"
         xmlns:controls="clr-namespace:SaveToGameWpf.Controls"
         xmlns:enums="clr-namespace:SharedData.Enums;assembly=SharedData"
+        xmlns:viewModels1="clr-namespace:Interfaces.ViewModels;assembly=Interfaces"
         mc:Ignorable="d"
 
-        Title="{Binding Title, Mode=OneWay}"
+        Title="{Binding Title.Value, Mode=OneWay}"
         Width="795" Height="500"
         MinWidth="795" MinHeight="500"
         Loaded="MainWindow_Loaded"
         Closed="MainWindow_OnClosed"
         Style="{StaticResource CommonWindowStyle}"
         WindowStartupLocation="CenterScreen"
-        d:DataContext="{d:DesignInstance viewModels:MainWindowViewModel, IsDesignTimeCreatable=True}">
+        d:DataContext="{d:DesignInstance viewModels1:IMainWindowViewModel, IsDesignTimeCreatable=False}">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition/>
@@ -32,47 +32,47 @@
 
                 <MenuItem Header="{x:Static localization:MainResources.Settings}">
                     <MenuItem Header="{x:Static localization:MainResources.Language}">
-                        <MenuItem IsCheckable="True" Header="Русский" Click="ChangeLanguageClick" Tag="ru" IsChecked="{Binding RuIsChecked, Mode=OneWay}" />
-                        <MenuItem IsCheckable="True" Header="English" Click="ChangeLanguageClick" Tag="en" IsChecked="{Binding EnIsChecked, Mode=OneWay}" />
+                        <MenuItem IsCheckable="True" Header="Русский" Click="ChangeLanguageClick" Tag="ru" IsChecked="{Binding RuIsChecked.Value, Mode=OneWay}" />
+                        <MenuItem IsCheckable="True" Header="English" Click="ChangeLanguageClick" Tag="en" IsChecked="{Binding EnIsChecked.Value, Mode=OneWay}" />
                     </MenuItem>
 
                     <MenuItem Header="{x:Static localization:MainResources.Theme}">
                         <MenuItem
                             Header="{x:Static localization:MainResources.ThemeLight}"
                             IsCheckable="True" Tag="Light" Click="ChangeTheme_OnClick" 
-                            IsChecked="{Binding AppSettings.Theme, Mode=OneWay, Converter={StaticResource ThemeToCheckedConverter}, ConverterParameter=Light}"/>
+                            IsChecked="{Binding AppTheme.Value, Mode=OneWay, Converter={StaticResource ThemeToCheckedConverter}, ConverterParameter=Light}"/>
 
                         <MenuItem
                             Header="{x:Static localization:MainResources.ThemeDark}"
                             IsCheckable="True" Tag="Dark" Click="ChangeTheme_OnClick"
-                            IsChecked="{Binding AppSettings.Theme, Mode=OneWay, Converter={StaticResource ThemeToCheckedConverter}, ConverterParameter=Dark}"/>
+                            IsChecked="{Binding AppTheme.Value, Mode=OneWay, Converter={StaticResource ThemeToCheckedConverter}, ConverterParameter=Dark}"/>
                     </MenuItem>
 
                     <MenuItem Header="{x:Static localization:MainResources.BackupType}">
                         <MenuItem 
                             Header="Titanium" IsCheckable="True"
-                            IsChecked="{Binding BackupType, Converter={StaticResource BackupToCheckedConverter}, ConverterParameter={x:Static enums:BackupType.Titanium}}"/>
+                            IsChecked="{Binding BackupType.Value, Converter={StaticResource BackupToCheckedConverter}, ConverterParameter={x:Static enums:BackupType.Titanium}}"/>
 
                         <MenuItem
                             Header="ROM Toolbox" IsCheckable="True"
-                            IsChecked="{Binding BackupType, Converter={StaticResource BackupToCheckedConverter}, ConverterParameter={x:Static enums:BackupType.RomToolbox}}"/>
+                            IsChecked="{Binding BackupType.Value, Converter={StaticResource BackupToCheckedConverter}, ConverterParameter={x:Static enums:BackupType.RomToolbox}}"/>
 
                         <MenuItem
                             Header="Lucky Patcher" IsCheckable="True"
-                            IsChecked="{Binding BackupType, Converter={StaticResource BackupToCheckedConverter}, ConverterParameter={x:Static enums:BackupType.LuckyPatcher}}"/>
+                            IsChecked="{Binding BackupType.Value, Converter={StaticResource BackupToCheckedConverter}, ConverterParameter={x:Static enums:BackupType.LuckyPatcher}}"/>
                     </MenuItem>
                     
                     <MenuItem
                         Header="{x:Static localization:MainResources.AlternativeSigning}"
                         IsCheckable="True"
-                        IsChecked="{Binding AppSettings.AlternativeSigning}"
+                        IsChecked="{Binding AlternativeSigning.Value}"
                         ToolTip="{x:Static localization:MainResources.AlternativeSigningToolTip}"
                         ToolTipService.ShowOnDisabled="True"/>
 
                     <MenuItem
                         Header="{x:Static localization:MainResources.Notifications}"
                         IsCheckable="True"
-                        IsChecked="{Binding AppSettings.Notifications}"
+                        IsChecked="{Binding NotificationsEnabled.Value}"
                         ToolTip="{x:Static localization:MainResources.NotificationsTooltip}"
                         ToolTipService.ShowOnDisabled="True"/>
                 </MenuItem>

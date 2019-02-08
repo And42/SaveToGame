@@ -9,16 +9,16 @@ namespace SaveToGameWpf.Logic.OrganisationItems
 {
     public class AppIconsStorage : IAppIconsStorage
     {
-        public Property<BitmapSource> Icon_xxhdpi { get; } = new Property<BitmapSource>();
-        public Property<BitmapSource> Icon_xhdpi { get; } = new Property<BitmapSource>();
-        public Property<BitmapSource> Icon_hdpi { get; } = new Property<BitmapSource>();
-        public Property<BitmapSource> Icon_mdpi { get; } = new Property<BitmapSource>();
+        public IProperty<BitmapSource> Icon_xxhdpi { get; } = new FieldProperty<BitmapSource>();
+        public IProperty<BitmapSource> Icon_xhdpi { get; } = new FieldProperty<BitmapSource>();
+        public IProperty<BitmapSource> Icon_hdpi { get; } = new FieldProperty<BitmapSource>();
+        public IProperty<BitmapSource> Icon_mdpi { get; } = new FieldProperty<BitmapSource>();
 
         public byte[] GetXxhdpiBytes() => GetBytes(Icon_xxhdpi);
         public byte[] GetXhdpiBytes() => GetBytes(Icon_xhdpi);
         public byte[] GetHdpiBytes() => GetBytes(Icon_hdpi);
         public byte[] GetMdpiBytes() => GetBytes(Icon_mdpi);
 
-        private static byte[] GetBytes(Property<BitmapSource> property) => property.Value.ToBitmap().ToByteArray();
+        private static byte[] GetBytes(IReadonlyProperty<BitmapSource> property) => property.Value.ToBitmap().ToByteArray();
     }
 }
