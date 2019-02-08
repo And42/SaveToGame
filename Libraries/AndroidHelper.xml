@@ -54,11 +54,6 @@
             Возвращает или задаёт главный smali файл
             </summary>
         </member>
-        <member name="P:AndroidHelper.Logic.AndroidManifest.Methods">
-            <summary>
-            Получает или задаёт список возможных названий главных методов
-            </summary>
-        </member>
         <member name="P:AndroidHelper.Logic.AndroidManifest.IconPath">
             <summary>
             Возвращает или задаёт название файла изображения
@@ -69,7 +64,7 @@
             Возвращает или задаёт название приложения (без расширения, то есть "app_name")
             </summary>
         </member>
-        <member name="M:AndroidHelper.Logic.AndroidManifest.#ctor(System.String,System.String[],System.Text.Encoding,System.Boolean)">
+        <member name="M:AndroidHelper.Logic.AndroidManifest.#ctor(System.String,System.Text.Encoding,System.Boolean)">
             <summary>
             Инициализирует новый экземпляр класса AndroidMnifest на основании пути, функции логгирования и методов
             </summary>
