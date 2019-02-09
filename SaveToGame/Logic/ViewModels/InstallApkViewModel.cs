@@ -275,11 +275,15 @@ namespace SaveToGameWpf.Logic.ViewModels
 
                 SetStep(MainResources.AddingData, 3);
 
+                // creating assets folder for data
+                string stgContainerAssetsPath = Path.Combine(stgContainerExtracted.TempFolder, "assets");
+                LDirectory.CreateDirectory(stgContainerAssetsPath);
+
                 // adding backup
                 if (!string.IsNullOrEmpty(saveFile))
                 {
-                    string internalDataPath = Path.Combine(stgContainerExtracted.TempFolder, "assets", internalDataInApkName);
-                    string externalDataPath = Path.Combine(stgContainerExtracted.TempFolder, "assets", externalDataInApkName);
+                    string internalDataPath = Path.Combine(stgContainerAssetsPath, internalDataInApkName);
+                    string externalDataPath = Path.Combine(stgContainerAssetsPath, externalDataInApkName);
 
                     ApkModifer.ParseBackup(
                         pathToBackup: saveFile,
@@ -295,7 +299,7 @@ namespace SaveToGameWpf.Logic.ViewModels
                 {
                     LFile.Copy(
                         androidDataFile,
-                        Path.Combine(stgContainerExtracted.TempFolder, "assets", externalDataInApkName)
+                        Path.Combine(stgContainerAssetsPath, externalDataInApkName)
                     );
                 }
 
@@ -340,7 +344,7 @@ namespace SaveToGameWpf.Logic.ViewModels
 
                     LFile.Copy(
                         sourceFileName: sourceResigned.TempFile,
-                        destFileName: Path.Combine(stgContainerExtracted.TempFolder, "assets", "install.bin"),
+                        destFileName: Path.Combine(stgContainerAssetsPath, "install.bin"),
                         overwrite: false
                     );
                 }
