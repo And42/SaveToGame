@@ -313,7 +313,7 @@ namespace SaveToGameWpf.Windows
             string pathToSave = ViewModel.CurrentSave.Value;
 
             IApktool apktool = _apktoolProvider.Get();
-            IProcessDataHandler dataHandler = new ProcessDataCombinedHandler(Log);
+            IProcessDataHandler dataHandler = new ProcessDataCombinedHandler(data => Log(data));
 
             #endregion
 
@@ -476,6 +476,8 @@ namespace SaveToGameWpf.Windows
             _visualProgress.HideIndeterminateLabel();
             SetStep(4, MainResources.AllDone);
             Log(MainResources.AllDone);
+            Log(string.Empty, false);
+            Log($"{MainResources.Path_to_file} {resultApkPath}");
 
             _globalVariables.LatestModdedApkPath = resultApkPath;
 
@@ -488,7 +490,7 @@ namespace SaveToGameWpf.Windows
             }
 
             string dialogResult = MessBox.ShowDial(
-                MainResources.Path_to_file + resultApkPath,
+                $"{MainResources.Path_to_file} {resultApkPath}",
                 MainResources.Successful,
                 MainResources.OK, MainResources.Open, MainResources.Install
             );
@@ -530,9 +532,9 @@ namespace SaveToGameWpf.Windows
             }
         }
 
-        public void Log(string text)
+        public void Log(string text, bool skipEmpty = true)
         {
-            if (string.IsNullOrEmpty(text))
+            if (skipEmpty && string.IsNullOrEmpty(text))
                 return;
 
             _currentLog?.WriteLine(text);

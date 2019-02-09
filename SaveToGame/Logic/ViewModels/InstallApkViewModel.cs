@@ -431,6 +431,8 @@ namespace SaveToGameWpf.Logic.ViewModels
             visualProgress?.HideIndeterminateLabel();
             visualProgress?.HideBar();
             SetStep(MainResources.AllDone, 6);
+            Log(string.Empty);
+            Log($"{MainResources.Path_to_file} {resultFilePath}");
 
             _globalVariables.LatestModdedApkPath = resultFilePath;
 
@@ -443,7 +445,7 @@ namespace SaveToGameWpf.Logic.ViewModels
             }
 
             string dialogResult = MessBox.ShowDial(
-                MainResources.Path_to_file + resultFilePath,
+                $"{MainResources.Path_to_file} {resultFilePath}",
                 MainResources.Successful,
                 MainResources.OK, MainResources.Open, MainResources.Install
             );
