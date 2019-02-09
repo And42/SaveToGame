@@ -421,6 +421,9 @@ Move the program to the folder with the write access or disable the portable ope
   <data name="ShowSources" xml:space="preserve">
     <value>Source code</value>
   </data>
+  <data name="AdbNoDevices" xml:space="preserve">
+    <value>No devices found. Make sure your device is connected to the computer with the adb debugging turned on</value>
+  </data>
   <data name="Refresh" xml:space="preserve">
     <value>Refresh</value>
   </data>

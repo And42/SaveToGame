@@ -88,6 +88,15 @@ namespace SaveToGameWpf.Resources.Localizations {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Не удалось найти подключённые устройства. Убедитесь, что устройство подключено к компьютеру, и на нём активирован режим отладки по usb.
+        /// </summary>
+        public static string AdbNoDevices {
+            get {
+                return ResourceManager.GetString("AdbNoDevices", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Добавление данных.
         /// </summary>
         public static string AddingData {

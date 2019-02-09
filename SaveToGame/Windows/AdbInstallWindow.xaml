@@ -55,7 +55,7 @@
                     </ItemsControl>
                 </ScrollViewer>
             </Border>
-            <TextBox x:Name="AdbLogBox" Grid.Row="1" IsReadOnly="True" Text="{Binding AdbLog.Value, Mode=OneWay}"/>
+            <TextBox x:Name="AdbLogBox" Grid.Row="1" IsReadOnly="True" Text="{Binding AdbLog.Value, Mode=OneWay}" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto"/>
 
             <Border Grid.Row="0" Grid.RowSpan="2" Background="#33000000" Visibility="{Binding Processing.Value, Converter={StaticResource TrueToVisibleConverter}}">
                 <fa:ImageAwesome Icon="Refresh" Spin="True" Height="24" Width="24" Foreground="{DynamicResource ElementInverted}"/>

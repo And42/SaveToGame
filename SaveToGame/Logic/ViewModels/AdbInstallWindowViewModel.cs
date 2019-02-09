@@ -7,6 +7,7 @@ using JetBrains.Annotations;
 using MVVM_Tools.Code.Commands;
 using MVVM_Tools.Code.Providers;
 using SaveToGameWpf.Logic.Utils;
+using SaveToGameWpf.Resources.Localizations;
 
 namespace SaveToGameWpf.Logic.ViewModels
 {
@@ -108,6 +109,9 @@ namespace SaveToGameWpf.Logic.ViewModels
 
             Devices.Clear();
             deviceModels.ForEach(Devices.Add);
+
+            if (deviceModels.Length == 0)
+                AdbLog.Value = MainResources.AdbNoDevices;
 
             Processing.Value = false;
         }

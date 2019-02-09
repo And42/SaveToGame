@@ -422,6 +422,9 @@
   <data name="ShowSources" xml:space="preserve">
     <value>Исходный код</value>
   </data>
+  <data name="AdbNoDevices" xml:space="preserve">
+    <value>Не удалось найти подключённые устройства. Убедитесь, что устройство подключено к компьютеру, и на нём активирован режим отладки по usb</value>
+  </data>
   <data name="Refresh" xml:space="preserve">
     <value>Обновить</value>
   </data>
