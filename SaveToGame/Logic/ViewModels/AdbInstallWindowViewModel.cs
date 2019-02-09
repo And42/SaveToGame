@@ -110,8 +110,7 @@ namespace SaveToGameWpf.Logic.ViewModels
             Devices.Clear();
             deviceModels.ForEach(Devices.Add);
 
-            if (deviceModels.Length == 0)
-                AdbLog.Value = MainResources.AdbNoDevices;
+            AdbLog.Value = deviceModels.Length == 0 ? MainResources.AdbNoDevices : string.Empty;
 
             Processing.Value = false;
         }
