@@ -54,7 +54,7 @@ namespace SaveToGameWpf.Logic.Utils
 
             bool fileDownloaded;
 
-            const string jreUrl = @"https://storage.googleapis.com/savetogame/jre_1.7.zip";
+            const string jreUrl = @"https://pixelcurves.ams3.digitaloceanspaces.com/SaveToGame/jre_1.7.zip";
             string fileLocation = Path.Combine(_globalVariables.AppDataPath, "jre.zip");
 
             LDirectory.CreateDirectory(_globalVariables.AppDataPath);

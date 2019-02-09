@@ -39,7 +39,7 @@ namespace SaveToGameWpf.Logic.Utils
 
         public void CheckForUpdate()
         {
-            WebUtils.DownloadStringAsync(new Uri("https://storage.googleapis.com/savetogame/config.json"), args =>
+            WebUtils.DownloadStringAsync(new Uri("https://pixelcurves.ams3.digitaloceanspaces.com/SaveToGame/config.json"), args =>
             {
                 if (args.Error != null)
                     return;
