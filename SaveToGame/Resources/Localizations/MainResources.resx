@@ -422,4 +422,7 @@
   <data name="ShowSources" xml:space="preserve">
     <value>Исходный код</value>
   </data>
+  <data name="Refresh" xml:space="preserve">
+    <value>Обновить</value>
+  </data>
 </root>

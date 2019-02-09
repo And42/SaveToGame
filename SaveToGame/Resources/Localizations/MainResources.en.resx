@@ -421,4 +421,7 @@ Move the program to the folder with the write access or disable the portable ope
   <data name="ShowSources" xml:space="preserve">
     <value>Source code</value>
   </data>
+  <data name="Refresh" xml:space="preserve">
+    <value>Refresh</value>
+  </data>
 </root>

@@ -680,6 +680,15 @@ namespace SaveToGameWpf.Resources.Localizations {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Обновить.
+        /// </summary>
+        public static string Refresh {
+            get {
+                return ResourceManager.GetString("Refresh", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Сохранение.
         /// </summary>
         public static string Save {

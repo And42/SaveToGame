@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:viewModels="clr-namespace:SaveToGameWpf.Logic.ViewModels"
         xmlns:fa="http://schemas.fontawesome.io/icons/"
+        xmlns:localizations="clr-namespace:SaveToGameWpf.Resources.Localizations"
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen" 
         Style="{StaticResource CommonWindowStyle}"
@@ -62,7 +63,7 @@
         </Grid>
 
         <StackPanel Grid.Row="1" Margin="0,5,0,0" Orientation="Horizontal">
-            <Button Content="Обновить" Command="{Binding LoadDataCommand}"/>
+            <Button Content="{x:Static localizations:MainResources.Refresh}" Command="{Binding LoadDataCommand}"/>
         </StackPanel>
     </Grid>
 </Window>
