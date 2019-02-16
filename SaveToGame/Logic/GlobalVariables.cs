@@ -9,6 +9,8 @@ namespace SaveToGameWpf.Logic
 {
     public class GlobalVariables
     {
+        public const int LatestSettingsVersion = 1;
+
         /// <summary>
         /// ../AppData/Roaming/SaveToGame
         /// </summary>

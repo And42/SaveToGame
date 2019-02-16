@@ -17,8 +17,6 @@ namespace Interfaces.OrganisationItems
 
         bool Notifications { get; set; }
 
-        bool SettingsMigrated { get; set; }
-
         int Version { get; set; }
     }
 }

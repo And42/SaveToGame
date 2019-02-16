@@ -1,5 +1,4 @@
-﻿using System;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -15,7 +14,6 @@ using SaveToGameWpf.Logic.Classes;
 using SaveToGameWpf.Logic.OrganisationItems;
 using SaveToGameWpf.Logic.Utils;
 using SaveToGameWpf.Logic.ViewModels;
-using SaveToGameWpf.Properties;
 using SaveToGameWpf.Resources.Localizations;
 using SaveToGameWpf.Windows;
 using SettingsManager;
@@ -43,7 +41,7 @@ namespace SaveToGameWpf
             base.OnStartup(e);
             _rootDiContainer = SetupDI();
             
-            MigrateSettings();
+            MigrateSettings(_rootDiContainer.Resolve<IAppSettings>());
             var globalVariables = _rootDiContainer.Resolve<GlobalVariables>();
             CheckForFiles(globalVariables);
             CheckPortability(globalVariables);
@@ -189,44 +187,29 @@ namespace SaveToGameWpf
             return builder.Build();
         }
 
-        private void MigrateSettings()
+        private static void MigrateSettings([NotNull] IAppSettings latestSettings)
         {
-            IAppSettings newSettings = _rootDiContainer.Resolve<IAppSettings>();
-
-            if (newSettings.SettingsMigrated)
+            int currentVersion = latestSettings.Version;
+            if (currentVersion == GlobalVariables.LatestSettingsVersion)
                 return;
 
-            Settings oldSettings = Settings.Default;
+            if (currentVersion < 0)
+                currentVersion = 0;
 
-            if (oldSettings.UpgradeRequired)
+            while (currentVersion < GlobalVariables.LatestSettingsVersion)
             {
-                oldSettings.Upgrade();
-                oldSettings.UpgradeRequired = false;
-                oldSettings.Save();
+                switch (currentVersion)
+                {
+                    case 0:
+                        currentVersion = 1;
+                        break;
+                }
             }
 
-            // copy setting values
-            newSettings.AlternativeSigning = oldSettings.AlternativeSigning;
-            newSettings.BackupType = oldSettings.BackupType;
-            newSettings.Language = oldSettings.Language;
-            newSettings.Notifications = oldSettings.Notifications;
-            newSettings.PopupMessage = oldSettings.PopupMessage;
-            newSettings.Theme = oldSettings.Theme;
+            if (currentVersion > GlobalVariables.LatestSettingsVersion)
+                currentVersion = GlobalVariables.LatestSettingsVersion;
 
-            // delete old setting files
-            string appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-            string settingsParentDir = Path.Combine(appDataPath, "ProgrammingMachines");
-            if (LDirectory.Exists(settingsParentDir))
-            {
-                string[] appSettingDirs = LDirectory.GetDirectories(settingsParentDir, "SaveToGame.exe_*");
-                foreach (string appSettingDir in appSettingDirs)
-                    LDirectory.Delete(appSettingDir, true);
-
-                if (!LDirectory.EnumerateFileSystemEntries(settingsParentDir).Any())
-                    LDirectory.Delete(settingsParentDir, true);
-            }
-
-            newSettings.SettingsMigrated = true;
+            latestSettings.Version = currentVersion;
         }
     }
 }
