@@ -9,7 +9,9 @@ namespace SaveToGameWpf.Logic.Utils
 {
     public class TempUtils
     {
-        private readonly object _providerLock = new object();
+        private volatile int _lastEntry;
+        private readonly object _entryLock = new object();
+
         private readonly string _tempFolder;
 
         private class TempFolderProvider : ITempFolderProvider
@@ -23,10 +25,7 @@ namespace SaveToGameWpf.Logic.Utils
 
             public string CreateTempFolder()
             {
-                return _tempUtils.CreateElement(
-                     nameProvider: index => $"temp_folder_{index}",
-                     elementCreator: LDirectory.CreateDirectory
-                );
+                return _tempUtils.CreateElement(LDirectory.CreateDirectory);
             }
         }
 
@@ -41,10 +40,7 @@ namespace SaveToGameWpf.Logic.Utils
 
             public string CreateTempFile()
             {
-                return _tempUtils.CreateElement(
-                    nameProvider: index => $"temp_file_{index}",
-                    elementCreator: filePath => LFile.Create(filePath).Close()
-                );
+                return _tempUtils.CreateElement(filePath => LFile.Create(filePath).Close());
             }
         }
 
@@ -53,6 +49,9 @@ namespace SaveToGameWpf.Logic.Utils
         )
         {
             _tempFolder = globalVariables.TempPath;
+
+            if (LDirectory.Exists(_tempFolder) && LDirectory.EnumerateFileSystemEntries(_tempFolder).Any())
+                LDirectory.Delete(_tempFolder, true);
         }
 
         [NotNull]
@@ -68,32 +67,28 @@ namespace SaveToGameWpf.Logic.Utils
         }
 
         [NotNull]
-        private string CreateElement([NotNull] Func<int, string> nameProvider, [NotNull] Action<string> elementCreator)
+        private string CreateElement([NotNull] Action<string> elementCreator)
         {
-            if (nameProvider == null)
-                throw new ArgumentNullException(nameof(nameProvider));
             if (elementCreator == null)
                 throw new ArgumentNullException(nameof(elementCreator));
 
-            lock (_providerLock)
+            if (!LDirectory.Exists(_tempFolder))
+                LDirectory.CreateDirectory(_tempFolder);
+
+            int entryIndex;
+            lock (_entryLock)
             {
-                if (!LDirectory.Exists(_tempFolder))
-                    LDirectory.CreateDirectory(_tempFolder);
+                if (_lastEntry == int.MaxValue)
+                    _lastEntry = 1;
+                else
+                    _lastEntry++;
 
-                string[] existingEntries = LDirectory.EnumerateFileSystemEntries(_tempFolder).Select(Path.GetFileName).ToArray();
-
-                for (int index = 1; ; index++)
-                {
-                    string fileName = nameProvider(index);
-
-                    if (existingEntries.Contains(fileName))
-                        continue;
-
-                    string filePath = Path.Combine(_tempFolder, fileName);
-                    elementCreator(filePath);
-                    return filePath;
-                }
+                entryIndex = _lastEntry;
             }
+
+            string filePath = Path.Combine(_tempFolder, $"temp_entry_{entryIndex}");
+            elementCreator(filePath);
+            return filePath;
         }
     }
 }
