@@ -357,12 +357,12 @@
         </member>
         <member name="T:AndroidHelper.Logic.Error">
             <summary>
-            Êëàññ îäíîé îøèáêè
+            Класс одной ошибки
             </summary>
         </member>
         <member name="T:AndroidHelper.Logic.Error.ErrorType">
             <summary>
-            Òèï îøèáêè
+            Тип ошибки
             </summary>
         </member>
         <member name="F:AndroidHelper.Logic.Error.ErrorType.Error_retrieving_parent_for_item">
@@ -382,36 +382,36 @@
         </member>
         <member name="F:AndroidHelper.Logic.Error.ErrorType.None">
             <summary>
-            Íåò ïîäõîäÿùåãî òèïà
+            Нет подходящего типа
             </summary>
         </member>
         <member name="F:AndroidHelper.Logic.Error.File">
             <summary>
-            Ôàéë ñ îøèáêîé
+            Файл с ошибкой
             </summary>
         </member>
         <member name="F:AndroidHelper.Logic.Error.Line">
             <summary>
-            Ñòðîêà ñ îøèáêîé
+            Строка с ошибкой
             </summary>
         </member>
         <member name="F:AndroidHelper.Logic.Error.Message">
             <summary>
-            Ñîîáùåíèå
+            Сообщение
             </summary>
         </member>
         <member name="F:AndroidHelper.Logic.Error.Type">
             <summary>
-            Òèï îøèáêè
+            Тип ошибки
             </summary>
         </member>
         <member name="M:AndroidHelper.Logic.Error.#ctor(System.String,System.Int32,System.String)">
             <summary>
-            Ñîçäà¸ò ýêçåìïëÿð êëàññà Îøèáêè íà îñíîâàíèè ôàéëà, ñòðîêè è ñîîáùåíèÿ
+            Создаёт экземпляр класса Ошибки на основании файла, строки и сообщения
             </summary>
-            <param name="file">Ôàéë ñ îøèáêîé</param>
-            <param name="line">Ñòðîêà ñ îøèáêîé</param>
-            <param name="message">Ñîîáùåíèå</param>
+            <param name="file">Файл с ошибкой</param>
+            <param name="line">Строка с ошибкой</param>
+            <param name="message">Сообщение</param>
         </member>
         <member name="P:AndroidHelper.Logic.Interfaces.IApktool.JavaPath">
             <summary>
