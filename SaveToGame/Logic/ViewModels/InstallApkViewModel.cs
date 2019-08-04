@@ -315,18 +315,13 @@ namespace SaveToGameWpf.Logic.ViewModels
                             progressNotifier: null
                         );
 
-                        IEnumerable<string> filesToAdd = LDirectory.EnumerateFiles(obbParts.TempFolder);
+                        string assetsDir = Path.Combine(stgContainerExtracted.TempFolder, "assets", "111111222222333333");
+                        LDirectory.CreateDirectory(assetsDir);
 
+                        IEnumerable<string> filesToAdd = LDirectory.EnumerateFiles(obbParts.TempFolder);
                         foreach (var file in filesToAdd)
                         {
-                            LFile.Copy(
-                                file,
-                                Path.Combine(
-                                    stgContainerExtracted.TempFolder,
-                                    "assets", "111111222222333333",
-                                    Path.GetFileName(file)
-                                )
-                            );
+                            LFile.Copy(file, Path.Combine(assetsDir, Path.GetFileName(file)));
                         }
                     }
                 }
