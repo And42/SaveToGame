@@ -11,7 +11,7 @@ namespace SaveToGameWpf.Logic.Utils
     {
         private volatile int _lastEntry;
         private readonly object _entryLock = new object();
-
+        [NotNull]
         private readonly string _tempFolder;
 
         private class TempFolderProvider : ITempFolderProvider

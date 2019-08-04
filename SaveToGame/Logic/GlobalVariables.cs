@@ -12,71 +12,93 @@ namespace SaveToGameWpf.Logic
         public const int LatestSettingsVersion = 1;
 
         /// <summary>
-        /// ../AppData/Roaming/SaveToGame
+        /// ../AppData/Roaming/SaveToGame or exe_folder/data
         /// </summary>
+        [NotNull]
         public readonly string AppDataPath;
 
         /// <summary>
         /// ../AppData/Roaming/SaveToGame/temp
         /// </summary>
+        [NotNull]
         public readonly string TempPath;
 
         /// <summary>
         /// exe_folder/exe
         /// </summary>
+        [NotNull]
         public readonly string PathToExe;
 
         /// <summary>
         /// exe_folder
         /// </summary>
+        [NotNull]
         public readonly string PathToExeFolder;
 
         /// <summary>
         /// exe_folder/Resources
         /// </summary>
+        [NotNull]
         public readonly string PathToResources;
 
         /// <summary>
         /// exe_folder/Resources/apktool.jar
         /// </summary>
+        [NotNull]
         public readonly string ApktoolPath;
 
         /// <summary>
         /// exe_folder/Resources/baksmali.jar
         /// </summary>
+        [NotNull]
         public readonly string BaksmaliPath;
 
         /// <summary>
         /// exe_folder/Resources/smali.jar
         /// </summary>
+        [NotNull]
         public readonly string SmaliPath;
 
         /// <summary>
         /// exe_folder/Resources/signapk.jar
         /// </summary>
+        [NotNull]
         public readonly string SignApkPath;
 
         /// <summary>
         /// exe_folder/Resources/testkey.x509.pem
         /// </summary>
+        [NotNull]
         public readonly string DefaultKeyPemPath;
 
         /// <summary>
         /// exe_folder/Resources/testkey.pk8
-        /// </summary>
+        /// </summary>]
+        [NotNull]
         public readonly string DefaultKeyPkPath;
 
+        /// <summary>
+        /// ../AppData/Roaming/SaveToGame/jre
+        /// </summary>
+        [NotNull]
         public readonly string PathToPortableJre;
 
         /// <summary>
         /// exe_folder/Resources/jre/bin/java.exe
         /// </summary>
+        [NotNull]
         public readonly string PathToPortableJavaExe;
 
+        /// <summary>
+        /// exe_folder/Resources/platform-tools/adb.exe
+        /// </summary>
+        [NotNull]
         public readonly string AdbPath;
 
+        [NotNull]
         public readonly IClient ErrorClient = new Client(apiKey: "1065fd5bfd52ab837da209f8354b79cb");
 
+        [NotNull]
         public readonly string AdditionalFilePassword = "Ub82X8:Hng6t=C+'mx";
 
         public readonly bool IsPortable;
@@ -86,6 +108,10 @@ namespace SaveToGameWpf.Logic
         /// </summary>
         public readonly bool? CanWriteToAppData;
 
+        /// <summary>
+        /// exe_folder/portable
+        /// </summary>
+        [NotNull]
         public readonly string PortableSwitchFile;
 
         [CanBeNull]
@@ -94,7 +120,7 @@ namespace SaveToGameWpf.Logic
         public GlobalVariables()
         {
             PathToExe = Assembly.GetExecutingAssembly().Location;
-            PathToExeFolder = Path.GetDirectoryName(PathToExe);
+            PathToExeFolder = Path.GetDirectoryName(PathToExe) ?? "";
             PortableSwitchFile = Path.Combine(PathToExeFolder, "portable");
             IsPortable = LFile.Exists(PortableSwitchFile);
 
@@ -126,8 +152,7 @@ namespace SaveToGameWpf.Logic
                 {
                     LDirectory.CreateDirectory(AppDataPath);
                     string tempFile = Path.Combine(AppDataPath, "write_test");
-                    using (LFile.Create(tempFile))
-                    { }
+                    using (LFile.Create(tempFile)) {}
                     LFile.Delete(tempFile);
                     CanWriteToAppData = true;
                 }
