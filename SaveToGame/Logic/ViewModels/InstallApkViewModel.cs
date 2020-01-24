@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
@@ -30,6 +31,8 @@ namespace SaveToGameWpf.Logic.ViewModels
 {
     public class InstallApkViewModel : BindableBase, IInstallApkViewModel
     {
+        private static readonly Regex PackageRegex = new Regex(@"package=""(?<packageName>[^""]+)""");
+
         [NotNull] private readonly IAppSettings _settings;
         [NotNull] private readonly NotificationManager _notificationManager;
         [NotNull] private readonly TempUtils _tempUtils;
@@ -348,7 +351,7 @@ namespace SaveToGameWpf.Logic.ViewModels
                 {
                     string pathToManifest = Path.Combine(stgContainerExtracted.TempFolder, "AndroidManifest.xml");
 
-                    string sourcePackageName;
+                    string sourcePackageName = null;
                     using (var sourceManifest = AndroidHelper.Logic.Utils.TempUtils.UseTempFile(tempFileProvider))
                     {
                         apktool.ExtractSimpleManifest(
@@ -357,7 +360,11 @@ namespace SaveToGameWpf.Logic.ViewModels
                             tempFolderProvider: tempFolderProvider
                         );
 
-                        sourcePackageName = new AndroidManifest(sourceManifest.TempFile).Package;
+                        string manifestText = File.ReadAllText(sourceManifest.TempFile, Encoding.UTF8);
+
+                        Match packageNameMatch = PackageRegex.Match(manifestText);
+                        if (packageNameMatch.Success)
+                            sourcePackageName = packageNameMatch.Groups["packageName"].Value;
                     }
 
                     LFile.WriteAllText(
