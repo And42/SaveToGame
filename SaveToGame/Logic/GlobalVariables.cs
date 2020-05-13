@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using Bugsnag;
@@ -118,7 +119,7 @@ namespace SaveToGameWpf.Logic
         
         public GlobalVariables()
         {
-            PathToExe = Assembly.GetExecutingAssembly().Location;
+            PathToExe = Process.GetCurrentProcess().MainModule.FileName;
             PathToExeFolder = Path.GetDirectoryName(PathToExe) ?? "";
             PortableSwitchFile = Path.Combine(PathToExeFolder, "portable");
             IsPortable = File.Exists(PortableSwitchFile);
