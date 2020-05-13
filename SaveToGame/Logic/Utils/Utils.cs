@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using ICSharpCode.SharpZipLib.Zip;
 using Interfaces.OrganisationItems;
 using JetBrains.Annotations;
-using LongPaths.Logic;
 using SaveToGameWpf.Resources.Localizations;
 using SaveToGameWpf.Windows;
 
@@ -57,7 +56,7 @@ namespace SaveToGameWpf.Logic.Utils
             const string jreUrl = @"https://pixelcurves.ams3.digitaloceanspaces.com/SaveToGame/jre_1.7.zip";
             string fileLocation = Path.Combine(_globalVariables.AppDataPath, "jre.zip");
 
-            LDirectory.CreateDirectory(_globalVariables.AppDataPath);
+            Directory.CreateDirectory(_globalVariables.AppDataPath);
 
             using (var client = new WebClient())
             {
@@ -100,7 +99,7 @@ namespace SaveToGameWpf.Logic.Utils
                     await Task.Factory.StartNew(() => zipFile.ExtractAll(_globalVariables.PathToPortableJre));
                 }
 
-                LFile.Delete(fileLocation);
+                File.Delete(fileLocation);
             }
 
             visualProgress.HideIndeterminateLabel();

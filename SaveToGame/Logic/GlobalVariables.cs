@@ -3,7 +3,6 @@ using System.IO;
 using System.Reflection;
 using Bugsnag;
 using JetBrains.Annotations;
-using LongPaths.Logic;
 
 namespace SaveToGameWpf.Logic
 {
@@ -122,7 +121,7 @@ namespace SaveToGameWpf.Logic
             PathToExe = Assembly.GetExecutingAssembly().Location;
             PathToExeFolder = Path.GetDirectoryName(PathToExe) ?? "";
             PortableSwitchFile = Path.Combine(PathToExeFolder, "portable");
-            IsPortable = LFile.Exists(PortableSwitchFile);
+            IsPortable = File.Exists(PortableSwitchFile);
 
             AppDataPath =
                 IsPortable
@@ -150,10 +149,10 @@ namespace SaveToGameWpf.Logic
             {
                 try
                 {
-                    LDirectory.CreateDirectory(AppDataPath);
+                    Directory.CreateDirectory(AppDataPath);
                     string tempFile = Path.Combine(AppDataPath, "write_test");
-                    using (LFile.Create(tempFile)) {}
-                    LFile.Delete(tempFile);
+                    using (File.Create(tempFile)) {}
+                    File.Delete(tempFile);
                     CanWriteToAppData = true;
                 }
                 catch (UnauthorizedAccessException)
@@ -163,7 +162,7 @@ namespace SaveToGameWpf.Logic
             }
             else
             {
-                LDirectory.CreateDirectory(AppDataPath);
+                Directory.CreateDirectory(AppDataPath);
             }
         }
     }

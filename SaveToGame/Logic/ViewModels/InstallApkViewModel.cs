@@ -15,7 +15,6 @@ using ICSharpCode.SharpZipLib.Zip;
 using Interfaces.OrganisationItems;
 using Interfaces.ViewModels;
 using JetBrains.Annotations;
-using LongPaths.Logic;
 using MVVM_Tools.Code.Classes;
 using MVVM_Tools.Code.Commands;
 using MVVM_Tools.Code.Disposables;
@@ -86,7 +85,7 @@ namespace SaveToGameWpf.Logic.ViewModels
             string iconsFolder = Path.Combine(_globalVariables.PathToResources, "icons");
 
             BitmapSource GetImage(string name) =>
-                LFile.ReadAllBytes(Path.Combine(iconsFolder, name)).ToBitmap().ToBitmapSource();
+                File.ReadAllBytes(Path.Combine(iconsFolder, name)).ToBitmap().ToBitmapSource();
 
             IconsStorage = new AppIconsStorage
             {
@@ -171,7 +170,7 @@ namespace SaveToGameWpf.Logic.ViewModels
         {
             string apkFile = Apk.Value;
 
-            if (string.IsNullOrEmpty(apkFile) || !LFile.Exists(apkFile))
+            if (string.IsNullOrEmpty(apkFile) || !File.Exists(apkFile))
                 return;
 
             using (CreateWorking())
@@ -280,7 +279,7 @@ namespace SaveToGameWpf.Logic.ViewModels
 
                 // creating assets folder for data
                 string stgContainerAssetsPath = Path.Combine(stgContainerExtracted.TempFolder, "assets");
-                LDirectory.CreateDirectory(stgContainerAssetsPath);
+                Directory.CreateDirectory(stgContainerAssetsPath);
 
                 // adding backup
                 if (!string.IsNullOrEmpty(saveFile))
@@ -300,7 +299,7 @@ namespace SaveToGameWpf.Logic.ViewModels
                 // adding external data
                 if (!string.IsNullOrEmpty(androidDataFile))
                 {
-                    LFile.Copy(
+                    File.Copy(
                         androidDataFile,
                         Path.Combine(stgContainerAssetsPath, externalDataInApkName)
                     );
@@ -319,12 +318,12 @@ namespace SaveToGameWpf.Logic.ViewModels
                         );
 
                         string assetsDir = Path.Combine(stgContainerExtracted.TempFolder, "assets", "111111222222333333");
-                        LDirectory.CreateDirectory(assetsDir);
+                        Directory.CreateDirectory(assetsDir);
 
-                        IEnumerable<string> filesToAdd = LDirectory.EnumerateFiles(obbParts.TempFolder);
+                        IEnumerable<string> filesToAdd = Directory.EnumerateFiles(obbParts.TempFolder);
                         foreach (var file in filesToAdd)
                         {
-                            LFile.Copy(file, Path.Combine(assetsDir, Path.GetFileName(file)));
+                            File.Copy(file, Path.Combine(assetsDir, Path.GetFileName(file)));
                         }
                     }
                 }
@@ -340,7 +339,7 @@ namespace SaveToGameWpf.Logic.ViewModels
                         deleteMetaInf: !alternativeSigning
                     );
 
-                    LFile.Copy(
+                    File.Copy(
                         sourceFileName: sourceResigned.TempFile,
                         destFileName: Path.Combine(stgContainerAssetsPath, "install.bin"),
                         overwrite: false
@@ -367,9 +366,9 @@ namespace SaveToGameWpf.Logic.ViewModels
                             sourcePackageName = packageNameMatch.Groups["packageName"].Value;
                     }
 
-                    LFile.WriteAllText(
+                    File.WriteAllText(
                         pathToManifest,
-                        LFile.ReadAllText(pathToManifest, Encoding.UTF8)
+                        File.ReadAllText(pathToManifest, Encoding.UTF8)
                             .Replace("change_package", sourcePackageName)
                             .Replace("@string/app_name", appTitle)
                     );
@@ -380,7 +379,7 @@ namespace SaveToGameWpf.Logic.ViewModels
                     string iconsFolder = Path.Combine(stgContainerExtracted.TempFolder, "res", "mipmap-");
 
                     void DeleteIcon(string folder) =>
-                        LFile.Delete(Path.Combine($"{iconsFolder}{folder}", "ic_launcher.png"));
+                        File.Delete(Path.Combine($"{iconsFolder}{folder}", "ic_launcher.png"));
 
                     DeleteIcon("xxhdpi-v4");
                     DeleteIcon("xhdpi-v4");
@@ -388,7 +387,7 @@ namespace SaveToGameWpf.Logic.ViewModels
                     DeleteIcon("mdpi-v4");
 
                     void WriteIcon(string folder, byte[] imageBytes) =>
-                        LFile.WriteAllBytes(Path.Combine($"{iconsFolder}{folder}", "ic_launcher.png"), imageBytes);
+                        File.WriteAllBytes(Path.Combine($"{iconsFolder}{folder}", "ic_launcher.png"), imageBytes);
 
                     WriteIcon("xxhdpi-v4", xxhdpiBytes);
                     WriteIcon("xhdpi-v4", xhdpiBytes);

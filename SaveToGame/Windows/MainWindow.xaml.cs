@@ -13,7 +13,6 @@ using AndroidHelper.Logic.Interfaces;
 using Interfaces.OrganisationItems;
 using Interfaces.ViewModels;
 using JetBrains.Annotations;
-using LongPaths.Logic;
 using MVVM_Tools.Code.Disposables;
 using SaveToGameWpf.Logic;
 using SaveToGameWpf.Logic.Classes;
@@ -152,9 +151,9 @@ namespace SaveToGameWpf.Windows
 
             #region Проверка на существование файлов
 
-            if (string.IsNullOrEmpty(apkFile) || !LFile.Exists(apkFile) ||
+            if (string.IsNullOrEmpty(apkFile) || !File.Exists(apkFile) ||
                 (ViewModel.SavePlusMess.Value || ViewModel.OnlySave.Value) &&
-                (string.IsNullOrEmpty(saveFile) || !LFile.Exists(saveFile) && !LDirectory.Exists(saveFile))
+                (string.IsNullOrEmpty(saveFile) || !File.Exists(saveFile) && !Directory.Exists(saveFile))
             )
             {
                 HaveError(MainResources.File_or_save_not_selected, MainResources.File_or_save_not_selected);
@@ -321,7 +320,7 @@ namespace SaveToGameWpf.Windows
 
             using (var tempApk = ATempUtils.UseTempFile(tempFileProvider))
             {
-                LFile.Copy(sourceApkPath, tempApk.TempFile, true);
+                File.Copy(sourceApkPath, tempApk.TempFile, true);
 
                 #region Добавление данных
 
@@ -357,7 +356,7 @@ namespace SaveToGameWpf.Windows
 
                         foreach (var (file, assetsName) in fileToAssetsName.Enumerate())
                         {
-                            if (!LFile.Exists(file) || FileUtils.FileLength(file) == 0)
+                            if (!File.Exists(file) || FileUtils.FileLength(file) == 0)
                                 continue;
 
                             using (var tempEncrypted = ATempUtils.UseTempFile(tempFileProvider))
@@ -416,7 +415,7 @@ namespace SaveToGameWpf.Windows
 
                         string saveGameDir = Path.Combine(decompiledFolder.TempFolder, smaliDir, "com", "savegame");
 
-                        LDirectory.CreateDirectory(saveGameDir);
+                        Directory.CreateDirectory(saveGameDir);
 
                         CommonUtils.GenerateAndSaveSmali(
                             filePath: Path.Combine(saveGameDir, "SavesRestoringPortable.smali"),
@@ -438,7 +437,7 @@ namespace SaveToGameWpf.Windows
                                 dataHandler: dataHandler
                             );
 
-                            string[] dexes = LDirectory.GetFiles(folderWithDexes.TempFolder, "*.dex");
+                            string[] dexes = Directory.GetFiles(folderWithDexes.TempFolder, "*.dex");
 
                             ApkModifer.AddFilesToZip(
                                 zipPath: tempApk.TempFile,
@@ -510,7 +509,7 @@ namespace SaveToGameWpf.Windows
 
         private async Task CheckJavaExistence()
         {
-            if (LDirectory.Exists(_globalVariables.PathToPortableJre))
+            if (Directory.Exists(_globalVariables.PathToPortableJre))
                 return;
 
             MessBox.ShowDial(

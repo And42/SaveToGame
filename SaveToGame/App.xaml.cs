@@ -7,8 +7,6 @@ using AndroidHelper.Logic.Interfaces;
 using Autofac;
 using Interfaces.OrganisationItems;
 using Interfaces.ViewModels;
-using JetBrains.Annotations;
-using LongPaths.Logic;
 using SaveToGameWpf.Logic;
 using SaveToGameWpf.Logic.Classes;
 using SaveToGameWpf.Logic.OrganisationItems;
@@ -33,7 +31,7 @@ namespace SaveToGameWpf
             "testkey.x509.pem"
         };
 
-        [NotNull]
+        [JetBrains.Annotations.NotNull]
         private IContainer _rootDiContainer;
 
         protected override void OnStartup(StartupEventArgs e)
@@ -70,7 +68,7 @@ namespace SaveToGameWpf
                 applicationUtils.CheckForUpdate();
         }
 
-        private void CheckPortability([NotNull] GlobalVariables globalVariables)
+        private void CheckPortability([JetBrains.Annotations.NotNull] GlobalVariables globalVariables)
         {
             if (!globalVariables.IsPortable || globalVariables.CanWriteToAppData.Value)
                 return;
@@ -87,12 +85,12 @@ namespace SaveToGameWpf
             Shutdown();
         }
 
-        private void CheckForFiles([NotNull] GlobalVariables globalVariables)
+        private void CheckForFiles([JetBrains.Annotations.NotNull] GlobalVariables globalVariables)
         {
             var resourcesFolder = Path.Combine(globalVariables.PathToExeFolder, "Resources");
 
             string[] notExistingFiles;
-            if (!LDirectory.Exists(resourcesFolder))
+            if (!Directory.Exists(resourcesFolder))
             {
                 notExistingFiles = new[] { resourcesFolder };
             }
@@ -100,7 +98,7 @@ namespace SaveToGameWpf
             {
                 notExistingFiles =
                     NeededFiles.Select(it => Path.Combine(resourcesFolder, it))
-                        .Where(it => !LFile.Exists(it)).ToArray();
+                        .Where(it => !File.Exists(it)).ToArray();
             }
 
             if (notExistingFiles.Length == 0)
@@ -125,7 +123,7 @@ namespace SaveToGameWpf
         }
 
         // ReSharper disable once InconsistentNaming
-        [NotNull]
+        [JetBrains.Annotations.NotNull]
         [SuppressMessage("ReSharper", "RedundantTypeArgumentsOfMethod")]
         private IContainer SetupDI()
         {
@@ -187,7 +185,7 @@ namespace SaveToGameWpf
             return builder.Build();
         }
 
-        private static void MigrateSettings([NotNull] IAppSettings latestSettings)
+        private static void MigrateSettings([JetBrains.Annotations.NotNull] IAppSettings latestSettings)
         {
             int currentVersion = latestSettings.Version;
             if (currentVersion == GlobalVariables.LatestSettingsVersion)

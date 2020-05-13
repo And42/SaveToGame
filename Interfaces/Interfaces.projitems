@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>eddc2212-7e90-4ed4-9de4-3540be53c094</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>Interfaces</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)OrganisationItems\IAppIconsStorage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)OrganisationItems\IAppSettings.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)OrganisationItems\ITaskBarManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)OrganisationItems\IVisualProgress.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModels\IAboutWindowViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModels\IInstallApkViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ViewModels\IMainWindowViewModel.cs" />
+  </ItemGroup>
+</Project>

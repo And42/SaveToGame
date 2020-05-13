@@ -2,7 +2,6 @@
 using System.IO;
 using ICSharpCode.SharpZipLib.Zip;
 using JetBrains.Annotations;
-using LongPaths.Logic;
 using MVVM_Tools.Code.Commands;
 using MVVM_Tools.Code.Providers;
 
@@ -14,18 +13,18 @@ namespace SaveToGameWpf.Logic.Utils
 
         public static void ExtractAll(this ZipFile zip, string folder)
         {
-            LDirectory.Delete(folder, true);
-            LDirectory.CreateDirectory(folder);
+            Directory.Delete(folder, true);
+            Directory.CreateDirectory(folder);
 
             foreach (ZipEntry entry in zip)
             {
                 if (entry.IsDirectory)
                     continue;
 
-                LDirectory.CreateDirectory(Path.Combine(folder, Path.GetDirectoryName(entry.Name) ?? String.Empty));
+                Directory.CreateDirectory(Path.Combine(folder, Path.GetDirectoryName(entry.Name) ?? String.Empty));
 
                 using (var zipStream = zip.GetInputStream(entry))
-                using (var outputStream = LFile.Create(Path.Combine(folder, entry.Name)))
+                using (var outputStream = File.Create(Path.Combine(folder, entry.Name)))
                 {
                     zipStream.CopyTo(outputStream, 4096);
                 }

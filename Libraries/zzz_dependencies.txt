@@ -1,7 +1,0 @@
-﻿C:\Files\Programming\C_Sharp\library_repos\LongPaths\LongPaths\bin\Release\LongPaths.dll
-C:\Files\Programming\C_Sharp\library_repos\SmaliParser\bin\Release\SmaliParser.dll
-C:\Files\Programming\C_Sharp\library_repos\AndroidTranslatorLib\AndroidTranslatorLib\bin\Release\AndroidTranslator.dll
-C:\Files\Programming\C_Sharp\library_repos\MVVM-Tools\MVVM Tools\bin\Release\MVVM_Tools.dll
-C:\Files\Programming\C_Sharp\library_repos\SettingsManager\SettingsManager\bin\Release\SettingsManager.dll
-C:\Files\Programming\C_Sharp\library_repos\AndroidHelper\AndroidHelper\bin\Release\AndroidHelper.dll
-only_dll

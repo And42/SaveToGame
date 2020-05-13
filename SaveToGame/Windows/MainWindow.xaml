@@ -5,8 +5,8 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:controls="clr-namespace:SaveToGameWpf.Controls"
-        xmlns:enums="clr-namespace:SharedData.Enums;assembly=SharedData"
-        xmlns:viewModels1="clr-namespace:Interfaces.ViewModels;assembly=Interfaces"
+        xmlns:enums="clr-namespace:SharedData.Enums"
+        xmlns:viewModels1="clr-namespace:Interfaces.ViewModels"
         mc:Ignorable="d"
 
         Title="{Binding Title.Value, Mode=OneWay}"

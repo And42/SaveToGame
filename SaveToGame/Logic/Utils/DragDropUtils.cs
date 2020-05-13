@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Windows;
-using AndroidHelper.Properties;
+using JetBrains.Annotations;
 
 namespace SaveToGameWpf.Logic.Utils
 {
