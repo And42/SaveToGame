@@ -35,7 +35,10 @@ namespace SaveToGameWpf.Logic.ViewModels
             });
             OpenAppDataFolderCommand = new ActionCommand(() =>
             {
-                Process.Start(globalVariables.AppDataPath);
+                Process.Start(new ProcessStartInfo(globalVariables.AppDataPath)
+                {
+                    UseShellExecute = true
+                });
             });
             OpenSourcesPage = new ActionCommand(() =>
             {
