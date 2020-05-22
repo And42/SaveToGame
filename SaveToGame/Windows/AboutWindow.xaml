@@ -4,9 +4,9 @@
         xmlns:localization="clr-namespace:SaveToGameWpf.Resources.Localizations"
         xmlns:elements="clr-namespace:SaveToGameWpf.Styles.Elements"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:viewModels="clr-namespace:Interfaces.ViewModels"
+        xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
         mc:Ignorable="d"
 
         Title="{x:Static localization:MainResources.AboutProgram}" 
@@ -65,36 +65,36 @@
 
             <TextBlock Grid.Row="1" Grid.Column="0" Style="{StaticResource UsualBlock}" Text="{x:Static localization:MainResources.Developer}"/>
             <TextBlock Grid.Row="1" Grid.Column="1" Style="{StaticResource LinkBlock}"  Text="And42">
-                <i:Interaction.Triggers>
-                    <i:EventTrigger EventName="MouseLeftButtonDown">
-                        <i:InvokeCommandAction Command="{Binding ShowDeveloperCommand}"/>
-                    </i:EventTrigger>
-                </i:Interaction.Triggers>
+                <b:Interaction.Triggers>
+                    <b:EventTrigger EventName="MouseLeftButtonDown">
+                        <b:InvokeCommandAction Command="{Binding ShowDeveloperCommand}"/>
+                    </b:EventTrigger>
+                </b:Interaction.Triggers>
             </TextBlock>
 
             <TextBlock Grid.Row="2" Grid.Column="0" Style="{StaticResource UsualBlock}" Text="{x:Static localization:MainResources.Support}"/>
             <TextBlock Grid.Row="2" Grid.Column="1" Style="{StaticResource LinkBlock}"  Text="4PDA">
-                <i:Interaction.Triggers>
-                    <i:EventTrigger EventName="MouseLeftButtonDown">
-                        <i:InvokeCommandAction Command="{Binding ThankDeveloperCommand}"/>
-                    </i:EventTrigger>
-                </i:Interaction.Triggers>
+                <b:Interaction.Triggers>
+                    <b:EventTrigger EventName="MouseLeftButtonDown">
+                        <b:InvokeCommandAction Command="{Binding ThankDeveloperCommand}"/>
+                    </b:EventTrigger>
+                </b:Interaction.Triggers>
             </TextBlock>
 
             <TextBlock Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" Style="{StaticResource CenteredLinkBlock}" Text="{x:Static localization:MainResources.AppDataFolder}">
-                <i:Interaction.Triggers>
-                    <i:EventTrigger EventName="MouseLeftButtonDown">
-                        <i:InvokeCommandAction Command="{Binding OpenAppDataFolderCommand}"/>
-                    </i:EventTrigger>
-                </i:Interaction.Triggers>
+                <b:Interaction.Triggers>
+                    <b:EventTrigger EventName="MouseLeftButtonDown">
+                        <b:InvokeCommandAction Command="{Binding OpenAppDataFolderCommand}"/>
+                    </b:EventTrigger>
+                </b:Interaction.Triggers>
             </TextBlock>
 
             <TextBlock Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Style="{StaticResource CenteredLinkBlock}" Text="{x:Static localization:MainResources.ShowSources}">
-                <i:Interaction.Triggers>
-                    <i:EventTrigger EventName="MouseLeftButtonDown">
-                        <i:InvokeCommandAction Command="{Binding OpenSourcesPage}"/>
-                    </i:EventTrigger>
-                </i:Interaction.Triggers>
+                <b:Interaction.Triggers>
+                    <b:EventTrigger EventName="MouseLeftButtonDown">
+                        <b:InvokeCommandAction Command="{Binding OpenSourcesPage}"/>
+                    </b:EventTrigger>
+                </b:Interaction.Triggers>
             </TextBlock>
         </Grid>
     </Grid>
