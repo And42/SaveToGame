@@ -1,6 +1,4 @@
-﻿using System;
-using System.Windows.Forms;
-using Microsoft.WindowsAPICodePack.Dialogs;
+﻿using Microsoft.WindowsAPICodePack.Dialogs;
 using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
 
 namespace SaveToGameWpf.Logic.Utils
@@ -51,27 +49,14 @@ namespace SaveToGameWpf.Logic.Utils
 
         public static (bool success, string folderPath) PickFolder(string title = null)
         {
-            // XP
-            if (Environment.OSVersion.Version.Major < 6)
+            var dialog = new CommonOpenFileDialog
             {
-                var dialog = new FolderBrowserDialog
-                {
-                    Description = title
-                };
+                Title = title,
+                IsFolderPicker = true,
+                Multiselect = false
+            };
 
-                return dialog.ShowDialog() == DialogResult.OK ? (true, dialog.SelectedPath) : (false, null);
-            }
-            else
-            {
-                var dialog = new CommonOpenFileDialog
-                {
-                    Title = title,
-                    IsFolderPicker = true,
-                    Multiselect = false
-                };
-
-                return dialog.ShowDialog() == CommonFileDialogResult.Ok ? (true, dialog.FileName) : (false, null);
-            }
+            return dialog.ShowDialog() == CommonFileDialogResult.Ok ? (true, dialog.FileName) : (false, null);
         }
     }
 }
