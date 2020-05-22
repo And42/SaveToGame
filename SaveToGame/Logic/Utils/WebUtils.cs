@@ -24,12 +24,21 @@ namespace SaveToGameWpf.Logic.Utils
         {
             try
             {
-                Process.Start(link);
+                Process.Start(new ProcessStartInfo(link)
+                {
+                    UseShellExecute = true
+                });
+                return;
             }
             catch (Exception)
             {
-                Process.Start(new ProcessStartInfo("IExplore.exe", link));
+                // ignored
             }
+
+            Process.Start(new ProcessStartInfo("IExplore.exe", link)
+            {
+                UseShellExecute = true
+            });
         }
     }
 }
