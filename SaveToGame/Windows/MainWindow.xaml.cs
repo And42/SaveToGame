@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
@@ -408,12 +409,27 @@ namespace SaveToGameWpf.Windows
                         if (manifest.MainSmaliFile == null)
                             throw new Exception("main smali file not found");
 
-                        // using this instead of just pasting "folder/smali" as there can be
-                        // no smali folder sometimes (smali_1, etc)
-                        string smaliDir = manifest.MainSmaliPath.Substring(decompiledFolder.TempFolder.Length + 1);
-                        smaliDir = smaliDir.Substring(0, smaliDir.IndexOf(Path.DirectorySeparatorChar));
+                        string smaliDir;
+                        DirectoryInfo lastDir = new DirectoryInfo(decompiledFolder.TempFolder)
+                            .EnumerateDirectories("smali_classes*")
+                            .Select(it => (dir: it, strIndex: it.Name.Substring("smali_classes".Length)))
+                            .Select(it => (it.dir, index: int.TryParse(it.strIndex, out int index) ? index : 0))
+                            .OrderByDescending(it => it.index)
+                            .Select(it => it.dir)
+                            .FirstOrDefault();
 
-                        string saveGameDir = Path.Combine(decompiledFolder.TempFolder, smaliDir, "com", "savegame");
+                        if (lastDir != null)
+                        {
+                            smaliDir = lastDir.FullName;
+                        }
+                        else
+                        {
+                            smaliDir = manifest.MainSmaliPath.Substring(decompiledFolder.TempFolder.Length + 1);
+                            smaliDir = smaliDir.Substring(0, smaliDir.IndexOf(Path.DirectorySeparatorChar));
+                            smaliDir = Path.Combine(decompiledFolder.TempFolder, smaliDir);
+                        }
+
+                        string saveGameDir = Path.Combine(smaliDir, "com", "savegame");
 
                         Directory.CreateDirectory(saveGameDir);
 
