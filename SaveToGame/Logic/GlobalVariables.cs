@@ -119,7 +119,7 @@ namespace SaveToGameWpf.Logic
         
         public GlobalVariables()
         {
-            PathToExe = Process.GetCurrentProcess().MainModule.FileName;
+            PathToExe = Assembly.GetExecutingAssembly().Location;
             PathToExeFolder = Path.GetDirectoryName(PathToExe) ?? "";
             PortableSwitchFile = Path.Combine(PathToExeFolder, "portable");
             IsPortable = File.Exists(PortableSwitchFile);
