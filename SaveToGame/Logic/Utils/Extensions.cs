@@ -13,7 +13,8 @@ namespace SaveToGameWpf.Logic.Utils
 
         public static void ExtractAll(this ZipFile zip, string folder)
         {
-            Directory.Delete(folder, true);
+            if (Directory.Exists(folder))
+                Directory.Delete(folder, true);
             Directory.CreateDirectory(folder);
 
             foreach (ZipEntry entry in zip)
