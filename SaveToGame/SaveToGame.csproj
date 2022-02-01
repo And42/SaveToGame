@@ -37,7 +37,7 @@
     <PackageReference Include="MVVM_Tools" Version="1.6.1" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="SettingsManager" Version="1.1.4" />
-    <PackageReference Include="SharpZipLib" Version="1.2.0" />
+    <PackageReference Include="SharpZipLib" Version="1.3.3" />
     <PackageReference Include="System.Drawing.Common" Version="4.7.0" />
     <PackageReference Include="WindowsAPICodePack-Shell" Version="1.1.1" />
     <PackageReference Include="WPF.Shell.Integration.Library" Version="2.0.0" />
