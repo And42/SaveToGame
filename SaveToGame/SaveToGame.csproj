@@ -35,7 +35,7 @@
     <PackageReference Include="JetBrains.Annotations" Version="2020.1.0" />
     <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.19" />
     <PackageReference Include="MVVM_Tools" Version="1.6.1" />
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="SettingsManager" Version="1.1.4" />
     <PackageReference Include="SharpZipLib" Version="1.2.0" />
     <PackageReference Include="System.Drawing.Common" Version="4.7.0" />
