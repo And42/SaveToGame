@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net6.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
     <UseWindowsForms>true</UseWindowsForms>
     <Description>Добавление сохранений в андроид приложения</Description>
@@ -15,6 +15,7 @@
     <RootNamespace>SaveToGameWpf</RootNamespace>
     <ApplicationIcon>App_Icon.ico</ApplicationIcon>
     <ApplicationManifest>app.manifest</ApplicationManifest>
+    <LangVersion>default</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
