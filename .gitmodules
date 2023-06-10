@@ -1,9 +1,0 @@
-[submodule "submodules/AndroidHelper"]
-	path = submodules/AndroidHelper
-	url = git@github.com:And42/AndroidHelper.git
-[submodule "submodules/SettingsManager"]
-	path = submodules/SettingsManager
-	url = git@github.com:And42/SettingsManager.git
-[submodule "submodules/MVVM_Tools"]
-	path = submodules/MVVM_Tools
-	url = git@github.com:And42/MVVM-Tools.git
