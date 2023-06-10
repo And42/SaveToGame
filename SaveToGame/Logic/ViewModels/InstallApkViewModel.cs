@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.IO.Compression;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -11,7 +13,6 @@ using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using AndroidHelper.Logic;
 using AndroidHelper.Logic.Interfaces;
-using ICSharpCode.SharpZipLib.Zip;
 using Interfaces.OrganisationItems;
 using Interfaces.ViewModels;
 using JetBrains.Annotations;
@@ -25,6 +26,7 @@ using SaveToGameWpf.Logic.Utils;
 using SaveToGameWpf.Resources.Localizations;
 using SaveToGameWpf.Windows;
 using SharedData.Enums;
+using ZipFile = ICSharpCode.SharpZipLib.Zip.ZipFile;
 
 namespace SaveToGameWpf.Logic.ViewModels
 {
@@ -36,7 +38,7 @@ namespace SaveToGameWpf.Logic.ViewModels
         [NotNull] private readonly NotificationManager _notificationManager;
         [NotNull] private readonly TempUtils _tempUtils;
         [NotNull] private readonly GlobalVariables _globalVariables;
-        [NotNull] private readonly Provider<IApktool> _apktoolProvider;
+        [NotNull] private readonly Provider<IApktoolExtra> _apktoolProvider;
         [NotNull] private readonly Provider<AdbInstallWindow> _adbInstallWindowProvider;
 
         public IAppIconsStorage IconsStorage { get; }
@@ -66,7 +68,7 @@ namespace SaveToGameWpf.Logic.ViewModels
             [NotNull] NotificationManager notificationManager,
             [NotNull] TempUtils tempUtils,
             [NotNull] GlobalVariables globalVariables,
-            [NotNull] Provider<IApktool> apktoolProvider,
+            [NotNull] Provider<IApktoolExtra> apktoolProvider,
             [NotNull] Provider<AdbInstallWindow> adbInstallWindowProvider
         )
         {
@@ -255,7 +257,7 @@ namespace SaveToGameWpf.Logic.ViewModels
                 Path.GetFileNameWithoutExtension(apkFile) + "_mod.apk"
             );
 
-            IApktool apktool = _apktoolProvider.Get();
+            IApktoolExtra apktool = _apktoolProvider.Get();
             IProcessDataHandler dataHandler = new ProcessDataCombinedHandler(Log);
 
             ITempFileProvider tempFileProvider = _tempUtils.CreateTempFileProvider();
@@ -329,14 +331,28 @@ namespace SaveToGameWpf.Logic.ViewModels
                 }
 
                 // adding resigned apk to container
+                using (var sourceWithoutMetaInf = AndroidHelper.Logic.Utils.TempUtils.UseTempFile(tempFileProvider))
+                using (var sourceZipaligned = AndroidHelper.Logic.Utils.TempUtils.UseTempFile(tempFileProvider))
                 using (var sourceResigned = AndroidHelper.Logic.Utils.TempUtils.UseTempFile(tempFileProvider))
                 {
+                    File.Copy(apkFile, sourceWithoutMetaInf.TempFile, overwrite: true);
+
+                    bool deleteMetaInf = !alternativeSigning;
+                    if (deleteMetaInf)
+                        apktool.RemoveMetaInf(sourceWithoutMetaInf.TempFile);
+                    
+                    apktool.ZipAlign(
+                        sourceApkPath: sourceWithoutMetaInf.TempFile,
+                        alignedApkPath: sourceZipaligned.TempFile,
+                        dataHandler: dataHandler
+                    );
+                    
                     apktool.Sign(
-                        sourceApkPath: apkFile,
+                        sourceApkPath: sourceZipaligned.TempFile,
                         signedApkPath: sourceResigned.TempFile,
                         tempFileProvider: tempFileProvider,
                         dataHandler: dataHandler,
-                        deleteMetaInf: !alternativeSigning
+                        deleteMetaInf: false
                     );
 
                     File.Copy(
@@ -351,6 +367,7 @@ namespace SaveToGameWpf.Logic.ViewModels
                     string pathToManifest = Path.Combine(stgContainerExtracted.TempFolder, "AndroidManifest.xml");
 
                     string sourcePackageName = null;
+                    string sourceSharedUserId = null;
                     using (var sourceManifest = AndroidHelper.Logic.Utils.TempUtils.UseTempFile(tempFileProvider))
                     {
                         apktool.ExtractSimpleManifest(
@@ -364,39 +381,82 @@ namespace SaveToGameWpf.Logic.ViewModels
                         Match packageNameMatch = PackageRegex.Match(manifestText);
                         if (packageNameMatch.Success)
                             sourcePackageName = packageNameMatch.Groups["packageName"].Value;
+
+                        Match sharedUserIdMatch = Regex.Match(manifestText, @":sharedUserId=""(?<sharedUserId>[^""]+)""");
+                        if (sharedUserIdMatch.Success)
+                            sourceSharedUserId = sharedUserIdMatch.Groups["sharedUserId"].Value;
                     }
 
-                    File.WriteAllText(
-                        pathToManifest,
+                    string text = 
                         File.ReadAllText(pathToManifest, Encoding.UTF8)
-                            .Replace("change_package", sourcePackageName)
-                            .Replace("@string/app_name", appTitle)
+                            .Replace("package=\"com.programmingmachines.savetogameextractor\"", $"package=\"{sourcePackageName}\"")
+                            .Replace("@string/app_name", appTitle);
+
+                    if (!sourceSharedUserId.IsNullOrEmpty())
+                        text = text.Replace("<manifest ", $"<manifest android:sharedUserId=\"{sourceSharedUserId}\" ");
+                    
+                    File.WriteAllText(pathToManifest, text);
+                }
+
+                // update container target sdk version to be able to install target apk on android <= 6
+                {
+                    int apkSdkVersion;
+                    if (!apktool.TryGetTargetSdkVersion(apkPath: apkFile, out apkSdkVersion))
+                        apkSdkVersion = apktool.GetSdkVersion(apkPath: apkFile);
+
+                    if (apkSdkVersion <= 22)
+                    {
+                        string pathToApktoolYml = Path.Combine(stgContainerExtracted.TempFolder, "apktool.yml");
+                        
+                        string apktoolYmlText = File.ReadAllText(pathToApktoolYml, Encoding.UTF8);
+                        string newApktoolYmlText = Regex.Replace(
+                            input: apktoolYmlText,
+                            pattern: @"targetSdkVersion: '(?<targetSdkVersion>\d+)'",
+                            replacement: "targetSdkVersion: '22'"
+                        );
+                        File.WriteAllText(pathToApktoolYml, newApktoolYmlText, Encoding.UTF8);
+                    }
+                }
+                
+                // update container version code to match target apk version code to be able to install it as an update for older versions
+                {
+                    int versionCode = apktool.GetVersionCode(apkPath: apkFile);
+    
+                    string pathToApktoolYml = Path.Combine(stgContainerExtracted.TempFolder, "apktool.yml");
+                        
+                    string apktoolYmlText = File.ReadAllText(pathToApktoolYml, Encoding.UTF8);
+                    string newApktoolYmlText = Regex.Replace(
+                        input: apktoolYmlText,
+                        pattern: @"versionCode: '(?<versionCode>\d+)'",
+                        replacement: $"versionCode: '{versionCode}'"
                     );
+                    File.WriteAllText(pathToApktoolYml, newApktoolYmlText, Encoding.UTF8);
                 }
 
                 // adding icons
                 {
+                    string resFolder = Path.Combine(stgContainerExtracted.TempFolder, "res");
                     string iconsFolder = Path.Combine(stgContainerExtracted.TempFolder, "res", "mipmap-");
 
-                    void DeleteIcon(string folder) =>
-                        File.Delete(Path.Combine($"{iconsFolder}{folder}", "ic_launcher.png"));
+                    foreach (string dir in Directory.EnumerateDirectories(resFolder, "mipmap-*"))
+                        Directory.Delete(dir, recursive: true);
 
-                    DeleteIcon("xxhdpi-v4");
-                    DeleteIcon("xhdpi-v4");
-                    DeleteIcon("hdpi-v4");
-                    DeleteIcon("mdpi-v4");
+                    void WriteIcon(string folder, byte[] imageBytes)
+                    {
+                        string directory = $"{iconsFolder}{folder}";
+                        Directory.CreateDirectory(directory);
+                        File.WriteAllBytes(Path.Combine(directory, "ic_launcher.png"), imageBytes);
+                    }
 
-                    void WriteIcon(string folder, byte[] imageBytes) =>
-                        File.WriteAllBytes(Path.Combine($"{iconsFolder}{folder}", "ic_launcher.png"), imageBytes);
-
-                    WriteIcon("xxhdpi-v4", xxhdpiBytes);
-                    WriteIcon("xhdpi-v4", xhdpiBytes);
-                    WriteIcon("hdpi-v4", hdpiBytes);
-                    WriteIcon("mdpi-v4", mdpiBytes);
+                    WriteIcon("xxhdpi", xxhdpiBytes);
+                    WriteIcon("xhdpi", xhdpiBytes);
+                    WriteIcon("hdpi", hdpiBytes);
+                    WriteIcon("mdpi", mdpiBytes);
                 }
 
-                // compiling + signing
+                // compiling + aligning + signing
                 using (var compiledContainer = AndroidHelper.Logic.Utils.TempUtils.UseTempFile(tempFileProvider))
+                using (var zipalignedContainer = AndroidHelper.Logic.Utils.TempUtils.UseTempFile(tempFileProvider))
                 {
                     // compiling
                     SetStep(MainResources.StepCompiling, 4);
@@ -416,15 +476,26 @@ namespace SaveToGameWpf.Logic.ViewModels
                         return;
                     }
 
+                    bool deleteMetaInf = !alternativeSigning;
+                    if (deleteMetaInf)
+                        apktool.RemoveMetaInf(fileName: compiledContainer.TempFile);
+
+                    // zipaligning
+                    apktool.ZipAlign(
+                        sourceApkPath: compiledContainer.TempFile,
+                        alignedApkPath: zipalignedContainer.TempFile,
+                        dataHandler: dataHandler
+                    );
+                    
                     // signing
                     SetStep(MainResources.StepSigning, 5);
 
                     apktool.Sign(
-                        sourceApkPath: compiledContainer.TempFile,
+                        sourceApkPath: zipalignedContainer.TempFile,
                         signedApkPath: resultFilePath,
                         tempFileProvider: tempFileProvider,
                         dataHandler: dataHandler,
-                        deleteMetaInf: !alternativeSigning
+                        deleteMetaInf: false
                     );
                 }
             }

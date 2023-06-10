@@ -64,6 +64,24 @@ namespace SaveToGameWpf.Logic
         /// </summary>
         [NotNull]
         public readonly string SignApkPath;
+        
+        /// <summary>
+        /// exe_folder/Resources/apksigner.jar
+        /// </summary>
+        [NotNull]
+        public readonly string ApkSignerPath;
+        
+        /// <summary>
+        /// exe_folder/Resources/zipalign.exe
+        /// </summary>
+        [NotNull]
+        public readonly string ZipalignPath;
+        
+        /// <summary>
+        /// exe_folder/Resources/aapt2.exe
+        /// </summary>
+        [NotNull]
+        public readonly string Aapt2Path;
 
         /// <summary>
         /// exe_folder/Resources/testkey.x509.pem
@@ -142,6 +160,9 @@ namespace SaveToGameWpf.Logic
             BaksmaliPath = Path.Combine(PathToResources, "baksmali.jar");
             SmaliPath = Path.Combine(PathToResources, "smali.jar");
             SignApkPath = Path.Combine(PathToResources, "signapk.jar");
+            ApkSignerPath = Path.Combine(PathToResources, "apksigner.jar");
+            ZipalignPath = Path.Combine(PathToResources, "zipalign.exe");
+            Aapt2Path = Path.Combine(PathToResources, "aapt2.exe");
             DefaultKeyPemPath = Path.Combine(PathToResources, "testkey.x509.pem");
             DefaultKeyPkPath = Path.Combine(PathToResources, "testkey.pk8");
             AdbPath = Path.Combine(PathToResources, "platform-tools", "adb.exe");

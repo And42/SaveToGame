@@ -58,6 +58,8 @@ namespace SaveToGameWpf.Logic.Classes
                             ExtractTarByEntry(pathToBackup, extractedBackup.TempFolder);
 
                             string path = Path.Combine(extractedBackup.TempFolder, "data", "data");
+                            if (!Directory.Exists(path))
+                                break;
 
                             foreach (string dir in Directory.EnumerateDirectories(path))
                             {
@@ -105,6 +107,8 @@ namespace SaveToGameWpf.Logic.Classes
                         using (var extractedBackup = TempUtils.UseTempFolder(tempFolderProvider))
                         {
                             ExtractTarByEntry(pathToBackup, extractedBackup.TempFolder);
+                            if (!Directory.Exists(extractedBackup.TempFolder))
+                                break;
 
                             IEnumerable<string> firstLevelDirs = Directory.EnumerateDirectories(extractedBackup.TempFolder);
 
@@ -307,7 +311,7 @@ namespace SaveToGameWpf.Logic.Classes
             Guard.NotNullArgument(tarFileName, nameof(tarFileName));
             Guard.NotNullArgument(targetDir, nameof(targetDir));
 
-            Directory.Delete(targetDir);
+            FileUtils.CleanUpDirectory(targetDir);
 
             using (var gzipInput = new GZipInputStream(File.OpenRead(tarFileName)))
             {

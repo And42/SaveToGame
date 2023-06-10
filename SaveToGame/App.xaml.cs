@@ -145,11 +145,11 @@ namespace SaveToGameWpf
                     .WithProcessor(new JsonModelProcessor())
                     .Build();
             }).As<IAppSettings>().SingleInstance();
-            builder.Register<Apktool>(c =>
+            builder.Register(c =>
             {
                 var globalVariables = c.Resolve<GlobalVariables>();
 
-                return new Apktool.Builder()
+                Apktool apktool = new Apktool.Builder()
                     .JavaPath(globalVariables.PathToPortableJavaExe)
                     .ApktoolPath(globalVariables.ApktoolPath)
                     .SignApkPath(globalVariables.SignApkPath)
@@ -158,7 +158,16 @@ namespace SaveToGameWpf
                     .DefaultKeyPemPath(globalVariables.DefaultKeyPemPath)
                     .DefaultKeyPkPath(globalVariables.DefaultKeyPkPath)
                     .Build();
-            }).As<IApktool>().SingleInstance();
+
+                var modified = new ApkSignerApktool(
+                    apktool: apktool,
+                    apkSignerPath: globalVariables.ApkSignerPath,
+                    zipalignPath: globalVariables.ZipalignPath,
+                    aapt2Path: globalVariables.Aapt2Path
+                );
+
+                return modified;
+            }).As<IApktool, IApktoolExtra>().SingleInstance();
 
             // basic construction
             builder.RegisterType<ApplicationUtils>().SingleInstance();
