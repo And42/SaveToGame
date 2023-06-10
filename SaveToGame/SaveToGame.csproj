@@ -30,16 +30,16 @@
 
   <ItemGroup>
     <PackageReference Include="AndroidHelper" Version="2.2.2" />
-    <PackageReference Include="Autofac" Version="5.2.0" />
-    <PackageReference Include="Bugsnag" Version="2.2.0" />
+    <PackageReference Include="Autofac" Version="7.0.1" />
+    <PackageReference Include="Bugsnag" Version="3.1.0" />
     <PackageReference Include="FontAwesome.WPF" Version="4.7.0.9" />
-    <PackageReference Include="JetBrains.Annotations" Version="2020.1.0" />
-    <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.19" />
+    <PackageReference Include="JetBrains.Annotations" Version="2022.3.1" />
+    <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.39" />
     <PackageReference Include="MVVM_Tools" Version="1.6.1" />
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="SettingsManager" Version="1.1.4" />
-    <PackageReference Include="SharpZipLib" Version="1.2.0" />
-    <PackageReference Include="System.Drawing.Common" Version="4.7.0" />
+    <PackageReference Include="SharpZipLib" Version="1.4.2" />
+    <PackageReference Include="System.Drawing.Common" Version="7.0.0" />
     <PackageReference Include="WindowsAPICodePack-Shell" Version="1.1.1" />
     <PackageReference Include="WPF.Shell.Integration.Library" Version="2.0.0" />
   </ItemGroup>
