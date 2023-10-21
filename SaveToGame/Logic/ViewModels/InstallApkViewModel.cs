@@ -139,6 +139,94 @@ namespace SaveToGameWpf.Logic.ViewModels
             StartCommand = new ActionCommand(StartCommand_Execute, () => !Working.Value).BindCanExecute(Working);
         }
 
+        private async Task ExecuteMultiple()
+        {
+            const string sourceDir = @"";
+            const string preparedDir = @"";
+            var apkFiles = new List<string>();
+            var dataFiles = new List<string>();
+
+            async Task PrepareFiles()
+            {
+                foreach (string file in Directory.EnumerateFiles(sourceDir))
+                {
+                    if (file.EndsWith(".apk.gz"))
+                    {
+                        string targetFile = Path.Combine(preparedDir, Path.GetFileNameWithoutExtension(file));
+                    
+                        using (var input = File.OpenRead(file))
+                        using (var gzipInput = new GZipStream(input, CompressionMode.Decompress))
+                        using (var output = File.Create(targetFile))
+                        {
+                            await gzipInput.CopyToAsync(output);
+                        }
+                    }
+                    else if (file.EndsWith(".tar.gz"))
+                    {
+                        string targetFile = Path.Combine(preparedDir, Path.GetFileName(file));                    
+                    
+                        File.Copy(file, targetFile);
+                    }
+                }
+            }
+            
+            // await PrepareFiles();
+
+            foreach (string file in Directory.EnumerateFiles(preparedDir))
+            {
+                if (file.EndsWith(".apk"))
+                {
+                    apkFiles.Add(file);
+                }
+                else if (file.EndsWith(".tar.gz"))
+                {
+                    dataFiles.Add(file);
+                }
+            }
+            
+            foreach (string apkFile in apkFiles)
+            {
+                string apkName = Path.GetFileName(apkFile);
+                Debug.WriteLine($"Processing {apkName}");
+                
+                int index = apkName.IndexOf('-');
+                if (index < 0)
+                {
+                    Debug.WriteLine($"    Can't get name for {apkName}");
+                    continue;
+                }
+
+                string packageName = apkName[..index] + "-";
+                List<string> apkBackups = dataFiles.Where(it => Path.GetFileName(it).StartsWith(packageName, StringComparison.Ordinal)).ToList();
+                if (apkBackups.Count == 0)
+                {
+                    Debug.WriteLine($"    Can't file backup for {apkName}");
+                    continue;
+                }
+                
+                foreach ((string backup, int i) in apkBackups.Select((it, i) => (it, i)))
+                {
+                    Debug.WriteLine($"    Backup {i + 1}: {Path.GetFileName(backup)}");
+                }
+
+                string apkBackup = apkBackups.MaxBy(it =>
+                {
+                    string fileName = Path.GetFileNameWithoutExtension(Path.GetFileNameWithoutExtension(it));
+                    string date = fileName[(fileName.IndexOf('-') + 1)..];
+                    return date;
+                });
+                
+                Debug.WriteLine($"    Chose backup {Path.GetFileName(apkBackup)}");
+
+                Apk.Value = apkFile;
+                Save.Value = apkBackup;
+                await StartCommand2_Execute();
+                
+                Debug.WriteLine("    Done");
+                Debug.WriteLine("");
+            }
+        }
+
         public void SetIcon(string imagePath, AndroidAppIcon iconType)
         {
             BitmapSource Resize(int size)
@@ -169,6 +257,12 @@ namespace SaveToGameWpf.Logic.ViewModels
         }
 
         private async void StartCommand_Execute()
+        {
+            // await ExecuteMultiple();
+            await StartCommand2_Execute();
+        }
+        
+        private async Task StartCommand2_Execute()
         {
             string apkFile = Apk.Value;
 
@@ -516,20 +610,20 @@ namespace SaveToGameWpf.Logic.ViewModels
                 );
             }
 
-            string dialogResult = MessBox.ShowDial(
-                $"{MainResources.Path_to_file} {resultFilePath}",
-                MainResources.Successful,
-                MainResources.OK, MainResources.Open, MainResources.Install
-            );
-
-            if (dialogResult == MainResources.Open)
-            {
-                Process.Start("explorer.exe", $"/select,{resultFilePath}");
-            }
-            else if (dialogResult == MainResources.Install)
-            {
-                uiThreadDispatcher.Invoke(() => _adbInstallWindowProvider.Get().ShowDialog());
-            }
+            // string dialogResult = MessBox.ShowDial(
+            //     $"{MainResources.Path_to_file} {resultFilePath}",
+            //     MainResources.Successful,
+            //     MainResources.OK, MainResources.Open, MainResources.Install
+            // );
+            //
+            // if (dialogResult == MainResources.Open)
+            // {
+            //     Process.Start("explorer.exe", $"/select,{resultFilePath}");
+            // }
+            // else if (dialogResult == MainResources.Install)
+            // {
+            //     uiThreadDispatcher.Invoke(() => _adbInstallWindowProvider.Get().ShowDialog());
+            // }
 
             taskBarManager?.SetNoneState();
         }
