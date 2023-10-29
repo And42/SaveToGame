@@ -1,7 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using Interfaces.ViewModels;
-using JetBrains.Annotations;
 using SaveToGameWpf.Logic.Utils;
 
 namespace SaveToGameWpf.Windows
@@ -9,7 +8,7 @@ namespace SaveToGameWpf.Windows
     public partial class AboutWindow
     {
         public AboutWindow(
-            [NotNull] IAboutWindowViewModel viewModel
+            IAboutWindowViewModel viewModel
         )
         {
             InitializeComponent();

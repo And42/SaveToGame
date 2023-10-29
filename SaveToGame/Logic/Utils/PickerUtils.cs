@@ -6,8 +6,8 @@ namespace SaveToGameWpf.Logic.Utils
     public static class PickerUtils
     {
         public static (bool success, string filePath) PickFile(
-            string title = null,
-            string filter = null,
+            string? title = null,
+            string? filter = null,
             bool addExtension = true,
             bool checkFileExists = true,
             bool checkPathExists = true
@@ -27,8 +27,8 @@ namespace SaveToGameWpf.Logic.Utils
         }
 
         public static (bool success, string[] filePaths) PickFiles(
-            string title = null,
-            string filter = null,
+            string? title = null,
+            string? filter = null,
             bool addExtension = true,
             bool checkFileExists = true,
             bool checkPathExists = true
@@ -47,7 +47,7 @@ namespace SaveToGameWpf.Logic.Utils
             return openDialog.ShowDialog() == true ? (true, openDialog.FileNames) : (false, null);
         }
 
-        public static (bool success, string folderPath) PickFolder(string title = null)
+        public static (bool success, string folderPath) PickFolder(string? title = null)
         {
             var dialog = new CommonOpenFileDialog
             {

@@ -8,13 +8,11 @@ using System.Text.RegularExpressions;
 using AndroidHelper.Logic;
 using AndroidHelper.Logic.Interfaces;
 using AndroidHelper.Logic.Utils;
-using JetBrains.Annotations;
 
 namespace SaveToGameWpf.Logic.Classes;
 
 public class ApkSignerApktool : IApktoolExtra
 {
-    [NotNull]
     private readonly IApktool _apktool;
     
     public string JavaPath => _apktool.JavaPath;
@@ -24,18 +22,15 @@ public class ApkSignerApktool : IApktoolExtra
     public string SmaliPath => _apktool.SmaliPath;
     public string DefaultKeyPemPath => _apktool.DefaultKeyPemPath;
     public string DefaultKeyPkPath => _apktool.DefaultKeyPkPath;
-    [NotNull]
     public string ApkSignerPath { get; }
-    [NotNull]
     public string ZipalignPath { get; }
-    [NotNull]
     public string Aapt2Path { get; }
     
     public ApkSignerApktool(
-        [NotNull] IApktool apktool,
-        [NotNull] string apkSignerPath,
-        [NotNull] string zipalignPath,
-        [NotNull] string aapt2Path
+        IApktool apktool,
+        string apkSignerPath,
+        string zipalignPath,
+        string aapt2Path
     )
     {
         _apktool = apktool;
@@ -55,10 +50,10 @@ public class ApkSignerApktool : IApktoolExtra
     }
 
     public void Sign(
-        [NotNull] string sourceApkPath,
-        [NotNull] string signedApkPath,
-        [NotNull] ITempFileProvider tempFileProvider,
-        [CanBeNull] IProcessDataHandler dataHandler,
+        string sourceApkPath,
+        string signedApkPath,
+        ITempFileProvider tempFileProvider,
+        IProcessDataHandler? dataHandler,
         bool deleteMetaInf
     )
     {
@@ -92,9 +87,9 @@ public class ApkSignerApktool : IApktoolExtra
     }
 
     public void ZipAlign(
-        [NotNull] string sourceApkPath,
-        [NotNull] string alignedApkPath,
-        [CanBeNull] IProcessDataHandler dataHandler
+        string sourceApkPath,
+        string alignedApkPath,
+        IProcessDataHandler? dataHandler
     )
     {
         if (sourceApkPath == null)
@@ -112,7 +107,7 @@ public class ApkSignerApktool : IApktoolExtra
     }
 
     public bool TryGetTargetSdkVersion(
-        [NotNull] string apkPath,
+        string apkPath,
         out int targetSdkVersion
     )
     {
@@ -137,7 +132,7 @@ public class ApkSignerApktool : IApktoolExtra
     }
 
     public int GetSdkVersion(
-        [NotNull] string apkPath
+        string apkPath
     )
     {
         string output = GetAapt2BadgingOutput(apkPath);
@@ -154,7 +149,7 @@ public class ApkSignerApktool : IApktoolExtra
     }
 
     public int GetVersionCode(
-        [NotNull] string apkPath
+        string apkPath
     )
     {
         string output = GetAapt2BadgingOutput(apkPath);
@@ -170,7 +165,7 @@ public class ApkSignerApktool : IApktoolExtra
         return versionCode;
     }
 
-    private string GetAapt2BadgingOutput([NotNull] string apkPath)
+    private string GetAapt2BadgingOutput(string apkPath)
     {
         if (Aapt2Path == null)
             throw new InvalidOperationException($"`{nameof(Aapt2Path)}` has to be set");
@@ -222,7 +217,7 @@ public class ApkSignerApktool : IApktoolExtra
 
     private void RunJava(string fileName, string arguments, IProcessDataHandler dataHandler)
     {
-        MethodInfo runJava = _apktool.GetType().GetMethod(
+        MethodInfo? runJava = _apktool.GetType().GetMethod(
             name: "RunJava",
             bindingAttr: BindingFlags.NonPublic | BindingFlags.Instance,
             types: new []
@@ -240,7 +235,7 @@ public class ApkSignerApktool : IApktoolExtra
 
     private static void RunProc(string fileName, string arguments, IProcessDataHandler dataHandler)
     {
-        MethodInfo runProc = typeof(Apktool).GetMethod(
+        MethodInfo? runProc = typeof(Apktool).GetMethod(
             name: "RunProc",
             bindingAttr: BindingFlags.NonPublic | BindingFlags.Static,
             types: new []

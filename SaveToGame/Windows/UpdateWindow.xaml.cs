@@ -3,7 +3,6 @@ using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Xml;
-using JetBrains.Annotations;
 using SaveToGameWpf.Logic.Utils;
 
 // ReSharper disable PossibleNullReferenceException
@@ -12,10 +11,10 @@ namespace SaveToGameWpf.Windows
 {
     public partial class UpdateWindow
     {
-        [NotNull] private readonly Provider<DownloadWindow> _downloadWindowProvider;
+        private readonly Provider<DownloadWindow> _downloadWindowProvider;
 
         public UpdateWindow(
-            [NotNull] Provider<DownloadWindow> downloadWindowProvider,
+            Provider<DownloadWindow> downloadWindowProvider,
             string nowVersion,
             string changes
         )

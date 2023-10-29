@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
-using JetBrains.Annotations;
 using SaveToGameWpf.Logic.Classes;
 using SaveToGameWpf.Resources;
 using SmaliParser.Logic;
@@ -13,12 +12,9 @@ namespace SaveToGameWpf.Logic.Utils
 {
     internal static class CommonUtils
     {
-        [NotNull]
         private static readonly Encoding SmaliEncoding = new UTF8Encoding(false);
-        [NotNull]
         private static readonly string NewLine = Environment.NewLine;
 
-        [NotNull]
         private static string GenByteString(byte input)
         {
             if (input <= 127)
@@ -27,10 +23,10 @@ namespace SaveToGameWpf.Logic.Utils
         }
 
         public static void EncryptFile(
-            [NotNull] string filePath,
-            [NotNull] string outputPath,
-            [NotNull] byte[] iv,
-            [NotNull] byte[] key
+            string filePath,
+            string outputPath,
+            byte[] iv,
+            byte[] key
         )
         {
             Guard.NotNullArgument(filePath, nameof(filePath));
@@ -62,11 +58,11 @@ namespace SaveToGameWpf.Logic.Utils
         }
 
         public static void GenerateAndSaveSmali(
-            [NotNull] string filePath,
-            [NotNull] byte[] iv,
-            [NotNull] byte[] key,
+            string filePath,
+            byte[] iv,
+            byte[] key,
             bool addSave,
-            [NotNull] string message,
+            string message,
             int messagesCount
         )
         {
@@ -149,7 +145,7 @@ namespace SaveToGameWpf.Logic.Utils
         }
 
         private static string PadBoth(
-            [CanBeNull] string source,
+            string? source,
             int padding,
             char paddingChar = ' '
         )

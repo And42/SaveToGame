@@ -1,5 +1,4 @@
 ﻿using System.Windows;
-using JetBrains.Annotations;
 using SaveToGameWpf.Logic.ViewModels;
 
 namespace SaveToGameWpf.Windows
@@ -9,7 +8,7 @@ namespace SaveToGameWpf.Windows
         private AdbInstallWindowViewModel ViewModel { get; }
 
         public AdbInstallWindow(
-            [NotNull] AdbInstallWindowViewModel viewModel
+            AdbInstallWindowViewModel viewModel
         )
         {
             ViewModel = viewModel;

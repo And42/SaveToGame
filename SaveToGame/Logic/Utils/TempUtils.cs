@@ -2,7 +2,6 @@
 using System.IO;
 using System.Linq;
 using AndroidHelper.Logic.Interfaces;
-using JetBrains.Annotations;
 
 namespace SaveToGameWpf.Logic.Utils
 {
@@ -10,14 +9,13 @@ namespace SaveToGameWpf.Logic.Utils
     {
         private volatile int _lastEntry;
         private readonly object _entryLock = new object();
-        [NotNull]
         private readonly string _tempFolder;
 
         private class TempFolderProvider : ITempFolderProvider
         {
-            [NotNull] private readonly TempUtils _tempUtils;
+            private readonly TempUtils _tempUtils;
 
-            public TempFolderProvider([NotNull] TempUtils tempUtils)
+            public TempFolderProvider(TempUtils tempUtils)
             {
                 _tempUtils = tempUtils;
             }
@@ -30,9 +28,9 @@ namespace SaveToGameWpf.Logic.Utils
 
         private class TempFileProvider : ITempFileProvider
         {
-            [NotNull] private readonly TempUtils _tempUtils;
+            private readonly TempUtils _tempUtils;
 
-            public TempFileProvider([NotNull] TempUtils tempUtils)
+            public TempFileProvider(TempUtils tempUtils)
             {
                 _tempUtils = tempUtils;
             }
@@ -44,7 +42,7 @@ namespace SaveToGameWpf.Logic.Utils
         }
 
         public TempUtils(
-            [NotNull] GlobalVariables globalVariables
+            GlobalVariables globalVariables
         )
         {
             _tempFolder = globalVariables.TempPath;
@@ -53,20 +51,17 @@ namespace SaveToGameWpf.Logic.Utils
                 Directory.Delete(_tempFolder, true);
         }
 
-        [NotNull]
         public ITempFolderProvider CreateTempFolderProvider()
         {
             return new TempFolderProvider(this);
         }
 
-        [NotNull]
         public ITempFileProvider CreateTempFileProvider()
         {
             return new TempFileProvider(this);
         }
 
-        [NotNull]
-        private string CreateElement([NotNull] Action<string> elementCreator)
+        private string CreateElement(Action<string> elementCreator)
         {
             if (elementCreator == null)
                 throw new ArgumentNullException(nameof(elementCreator));

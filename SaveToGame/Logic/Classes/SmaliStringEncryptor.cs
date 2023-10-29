@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using JetBrains.Annotations;
 using SaveToGameWpf.Logic.Utils;
 using SmaliParser.Logic;
 
@@ -11,17 +10,14 @@ namespace SaveToGameWpf.Logic.Classes
 {
     internal class SmaliStringEncryptor
     {
-        [NotNull]
         private static readonly Regex MessageRegex = new Regex(@"const-string v([\d]*), ""(.*?[^\\])""");
-        [NotNull]
         private static readonly Random Random = new Random();
-        [NotNull]
         private static readonly string NewLine = Environment.NewLine;
 
         public static int EncryptMethod(
-            [NotNull] SmaliMethod method,
-            [NotNull] string className,
-            [NotNull] Dictionary<string, SmaliMethod> methods
+            SmaliMethod method,
+            string className,
+            Dictionary<string, SmaliMethod> methods
         )
         {
             Guard.NotNullArgument(method, nameof(method));
@@ -67,15 +63,14 @@ namespace SaveToGameWpf.Logic.Classes
             return plusCount;
         }
 
-        [NotNull]
         private static string EncodeString(
-            [NotNull] string input,
-            [NotNull] string className,
-            [NotNull] Dictionary<string, SmaliMethod> methods,
+            string input,
+            string className,
+            Dictionary<string, SmaliMethod> methods,
             int tempRegister,
             int resultRegister,
             out int plusCount,
-            [CanBeNull] string plusName = null
+            string? plusName = null
         )
         {
             Guard.NotNullArgument(input, nameof(input));
@@ -145,12 +140,11 @@ namespace SaveToGameWpf.Logic.Classes
         /// <param name="className">Имя класса</param>
         /// <param name="existingMethodNames">Существующие методы</param>
         /// <param name="plusName">Название поля для инкремента</param>
-        [NotNull]
         private static SmaliMethod GenerateStringCall(
-            [NotNull] string str,
-            [NotNull] string className,
-            [NotNull] string[] existingMethodNames,
-            [CanBeNull] string plusName = null
+            string str,
+            string className,
+            string[] existingMethodNames,
+            string? plusName = null
         )
         {
             Guard.NotNullArgument(str, nameof(str));
@@ -198,7 +192,6 @@ namespace SaveToGameWpf.Logic.Classes
         /// <param name="startLength">Минимальная длина</param>
         /// <param name="endLength">Максимальная длина</param>
         /// <returns>Случайная строка</returns>
-        [NotNull]
         private static string GenerateRandomString(int startLength = 8, int endLength = 16)
         {
             if (endLength < startLength)

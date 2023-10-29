@@ -6,7 +6,7 @@ namespace SaveToGameWpf.Converters
 {
     public class ThemeToCheckedConverter : ConverterBase<string, string, bool>
     {
-        public override bool ConvertInternal(string currentTheme, string parameter, CultureInfo culture)
+        public override bool ConvertInternal(string? currentTheme, string parameter, CultureInfo culture)
         {
             if (string.IsNullOrEmpty(parameter))
                 throw new ArgumentException($"Unknown theme: \"{parameter}\"", nameof(parameter));

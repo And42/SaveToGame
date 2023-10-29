@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics;
 using Interfaces.ViewModels;
-using JetBrains.Annotations;
 using MVVM_Tools.Code.Commands;
 using MVVM_Tools.Code.Providers;
 using SaveToGameWpf.Logic.Utils;
@@ -17,8 +16,8 @@ namespace SaveToGameWpf.Logic.ViewModels
         public IActionCommand OpenSourcesPage { get; }
 
         public AboutWindowViewModel(
-            [NotNull] ApplicationUtils applicationUtils,
-            [NotNull] GlobalVariables globalVariables
+            ApplicationUtils applicationUtils,
+            GlobalVariables globalVariables
         )
         {
             // properties

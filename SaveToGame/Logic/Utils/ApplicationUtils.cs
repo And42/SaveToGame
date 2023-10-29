@@ -3,7 +3,6 @@ using System.Globalization;
 using System.Reflection;
 using System.Threading;
 using Interfaces.OrganisationItems;
-using JetBrains.Annotations;
 using Newtonsoft.Json;
 using SaveToGameWpf.Logic.JsonMappings;
 using SaveToGameWpf.Windows;
@@ -12,14 +11,14 @@ namespace SaveToGameWpf.Logic.Utils
 {
     public class ApplicationUtils
     {
-        [NotNull] private readonly IAppSettings _appSettings;
-        [NotNull] private readonly Provider<DownloadWindow> _downloadWindowProvider;
-        [NotNull] private readonly GlobalVariables _globalVariables;
+        private readonly IAppSettings _appSettings;
+        private readonly Provider<DownloadWindow> _downloadWindowProvider;
+        private readonly GlobalVariables _globalVariables;
 
         public ApplicationUtils(
-            [NotNull] IAppSettings appSettings,
-            [NotNull] Provider<DownloadWindow> downloadWindowProvider,
-            [NotNull] GlobalVariables globalVariables
+            IAppSettings appSettings,
+            Provider<DownloadWindow> downloadWindowProvider,
+            GlobalVariables globalVariables
         )
         {
             _appSettings = appSettings;

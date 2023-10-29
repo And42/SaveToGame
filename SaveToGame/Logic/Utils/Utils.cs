@@ -4,7 +4,6 @@ using System.Net;
 using System.Threading.Tasks;
 using ICSharpCode.SharpZipLib.Zip;
 using Interfaces.OrganisationItems;
-using JetBrains.Annotations;
 using SaveToGameWpf.Resources.Localizations;
 using SaveToGameWpf.Windows;
 
@@ -12,16 +11,16 @@ namespace SaveToGameWpf.Logic.Utils
 {
     public class Utils
     {
-        [NotNull] private readonly GlobalVariables _globalVariables;
+        private readonly GlobalVariables _globalVariables;
 
         public Utils(
-            [NotNull] GlobalVariables globalVariables
+            GlobalVariables globalVariables
         )
         {
             _globalVariables = globalVariables;
         }
 
-        public static int CompareVersions([NotNull] string first, [NotNull] string second)
+        public static int CompareVersions(string first, string second)
         {
             return 
                 CompareVersions(
@@ -30,7 +29,7 @@ namespace SaveToGameWpf.Logic.Utils
                 );
         }
 
-        public static int CompareVersions([NotNull] int[] first, [NotNull] int[] second)
+        public static int CompareVersions(int[] first, int[] second)
         {
             int minLen = Math.Min(first.Length, second.Length);
 
@@ -46,7 +45,7 @@ namespace SaveToGameWpf.Logic.Utils
             return 0;
         }
 
-        public async Task DownloadJava([NotNull] IVisualProgress visualProgress)
+        public async Task DownloadJava(IVisualProgress visualProgress)
         {
             visualProgress.SetLabelText(MainResources.JavaDownloading);
             visualProgress.ShowIndeterminateLabel();

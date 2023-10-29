@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Windows;
-using JetBrains.Annotations;
 
 namespace SaveToGameWpf.Logic.Utils
 {
@@ -9,14 +8,12 @@ namespace SaveToGameWpf.Logic.Utils
     {
         private static readonly string[] EmptyStrings = new string[0];
 
-        [NotNull]
         public static string[] GetFilesDrop(this DragEventArgs args)
         {
-            return (string[])args.Data.GetData(DataFormats.FileDrop) ?? EmptyStrings;
+            return (string[]?)args.Data.GetData(DataFormats.FileDrop) ?? EmptyStrings;
         }
 
-        [NotNull]
-        public static string[] GetFilesDrop(this DragEventArgs args, string ending)
+        public static string[] GetFilesDrop(this DragEventArgs args, string? ending)
         {
             // ReSharper disable once ConvertIfStatementToReturnStatement
             if (string.IsNullOrEmpty(ending))
@@ -25,8 +22,7 @@ namespace SaveToGameWpf.Logic.Utils
             return args.GetFilesDrop(it => it.EndsWith(ending, StringComparison.Ordinal));
         }
 
-        [NotNull]
-        public static string[] GetFilesDrop(this DragEventArgs args, Func<string, bool> filter)
+        public static string[] GetFilesDrop(this DragEventArgs args, Func<string, bool>? filter)
         {
             var items = args.GetFilesDrop();
 

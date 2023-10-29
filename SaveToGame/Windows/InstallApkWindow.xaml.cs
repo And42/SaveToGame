@@ -3,7 +3,6 @@ using System.Windows.Input;
 using System.Windows.Shell;
 using Interfaces.OrganisationItems;
 using Interfaces.ViewModels;
-using JetBrains.Annotations;
 using Microsoft.Win32;
 using SaveToGameWpf.Logic.OrganisationItems;
 using SaveToGameWpf.Logic.Utils;
@@ -15,10 +14,10 @@ namespace SaveToGameWpf.Windows
 {
     public partial class InstallApkWindow
     {
-        [NotNull] private readonly IInstallApkViewModel _viewModel;
+        private readonly IInstallApkViewModel _viewModel;
 
         public InstallApkWindow(
-            [NotNull] IInstallApkViewModel viewModel
+            IInstallApkViewModel viewModel
         )
         {
             _viewModel = viewModel;

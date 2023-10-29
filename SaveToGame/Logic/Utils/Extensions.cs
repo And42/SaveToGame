@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using ICSharpCode.SharpZipLib.Zip;
-using JetBrains.Annotations;
 using MVVM_Tools.Code.Commands;
 using MVVM_Tools.Code.Providers;
 
@@ -32,13 +31,13 @@ namespace SaveToGameWpf.Logic.Utils
             }
         }
 
-        public static IActionCommand BindCanExecute<TProp>([NotNull] this IActionCommand actionCommand, [NotNull] IReadonlyProperty<TProp> observable)
+        public static IActionCommand BindCanExecute<TProp>(this IActionCommand actionCommand, IReadonlyProperty<TProp> observable)
         {
             observable.PropertyChanged += (sender, args) => actionCommand.RaiseCanExecuteChanged();
             return actionCommand;
         }
 
-        public static IActionCommand<T> BindCanExecute<T, TProp>([NotNull] this IActionCommand<T> actionCommand, [NotNull] IReadonlyProperty<TProp> observable)
+        public static IActionCommand<T> BindCanExecute<T, TProp>(this IActionCommand<T> actionCommand, IReadonlyProperty<TProp> observable)
         {
             observable.PropertyChanged += (sender, args) => actionCommand.RaiseCanExecuteChanged();
             return actionCommand;

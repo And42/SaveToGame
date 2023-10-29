@@ -3,7 +3,6 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using JetBrains.Annotations;
 using MVVM_Tools.Code.Commands;
 using MVVM_Tools.Code.Providers;
 using SaveToGameWpf.Logic.Utils;
@@ -13,7 +12,7 @@ namespace SaveToGameWpf.Logic.ViewModels
 {
     public class AdbInstallWindowViewModel
     {
-        [NotNull] private readonly GlobalVariables _globalVariables;
+        private readonly GlobalVariables _globalVariables;
 
         public ObservableCollection<AdbDeviceViewModel> Devices { get; } = new ObservableCollection<AdbDeviceViewModel>();
 
@@ -24,7 +23,7 @@ namespace SaveToGameWpf.Logic.ViewModels
         public IActionCommand<AdbDeviceViewModel> InstallCommand { get; }
 
         public AdbInstallWindowViewModel(
-            [NotNull] GlobalVariables globalVariables
+            GlobalVariables globalVariables
         )
         {
             _globalVariables = globalVariables;
@@ -115,8 +114,7 @@ namespace SaveToGameWpf.Logic.ViewModels
             Processing.Value = false;
         }
 
-        [NotNull]
-        private static Process CheckAdbProcess([CanBeNull] Process adbProcess)
+        private static Process CheckAdbProcess(Process? adbProcess)
         {
             if (adbProcess == null)
                 throw new Exception("Can't start adb process. Probably, file not found");

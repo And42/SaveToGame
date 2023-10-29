@@ -31,7 +31,6 @@ namespace SaveToGameWpf
             "testkey.x509.pem"
         };
 
-        [JetBrains.Annotations.NotNull]
         private IContainer _rootDiContainer;
 
         protected override void OnStartup(StartupEventArgs e)
@@ -68,7 +67,7 @@ namespace SaveToGameWpf
                 applicationUtils.CheckForUpdate();
         }
 
-        private void CheckPortability([JetBrains.Annotations.NotNull] GlobalVariables globalVariables)
+        private void CheckPortability(GlobalVariables globalVariables)
         {
             if (!globalVariables.IsPortable || globalVariables.CanWriteToAppData.Value)
                 return;
@@ -85,7 +84,7 @@ namespace SaveToGameWpf
             Shutdown();
         }
 
-        private void CheckForFiles([JetBrains.Annotations.NotNull] GlobalVariables globalVariables)
+        private void CheckForFiles(GlobalVariables globalVariables)
         {
             var resourcesFolder = Path.Combine(globalVariables.PathToExeFolder, "Resources");
 
@@ -123,7 +122,6 @@ namespace SaveToGameWpf
         }
 
         // ReSharper disable once InconsistentNaming
-        [JetBrains.Annotations.NotNull]
         [SuppressMessage("ReSharper", "RedundantTypeArgumentsOfMethod")]
         private IContainer SetupDI()
         {
@@ -194,7 +192,7 @@ namespace SaveToGameWpf
             return builder.Build();
         }
 
-        private static void MigrateSettings([JetBrains.Annotations.NotNull] IAppSettings latestSettings)
+        private static void MigrateSettings(IAppSettings latestSettings)
         {
             int currentVersion = latestSettings.Version;
             if (currentVersion == GlobalVariables.LatestSettingsVersion)

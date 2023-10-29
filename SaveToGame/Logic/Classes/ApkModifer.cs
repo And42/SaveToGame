@@ -9,7 +9,6 @@ using AndroidHelper.Logic.Interfaces;
 using AndroidHelper.Logic.Utils;
 using ICSharpCode.SharpZipLib.GZip;
 using ICSharpCode.SharpZipLib.Tar;
-using JetBrains.Annotations;
 using SaveToGameWpf.Logic.Utils;
 using SharedData.Enums;
 using TempUtils = AndroidHelper.Logic.Utils.TempUtils;
@@ -19,12 +18,12 @@ namespace SaveToGameWpf.Logic.Classes
     public static class ApkModifer
     {
         public static void ParseBackup(
-            [NotNull] string pathToBackup,
+            string pathToBackup,
             BackupType backupType,
-            [NotNull] string resultInternalDataPath,
-            [NotNull] string resultExternalDataPath,
+            string resultInternalDataPath,
+            string resultExternalDataPath,
             //[NotNull] string resultObbPath,
-            [NotNull] ITempFolderProvider tempFolderProvider
+            ITempFolderProvider tempFolderProvider
         )
         {
             Guard.NotNullArgument(pathToBackup, nameof(pathToBackup));
@@ -118,7 +117,7 @@ namespace SaveToGameWpf.Logic.Classes
                                 {
                                     string path = Path.Combine(firstLevelDir, "data");
 
-                                    string dir = Directory.EnumerateDirectories(path).FirstOrDefault();
+                                    string? dir = Directory.EnumerateDirectories(path).FirstOrDefault();
                                     if (dir == default)
                                         continue;
 
@@ -126,13 +125,13 @@ namespace SaveToGameWpf.Logic.Classes
                                 }
                                 else
                                 {
-                                    string dir = Directory.EnumerateDirectories(firstLevelDir, "Android", SearchOption.AllDirectories).FirstOrDefault();
+                                    string? dir = Directory.EnumerateDirectories(firstLevelDir, "Android", SearchOption.AllDirectories).FirstOrDefault();
                                     if (dir == default)
                                         continue;
 
                                     string path = Path.Combine(dir, "data");
 
-                                    string dir2 = Directory.EnumerateDirectories(path).FirstOrDefault();
+                                    string? dir2 = Directory.EnumerateDirectories(path).FirstOrDefault();
                                     if (dir2 == default)
                                         continue;
 
@@ -176,9 +175,9 @@ namespace SaveToGameWpf.Logic.Classes
         }
 
         public static void SplitObbFiles(
-            [NotNull] IEnumerable<string> obbFilePaths,
-            [NotNull] string partsFolderPath,
-            IProgress<(long bytesWritten, long totalBytes)> progressNotifier
+            IEnumerable<string> obbFilePaths,
+            string partsFolderPath,
+            IProgress<(long bytesWritten, long totalBytes)>? progressNotifier
         )
         {
             Guard.NotNullArgument(obbFilePaths, nameof(obbFilePaths));
@@ -249,9 +248,9 @@ namespace SaveToGameWpf.Logic.Classes
         }
 
         public static void AddFileToZip(
-            [NotNull] string zipPath,
-            [NotNull] string filePath,
-            [NotNull] string pathInZip,
+            string zipPath,
+            string filePath,
+            string pathInZip,
             CompressionType newEntryCompression
         )
         {
@@ -263,9 +262,9 @@ namespace SaveToGameWpf.Logic.Classes
         }
 
         public static void AddFilesToZip(
-            [NotNull] string zipPath,
-            [ItemNotNull] string[] filePaths,
-            [ItemNotNull] string[] pathsInZip,
+            string zipPath,
+            string[] filePaths,
+            string[] pathsInZip,
             CompressionType newEntryCompression
         )
         {
@@ -304,8 +303,8 @@ namespace SaveToGameWpf.Logic.Classes
         }
 
         public static void ExtractTarByEntry(
-            [NotNull] string tarFileName,
-            [NotNull] string targetDir
+            string tarFileName,
+            string targetDir
         )
         {
             Guard.NotNullArgument(tarFileName, nameof(tarFileName));
@@ -366,8 +365,8 @@ namespace SaveToGameWpf.Logic.Classes
         }
 
         public static void CreateArchive(
-            [NotNull] string folderPath,
-            [NotNull] string resultZipPath
+            string folderPath,
+            string resultZipPath
         )
         {
             Guard.NotNullArgument(folderPath, nameof(folderPath));

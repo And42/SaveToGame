@@ -14,13 +14,13 @@ namespace SaveToGameWpf.Windows
             InitializeComponent();
         }
 
-        public static string ShowDial(string message, string caption = null, params string[] buttons)
+        public static string ShowDial(string message, string? caption = null, params string[] buttons)
         {
             Application.Current.Dispatcher.Invoke(() => new MessBox().ShowD(message, caption, buttons));
             return _result;
         }
 
-        private void ShowD(string message, string caption = null, params string[] buttons)
+        private void ShowD(string message, string? caption = null, params string[] buttons)
         {
             Title = caption ?? string.Empty;
             MessLabel.Text = message;

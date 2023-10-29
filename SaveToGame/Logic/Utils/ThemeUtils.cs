@@ -3,17 +3,15 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
 using Interfaces.OrganisationItems;
-using JetBrains.Annotations;
 
 namespace SaveToGameWpf.Logic.Utils
 {
     public class ThemeUtils
     {
-        [NotNull]
         private readonly IAppSettings _appSettings;
         
         public ThemeUtils(
-            [NotNull] IAppSettings appSettings
+            IAppSettings appSettings
         )
         {
             _appSettings = appSettings;

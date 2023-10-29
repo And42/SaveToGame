@@ -13,7 +13,6 @@ using AndroidHelper.Logic;
 using AndroidHelper.Logic.Interfaces;
 using Interfaces.OrganisationItems;
 using Interfaces.ViewModels;
-using JetBrains.Annotations;
 using MVVM_Tools.Code.Disposables;
 using SaveToGameWpf.Logic;
 using SaveToGameWpf.Logic.Classes;
@@ -35,17 +34,17 @@ namespace SaveToGameWpf.Windows
 
         private static readonly string Line = new string('-', 50);
 
-        [NotNull] private readonly IAppSettings _settings;
-        [NotNull] private readonly ApplicationUtils _applicationUtils;
-        [NotNull] private readonly Provider<MainWindow> _mainWindowProvider;
-        [NotNull] private readonly Provider<InstallApkWindow> _installApkWindowProvider;
-        [NotNull] private readonly Provider<AboutWindow> _aboutWindowProvider;
-        [NotNull] private readonly Provider<AdbInstallWindow> _adbInstallWindowProvider;
-        [NotNull] private readonly NotificationManager _notificationManager;
-        [NotNull] private readonly TempUtils _tempUtils;
-        [NotNull] private readonly GlobalVariables _globalVariables;
-        [NotNull] private readonly Utils _utils;
-        [NotNull] private readonly Provider<IApktool> _apktoolProvider;
+        private readonly IAppSettings _settings;
+        private readonly ApplicationUtils _applicationUtils;
+        private readonly Provider<MainWindow> _mainWindowProvider;
+        private readonly Provider<InstallApkWindow> _installApkWindowProvider;
+        private readonly Provider<AboutWindow> _aboutWindowProvider;
+        private readonly Provider<AdbInstallWindow> _adbInstallWindowProvider;
+        private readonly NotificationManager _notificationManager;
+        private readonly TempUtils _tempUtils;
+        private readonly GlobalVariables _globalVariables;
+        private readonly Utils _utils;
+        private readonly Provider<IApktool> _apktoolProvider;
 
         private readonly IVisualProgress _visualProgress;
         private readonly ITaskBarManager _taskBarManager;
@@ -57,18 +56,18 @@ namespace SaveToGameWpf.Windows
         private bool _shutdownOnClose = true;
 
         public MainWindow(
-            [NotNull] IAppSettings appSettings,
-            [NotNull] ApplicationUtils applicationUtils,
-            [NotNull] IMainWindowViewModel viewModel,
-            [NotNull] Provider<MainWindow> mainWindowProvider,
-            [NotNull] Provider<InstallApkWindow> installApkWindowProvider,
-            [NotNull] Provider<AboutWindow> aboutWindowProvider,
-            [NotNull] Provider<AdbInstallWindow> adbInstallWindowProvider,
-            [NotNull] NotificationManager notificationManager,
-            [NotNull] TempUtils tempUtils,
-            [NotNull] GlobalVariables globalVariables,
-            [NotNull] Utils utils,
-            [NotNull] Provider<IApktool> apktoolProvider
+            IAppSettings appSettings,
+            ApplicationUtils applicationUtils,
+            IMainWindowViewModel viewModel,
+            Provider<MainWindow> mainWindowProvider,
+            Provider<InstallApkWindow> installApkWindowProvider,
+            Provider<AboutWindow> aboutWindowProvider,
+            Provider<AdbInstallWindow> adbInstallWindowProvider,
+            NotificationManager notificationManager,
+            TempUtils tempUtils,
+            GlobalVariables globalVariables,
+            Utils utils,
+            Provider<IApktool> apktoolProvider
         )
         {
             _settings = appSettings;
@@ -410,7 +409,7 @@ namespace SaveToGameWpf.Windows
                             throw new Exception("main smali file not found");
 
                         string smaliDir;
-                        DirectoryInfo lastDir = new DirectoryInfo(decompiledFolder.TempFolder)
+                        DirectoryInfo? lastDir = new DirectoryInfo(decompiledFolder.TempFolder)
                             .EnumerateDirectories("smali_classes*")
                             .Select(it => (dir: it, strIndex: it.Name.Substring("smali_classes".Length)))
                             .Select(it => (it.dir, index: int.TryParse(it.strIndex, out int index) ? index : 0))
@@ -561,7 +560,7 @@ namespace SaveToGameWpf.Windows
             });
         }
 
-        private void HaveError(string errorText, string dialogMessage = null)
+        private void HaveError(string errorText, string? dialogMessage = null)
         {
             Log($"{MainResources.Error}: {errorText}");
 

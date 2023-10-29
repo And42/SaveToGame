@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
-using System.IO.Compression;
-using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -15,7 +13,6 @@ using AndroidHelper.Logic;
 using AndroidHelper.Logic.Interfaces;
 using Interfaces.OrganisationItems;
 using Interfaces.ViewModels;
-using JetBrains.Annotations;
 using MVVM_Tools.Code.Classes;
 using MVVM_Tools.Code.Commands;
 using MVVM_Tools.Code.Disposables;
@@ -34,12 +31,12 @@ namespace SaveToGameWpf.Logic.ViewModels
     {
         private static readonly Regex PackageRegex = new Regex(@"package=""(?<packageName>[^""]+)""");
 
-        [NotNull] private readonly IAppSettings _settings;
-        [NotNull] private readonly NotificationManager _notificationManager;
-        [NotNull] private readonly TempUtils _tempUtils;
-        [NotNull] private readonly GlobalVariables _globalVariables;
-        [NotNull] private readonly Provider<IApktoolExtra> _apktoolProvider;
-        [NotNull] private readonly Provider<AdbInstallWindow> _adbInstallWindowProvider;
+        private readonly IAppSettings _settings;
+        private readonly NotificationManager _notificationManager;
+        private readonly TempUtils _tempUtils;
+        private readonly GlobalVariables _globalVariables;
+        private readonly Provider<IApktoolExtra> _apktoolProvider;
+        private readonly Provider<AdbInstallWindow> _adbInstallWindowProvider;
 
         public IAppIconsStorage IconsStorage { get; }
 
@@ -64,12 +61,12 @@ namespace SaveToGameWpf.Logic.ViewModels
         public IActionCommand StartCommand { get; }
 
         public InstallApkViewModel(
-            [NotNull] IAppSettings appSettings,
-            [NotNull] NotificationManager notificationManager,
-            [NotNull] TempUtils tempUtils,
-            [NotNull] GlobalVariables globalVariables,
-            [NotNull] Provider<IApktoolExtra> apktoolProvider,
-            [NotNull] Provider<AdbInstallWindow> adbInstallWindowProvider
+            IAppSettings appSettings,
+            NotificationManager notificationManager,
+            TempUtils tempUtils,
+            GlobalVariables globalVariables,
+            Provider<IApktoolExtra> apktoolProvider,
+            Provider<AdbInstallWindow> adbInstallWindowProvider
         )
         {
             _settings = appSettings;
@@ -226,7 +223,7 @@ namespace SaveToGameWpf.Logic.ViewModels
             string apkFile = Apk.Value;
             string saveFile = Save.Value;
             string androidDataFile = Data.Value;
-            string[] androidObbFiles = (string[])Obb.Value?.Clone() ?? new string[0];
+            string[] androidObbFiles = (string[]?)Obb.Value?.Clone() ?? new string[0];
             string appTitle = AppTitle.Value;
             bool alternativeSigning = _settings.AlternativeSigning;
             BackupType backupType = _settings.BackupType;
@@ -366,7 +363,7 @@ namespace SaveToGameWpf.Logic.ViewModels
                 {
                     string pathToManifest = Path.Combine(stgContainerExtracted.TempFolder, "AndroidManifest.xml");
 
-                    string sourcePackageName = null;
+                    string? sourcePackageName = null;
                     string sourceSharedUserId = null;
                     using (var sourceManifest = AndroidHelper.Logic.Utils.TempUtils.UseTempFile(tempFileProvider))
                     {

@@ -1,7 +1,6 @@
 ﻿using System.Threading;
 using Interfaces.OrganisationItems;
 using Interfaces.ViewModels;
-using JetBrains.Annotations;
 using MVVM_Tools.Code.Providers;
 using SaveToGameWpf.Resources.Localizations;
 using SharedData.Enums;
@@ -32,7 +31,7 @@ namespace SaveToGameWpf.Logic.ViewModels
         public IReadonlyProperty<bool> EnIsChecked { get; }
 
         public MainWindowViewModel(
-            [NotNull] IAppSettings appSettings
+            IAppSettings appSettings
         )
         {
             Working = new FieldProperty<bool>();
