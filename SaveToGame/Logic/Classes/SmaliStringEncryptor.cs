@@ -10,8 +10,8 @@ namespace SaveToGameWpf.Logic.Classes
 {
     internal class SmaliStringEncryptor
     {
-        private static readonly Regex MessageRegex = new Regex(@"const-string v([\d]*), ""(.*?[^\\])""");
-        private static readonly Random Random = new Random();
+        private static readonly Regex MessageRegex = new(@"const-string v([\d]*), ""(.*?[^\\])""");
+        private static readonly Random Random = new();
         private static readonly string NewLine = Environment.NewLine;
 
         public static int EncryptMethod(

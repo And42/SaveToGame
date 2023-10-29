@@ -12,12 +12,12 @@ namespace SaveToGameWpf.Windows
     public partial class DownloadWindow
     {
         private static readonly Uri UpdateExeUri =
-            new Uri("https://pixelcurves.ams3.digitaloceanspaces.com/SaveToGame/latest_version_installer.exe");
+            new("https://pixelcurves.ams3.digitaloceanspaces.com/SaveToGame/latest_version_installer.exe");
 
         private static readonly string UpdateFilePath = 
             Path.Combine(Path.GetTempPath(), "STG Temp", "NewVersion.exe");
 
-        public FieldProperty<int> ProgressNow { get; } = new FieldProperty<int>();
+        public FieldProperty<int> ProgressNow { get; } = new();
 
         public DownloadWindow()
         {

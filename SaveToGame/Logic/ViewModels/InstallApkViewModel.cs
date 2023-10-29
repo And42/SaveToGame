@@ -29,7 +29,7 @@ namespace SaveToGameWpf.Logic.ViewModels
 {
     public class InstallApkViewModel : BindableBase, IInstallApkViewModel
     {
-        private static readonly Regex PackageRegex = new Regex(@"package=""(?<packageName>[^""]+)""");
+        private static readonly Regex PackageRegex = new(@"package=""(?<packageName>[^""]+)""");
 
         private readonly IAppSettings _settings;
         private readonly NotificationManager _notificationManager;

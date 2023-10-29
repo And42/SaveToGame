@@ -32,7 +32,7 @@ namespace SaveToGameWpf.Windows
         // how many times app should try to create log file for the apk file processing
         private const int LogCreationTries = 50;
 
-        private static readonly string Line = new string('-', 50);
+        private static readonly string Line = new('-', 50);
 
         private readonly IAppSettings _settings;
         private readonly ApplicationUtils _applicationUtils;

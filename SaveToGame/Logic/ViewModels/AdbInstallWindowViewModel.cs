@@ -14,7 +14,7 @@ namespace SaveToGameWpf.Logic.ViewModels
     {
         private readonly GlobalVariables _globalVariables;
 
-        public ObservableCollection<AdbDeviceViewModel> Devices { get; } = new ObservableCollection<AdbDeviceViewModel>();
+        public ObservableCollection<AdbDeviceViewModel> Devices { get; } = new();
 
         public IProperty<bool> Processing { get; } = new FieldProperty<bool>();
         public IProperty<string> AdbLog { get; } = new FieldProperty<string>();
