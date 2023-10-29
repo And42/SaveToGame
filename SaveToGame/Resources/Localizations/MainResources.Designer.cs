@@ -19,7 +19,7 @@ namespace SaveToGameWpf.Resources.Localizations {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class MainResources {
@@ -673,18 +673,6 @@ namespace SaveToGameWpf.Resources.Localizations {
         public static string ProgramActivation {
             get {
                 return ResourceManager.GetString("ProgramActivation", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to - Задание текста всплывающего сообщения
-        ///- Возможность указать расположение главного smali файла (файла с методом onCreate). Может понадобиться, если программа не может найти его сама
-        ///- Встраивание кеша с использованием контейнера
-        ///- Добавление иконки и названия конечного файла к контейнеру.
-        /// </summary>
-        public static string ProVersionPlusses {
-            get {
-                return ResourceManager.GetString("ProVersionPlusses", resourceCulture);
             }
         }
         

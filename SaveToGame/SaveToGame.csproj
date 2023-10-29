@@ -44,6 +44,21 @@
     <PackageReference Include="WPF.Shell.Integration.Library" Version="2.0.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Update="Resources\Localizations\MainResources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>MainResources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Resources\Localizations\MainResources.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>MainResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
   <Import Project="..\Interfaces\Interfaces.projitems" Label="Shared" />
 
   <Import Project="..\SharedData\SharedData.projitems" Label="Shared" />
