@@ -36,7 +36,7 @@ Name: "quicklaunchicon"; Description: "{cm:CreateQuickLaunchIcon}"; GroupDescrip
 
 [Files]
 Source: "SaveToGame publish\SaveToGame.exe"; DestDir: "{app}"; Flags: ignoreversion
-; Source: "Decompressed resources\Resources\*"; DestDir: "{app}\Resources"; Flags: ignoreversion recursesubdirs
+Source: "Decompressed resources\Resources\*"; DestDir: "{app}\Resources"; Flags: ignoreversion recursesubdirs
 
 [InstallDelete]
 Type: filesandordirs; Name: "{app}\en"
