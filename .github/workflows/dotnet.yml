@@ -24,10 +24,10 @@ jobs:
       with:
         python-version: '3.10'
   
-    - name: Building artifacts
+    - name: Build artifacts
       run: python "CI/Scripts/build_artifacts.py"
       
-    - name: Uploading artifacts
+    - name: Upload artifacts
       uses: actions/upload-artifact@v3
       with:
         name: artifacts
