@@ -30,6 +30,6 @@ jobs:
     - name: Upload artifacts
       uses: actions/upload-artifact@v3
       with:
-        name: artifacts
+        name: artifacts.zip
         path: "CI/Building/Artifacts/"
         if-no-files-found: error
