@@ -32,3 +32,4 @@ jobs:
       with:
         name: artifacts
         path: "CI/Building/Artifacts/"
+        if-no-files-found: error
