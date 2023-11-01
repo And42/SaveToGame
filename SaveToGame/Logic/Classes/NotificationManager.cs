@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Drawing;
-using System.Reflection;
 using System.Windows.Forms;
 
 namespace SaveToGameWpf.Logic.Classes
@@ -11,11 +10,13 @@ namespace SaveToGameWpf.Logic.Classes
 
         private readonly NotifyIcon _trayIcon;
 
-        public NotificationManager()
+        public NotificationManager(
+            GlobalVariables globalVariables
+        )
         {
             _trayIcon = new NotifyIcon
             {
-                Icon = Icon.ExtractAssociatedIcon(Assembly.GetExecutingAssembly().Location),
+                Icon = Icon.ExtractAssociatedIcon(globalVariables.PathToExe),
                 Visible = true
             };
         }

@@ -114,7 +114,7 @@ namespace SaveToGameWpf.Logic
         
         public GlobalVariables()
         {
-            PathToExe = Assembly.GetExecutingAssembly().Location;
+            PathToExe = Environment.ProcessPath!;
             PathToExeFolder = Path.GetDirectoryName(PathToExe) ?? "";
             PortableSwitchFile = Path.Combine(PathToExeFolder, "portable");
             IsPortable = File.Exists(PortableSwitchFile);
@@ -124,7 +124,7 @@ namespace SaveToGameWpf.Logic
                     ? Path.Combine(PathToExeFolder, "data")
                     : Path.Combine(
                         Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-                        Assembly.GetExecutingAssembly().GetName().Name
+                        Assembly.GetExecutingAssembly().GetName().Name!
                     );
             TempPath = Path.Combine(AppDataPath, "temp");
 
