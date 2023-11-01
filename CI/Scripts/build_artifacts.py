@@ -74,16 +74,16 @@ if __name__ == "__main__":
     compressed_resources_zip = solution_root / "compiled_app_resources.zip"
     inno_script_script_path = solution_root / "SaveToGame.iss"
 
+    app_version = project_cs_path.read_text(encoding="utf-8").split("<Version>")[1].split("</Version>")[0].strip()
+    app_short_version = ".".join(app_version.split(".")[:2])
+
     building_dir = ci_root / "Building"
     save_to_game_publish_dir = building_dir / "SaveToGame publish"
     inno_script_building_path = building_dir / inno_script_script_path.name
     decompressed_resources_dir = building_dir / "Decompressed resources"
     inno_script_output_dir = building_dir / "Inno script output"
     artifacts_dir = building_dir / "Artifacts"
-    portable_variant_artifact = artifacts_dir / "SaveToGame portable.zip"
-
-    app_version = project_cs_path.read_text(encoding="utf-8").split("<Version>")[1].split("</Version>")[0].strip()
-    app_short_version = ".".join(app_version.split(".")[:2])
+    portable_variant_artifact = artifacts_dir / f"SaveToGame_{app_short_version}_portable.zip"
 
     print_step("Clean up")
     delete_dir(building_dir)
